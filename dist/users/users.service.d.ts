@@ -1,7 +1,7 @@
 import { User } from "./users.model";
 export declare class UsersService {
     private users;
-    insertUser(id: string, username: string, avatar: string): void;
+    insertUser(id: string, username: string, avatar: string): string;
     getAllUsers(): User[];
     getUser(id: string): {
         [x: number]: number | User;
@@ -61,8 +61,10 @@ export declare class UsersService {
         at(index: number): number | User;
     };
     updateUsername(id: string, username: string): void;
+    updateAvatar(id: string, avatar: string): void;
     updateLevel(id: string, lvl: number): void;
     updateStatus(id: string, status: string): void;
+    myCondition(player: any, id: any): boolean;
     private findUser;
     private duplicateUser;
 }

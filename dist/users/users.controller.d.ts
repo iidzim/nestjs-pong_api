@@ -62,4 +62,5 @@ export declare class UsersController {
         at(index: number): number | import("./users.model").User;
     };
     updateUsername(id: string, username: string): any;
+    updateAvatar(id: string, avatar: string): any;
 }

@@ -12,6 +12,7 @@ export class UsersController {
 		@Body('avatar') avatar: string
 	): any {
 		this.usersService.insertUser(id, username, avatar);
+		return {id: id};
 	}
 
 	@Get()
@@ -21,16 +22,26 @@ export class UsersController {
 
 	@Get(':id')
 	getUser(@Param(':id') login: string){
+		console.log("id = " + login);
 		return this.usersService.getUser(login);
 	}
 
 	@Patch(':id')
 	updateUsername(
-		@Param(':id') id:string, 
-		@Param(':username') username:string
+		@Param('id') id:string,
+		@Body('username') username:string
 	) {
 		this.usersService.updateUsername(id, username);
 		return null;
 	}
 
+	@Patch(':id')
+	updateAvatar(
+		@Param('id') id:string,
+		@Body('avatar') avatar:string
+	) {
+		this.usersService.updateAvatar(id, avatar);
+		return null;
+	}
 }
+

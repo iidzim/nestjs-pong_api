@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ConsoleLogger, Injectable, NotFoundException } from "@nestjs/common";
 import { User } from "./users.model";
 
 @Injectable()
@@ -9,6 +9,7 @@ export class UsersService {
 		this.duplicateUser(id, username);
 		const newUser = new User(id, username, avatar, 0, 0, 0, 'online');
 		this.users.push(newUser);
+		return id;
 	}
 
 	getAllUsers(){
@@ -24,9 +25,17 @@ export class UsersService {
 		const [userObj, userIndex] = this.findUser(id);
 		const updateUsernm = {...userObj};
 		if (username) {
-			updateUsernm.id = id;
+			this.duplicateUser(id, username);
+			updateUsernm.username = username;
 		}
 		this.users[userIndex] = updateUsernm;
+	}
+
+	updateAvatar(id:string, avatar: string){
+		const [userObj, userIndex] = this.findUser(id);
+		const updateUser = {...userObj};
+		updateUser.avatar = avatar;
+		this.users[userIndex] = updateUser;
 	}
 
 	updateLevel(id:string, lvl: number){
@@ -45,8 +54,13 @@ export class UsersService {
 		this.users[userIndex] = updateUser;
 	}
 
+	myCondition(player, id) {
+		return player.id === id;
+	}
+
 	private findUser(id:string): [User, number] {
-		const userIndex = this.users.findIndex(player => player.id === id);
+
+		const userIndex =  this.users.findIndex(player => player.id === id);
 		const userObj = this.users[userIndex];
 		if (!userObj) {
 			throw new NotFoundException('Could not find user');

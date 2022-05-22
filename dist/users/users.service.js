@@ -17,6 +17,7 @@ let UsersService = class UsersService {
         this.duplicateUser(id, username);
         const newUser = new users_model_1.User(id, username, avatar, 0, 0, 0, 'online');
         this.users.push(newUser);
+        return id;
     }
     getAllUsers() {
         return [...this.users];
@@ -29,9 +30,16 @@ let UsersService = class UsersService {
         const [userObj, userIndex] = this.findUser(id);
         const updateUsernm = Object.assign({}, userObj);
         if (username) {
-            updateUsernm.id = id;
+            this.duplicateUser(id, username);
+            updateUsernm.username = username;
         }
         this.users[userIndex] = updateUsernm;
+    }
+    updateAvatar(id, avatar) {
+        const [userObj, userIndex] = this.findUser(id);
+        const updateUser = Object.assign({}, userObj);
+        updateUser.avatar = avatar;
+        this.users[userIndex] = updateUser;
     }
     updateLevel(id, lvl) {
         const [userObj, userIndex] = this.findUser(id);
@@ -46,6 +54,9 @@ let UsersService = class UsersService {
         const updateUser = Object.assign({}, userObj);
         updateUser.status = status;
         this.users[userIndex] = updateUser;
+    }
+    myCondition(player, id) {
+        return player.id === id;
     }
     findUser(id) {
         const userIndex = this.users.findIndex(player => player.id === id);

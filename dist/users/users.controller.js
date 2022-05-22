@@ -21,15 +21,21 @@ let UsersController = class UsersController {
     }
     addUser(id, username, avatar) {
         this.usersService.insertUser(id, username, avatar);
+        return { id: id };
     }
     getAllUsers() {
         return this.usersService.getAllUsers();
     }
     getUser(login) {
+        console.log("id = " + login);
         return this.usersService.getUser(login);
     }
     updateUsername(id, username) {
         this.usersService.updateUsername(id, username);
+        return null;
+    }
+    updateAvatar(id, avatar) {
+        this.usersService.updateAvatar(id, avatar);
         return null;
     }
 };
@@ -57,12 +63,20 @@ __decorate([
 ], UsersController.prototype, "getUser", null);
 __decorate([
     (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)(':id')),
-    __param(1, (0, common_1.Param)(':username')),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)('username')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateUsername", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)('avatar')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "updateAvatar", null);
 UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])
