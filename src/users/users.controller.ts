@@ -7,7 +7,7 @@ export class UsersController {
 
 	@Post()
 	addUser(
-		@Body('id') id: string,
+		@Body('id') id: number,
 		@Body('username') username: string,
 		@Body('avatar') avatar: string
 	): any {
@@ -21,14 +21,14 @@ export class UsersController {
 	}
 
 	@Get(':id')
-	getUser(@Param(':id') login: string){
-		console.log("id = " + login);
-		return this.usersService.getUser(login);
+	getUser(@Param(':id') id: number){
+		// console.log("id = " + id);
+		return this.usersService.getUser(id);
 	}
 
 	@Patch(':id')
 	updateUsername(
-		@Param('id') id:string,
+		@Param('id') id:number,
 		@Body('username') username:string
 	) {
 		this.usersService.updateUsername(id, username);
@@ -37,7 +37,7 @@ export class UsersController {
 
 	@Patch(':id')
 	updateAvatar(
-		@Param('id') id:string,
+		@Param('id') id:number,
 		@Body('avatar') avatar:string
 	) {
 		this.usersService.updateAvatar(id, avatar);

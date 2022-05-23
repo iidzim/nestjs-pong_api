@@ -26,9 +26,8 @@ let UsersController = class UsersController {
     getAllUsers() {
         return this.usersService.getAllUsers();
     }
-    getUser(login) {
-        console.log("id = " + login);
-        return this.usersService.getUser(login);
+    getUser(id) {
+        return this.usersService.getUser(id);
     }
     updateUsername(id, username) {
         this.usersService.updateUsername(id, username);
@@ -45,7 +44,7 @@ __decorate([
     __param(1, (0, common_1.Body)('username')),
     __param(2, (0, common_1.Body)('avatar')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:paramtypes", [Number, String, String]),
     __metadata("design:returntype", Object)
 ], UsersController.prototype, "addUser", null);
 __decorate([
@@ -58,7 +57,7 @@ __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)(':id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "getUser", null);
 __decorate([
@@ -66,7 +65,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)('username')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [Number, String]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateUsername", null);
 __decorate([
@@ -74,7 +73,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)('avatar')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [Number, String]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateAvatar", null);
 UsersController = __decorate([

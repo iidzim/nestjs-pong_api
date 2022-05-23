@@ -2,9 +2,9 @@ import { UsersService } from "./users.service";
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
-    addUser(id: string, username: string, avatar: string): any;
+    addUser(id: number, username: string, avatar: string): any;
     getAllUsers(): import("./users.model").User[];
-    getUser(login: string): {
+    getUser(id: number): {
         [x: number]: number | import("./users.model").User;
         0: import("./users.model").User;
         1: number;
@@ -61,6 +61,6 @@ export declare class UsersController {
         };
         at(index: number): number | import("./users.model").User;
     };
-    updateUsername(id: string, username: string): any;
-    updateAvatar(id: string, avatar: string): any;
+    updateUsername(id: number, username: string): any;
+    updateAvatar(id: number, avatar: string): any;
 }

@@ -5,7 +5,7 @@ import { User } from "./users.model";
 export class UsersService {
 	private users: User[] = [];
 
-	insertUser(id: string, username: string, avatar: string){
+	insertUser(id: number, username: string, avatar: string){
 		this.duplicateUser(id, username);
 		const newUser = new User(id, username, avatar, 0, 0, 0, 'online');
 		this.users.push(newUser);
@@ -16,12 +16,12 @@ export class UsersService {
 		return [...this.users];
 	}
 
-	getUser(id: string){
+	getUser(id: number){
 		const player = this.findUser(id);
 		return {...player};
 	}
 
-	updateUsername(id:string, username: string){
+	updateUsername(id:number, username: string){
 		const [userObj, userIndex] = this.findUser(id);
 		const updateUsernm = {...userObj};
 		if (username) {
@@ -31,14 +31,14 @@ export class UsersService {
 		this.users[userIndex] = updateUsernm;
 	}
 
-	updateAvatar(id:string, avatar: string){
+	updateAvatar(id:number, avatar: string){
 		const [userObj, userIndex] = this.findUser(id);
 		const updateUser = {...userObj};
 		updateUser.avatar = avatar;
 		this.users[userIndex] = updateUser;
 	}
 
-	updateLevel(id:string, lvl: number){
+	updateLevel(id:number, lvl: number){
 		const [userObj, userIndex] = this.findUser(id);
 		const updateUser = {...userObj};
 		if (lvl > updateUser.level) {
@@ -47,18 +47,14 @@ export class UsersService {
 		this.users[userIndex] = updateUser;
 	}
 
-	updateStatus(id:string, status: string){
+	updateStatus(id:number, status: string){
 		const [userObj, userIndex] = this.findUser(id);
 		const updateUser = {...userObj};
 		updateUser.status = status;
 		this.users[userIndex] = updateUser;
 	}
 
-	myCondition(player, id) {
-		return player.id === id;
-	}
-
-	private findUser(id:string): [User, number] {
+	private findUser(id:number): [User, number] {
 
 		const userIndex =  this.users.findIndex(player => player.id === id);
 		const userObj = this.users[userIndex];
@@ -68,7 +64,7 @@ export class UsersService {
 		return [userObj, userIndex];
 	}
 
-	private duplicateUser(id: string, username: string){
+	private duplicateUser(id: number, username: string){
 		const usernm = this.users.find(player => player.username === username);
 		if (usernm) {
 			throw new NotFoundException('username already taken !');

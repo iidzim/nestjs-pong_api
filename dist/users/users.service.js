@@ -55,9 +55,6 @@ let UsersService = class UsersService {
         updateUser.status = status;
         this.users[userIndex] = updateUser;
     }
-    myCondition(player, id) {
-        return player.id === id;
-    }
     findUser(id) {
         const userIndex = this.users.findIndex(player => player.id === id);
         const userObj = this.users[userIndex];
