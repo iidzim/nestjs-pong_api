@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToMany } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { Match } from '../match/Match.model';
+import { Relation } from '../relations/relation.model';
 
 @Entity()
 export class User extends BaseEntity{
@@ -24,16 +25,17 @@ export class User extends BaseEntity{
 	avatar: string;
 
 	@Column()
-	wins: number;
-
-	@Column()
-	losses: number;
-
-	@Column()
 	level: number;
 
 	@Column({ length: 10 })
-	status: string;
+	status: UserStatus;
+
+	@OneToMany(type => Match, match => match.user1)
+	matchs: Match[];
+
+	@ManyToMany(type => Relation)
+		@JoinTable()
+		relations: Relation[];
 
 	constructor(
 		id: number,
@@ -42,16 +44,20 @@ export class User extends BaseEntity{
 		wins: number,
 		losses: number,
 		level: number,
-		status: string
+		status: UserStatus
 	) {
 		// super(id, username, avatar, wins, losses, level, status);
 		super();
 		this.id = id;
 		this.username = username;
 		this.avatar = avatar;
-		this.wins = wins;
-		this.losses = losses;
 		this.level = level;
 		this.status = status;
 	  }
-	}
+}
+
+export enum UserStatus {
+	ONLINE = 'online',
+	OFFLINE = 'offline',
+	PLAYING = 'playing',
+}

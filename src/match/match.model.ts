@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, ManyToMany, JoinTable } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, JoinTable } from "typeorm";
 import { User } from '../users/users.model';
 
 @Entity()
@@ -7,11 +7,11 @@ export class Match extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    user1: number;
+    @ManyToOne(type => User, user => user.id)
+    user1: User;
 
-    @Column()
-    user2: number;
+    @ManyToOne(type => User, user => user.id)
+    user2: User;
 
     @Column()
     winner: string;
@@ -23,24 +23,29 @@ export class Match extends BaseEntity{
     score: number;
 
     @Column()
-    status: string;
+    status: MatchStatus;
 
     constructor(
         id: number,
-        user1: number,
-        user2: number,
+        // user1: number,
+        // user2: number,
         winner: string,
         loser: string,
         score: number,
-        status: string
+        status: MatchStatus
     ) {
         super();
         this.id = id;
-        this.user1 = user1;
-        this.user2 = user2;
+        // this.user1 = User.id;
+        // this.user2 = User.id;
         this.winner = winner;
         this.loser = loser;
         this.score = score;
         this.status = status;
     }
+}
+
+export enum MatchStatus { 
+    PLAYING = 'playing',
+    GAMEOVER = 'gameover',
 }
