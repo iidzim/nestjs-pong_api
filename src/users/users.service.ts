@@ -1,80 +1,60 @@
-import { ConsoleLogger, Injectable, NotFoundException } from "@nestjs/common";
-import { User, UserStatus } from "./users.model";
+import { ConsoleLogger, Injectable, NotFoundException, Param } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { GetUsersFilterDto } from "./dto/get-user-filter.dto";
+import { User } from "./user.entity";
+import { UserRepository } from "./user.repository";
+import { UserStatus } from "./user_status.enum";
 
 @Injectable()
 export class UsersService {
-	private users: User[] = [];
+	constructor(
+		@InjectRepository(UserRepository)
+		private userRepository: UserRepository,
+	) {}
 
-	insertUser(id: number, username: string, avatar: string): User {
-		this.duplicateUser(id, username);
-		const newUser = new User(id, username, avatar, 0, 0, 0, UserStatus.ONLINE);
-		this.users.push(newUser);
-		return newUser;
+
+	async createUser(createUserDto: CreateUserDto): Promise<User> {
+		return this.userRepository.createUser(createUserDto);
 	}
 
-	getAllUsers(): User[] { 
-		return [...this.users];
-	}
-
-	getUser(id: number): [User, number]{
-		const player = this.findUser(id);
-		return {...player};
-	}
-
-	updateUsername(id:number, username: string): void{
-		const [userObj, userIndex] = this.findUser(id);
-		const updateUsernm = {...userObj};
-		if (username) {
-			this.duplicateUser(id, username);
-			updateUsernm.username = username;
+	async getUserById(id: number): Promise<User> {
+		const found = await this.userRepository.findOne(id);
+		if (!found){
+			throw new NotFoundException(`User with ID "${id}" not found`)
 		}
-		this.users[userIndex] = updateUsernm;
+		return found;
 	}
 
-	updateAvatar(id:number, avatar: string): void{
-		const [userObj, userIndex] = this.findUser(id);
-		const updateUser = {...userObj};
-		updateUser.avatar = avatar;
-		this.users[userIndex] = updateUser;
-	}
-
-	updateLevel(id:number, lvl: number): void{
-		const [userObj, userIndex] = this.findUser(id);
-		const updateUser = {...userObj};
-		if (lvl > updateUser.level) {
-			updateUser.level = lvl;
-		}
-		this.users[userIndex] = updateUser;
-	}
-
-	updateStatus(id: number, status: string): void{
-		const [userObj, userIndex] = this.findUser(id);
-		const updateUser = {...userObj};
-		updateUser.status = status;
-		this.users[userIndex] = updateUser;
-	}
-
-	deleteUser(id: number): void{
-		// const userIndex =  this.users.findIndex(player => player.id === id);
-		// delete this.users[userIndex];
-
-		this.users = this.users.filter(user => user.id !== id);
-	}
-
-	private findUser(id:number): [User, number] {
-
-		const userIndex =  this.users.findIndex(player => player.id === id);
-		const userObj = this.users[userIndex];
-		if (!userObj) {
-			throw new NotFoundException('Could not find user');
-		}
-		return [userObj, userIndex];
-	}
-
-	private duplicateUser(id: number, username: string){
-		const usernm = this.users.find(player => player.username === username);
-		if (usernm) {
-			throw new NotFoundException('username already taken !');
+	async deleteUser(id: number): Promise<void> {
+		const del = await this.userRepository.delete(id);
+		if (!del.affected){
+			throw new NotFoundException(`User with ID "${id}" not found`)
 		}
 	}
+
+	async updateUsername(id: number, username: string): Promise<User> {
+		const updated = await this.getUserById(id);
+		updated.username = username;
+		await updated.save();
+		return updated;
+	}
+
+	async updateAvatar(id: number, avatar: string): Promise<User> {
+		const updated = await this.getUserById(id);
+		updated.avatar = avatar;
+		await updated.save();
+		return updated;
+	}
+
+	getUsers(FilterDto: GetUsersFilterDto):Promise<User[]> { 
+		return this.userRepository.getUsers(FilterDto);
+	}
+
+// 	private duplicateUser(id: number, username: string){
+// 		const usernm = this.users.find(player => player.username === username);
+// 		if (usernm) {
+// 			throw new NotFoundException('username already taken !');
+// 		}
+// 	}
 }

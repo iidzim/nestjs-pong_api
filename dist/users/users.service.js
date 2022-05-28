@@ -5,73 +5,57 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
-const users_model_1 = require("./users.model");
+const typeorm_1 = require("@nestjs/typeorm");
+const user_repository_1 = require("./user.repository");
 let UsersService = class UsersService {
-    constructor() {
-        this.users = [];
+    constructor(userRepository) {
+        this.userRepository = userRepository;
     }
-    insertUser(id, username, avatar) {
-        this.duplicateUser(id, username);
-        const newUser = new users_model_1.User(id, username, avatar, 0, 0, 0, 'online');
-        this.users.push(newUser);
-        return id;
+    async createUser(createUserDto) {
+        return this.userRepository.createUser(createUserDto);
     }
-    getAllUsers() {
-        return [...this.users];
-    }
-    getUser(id) {
-        const player = this.findUser(id);
-        return Object.assign({}, player);
-    }
-    updateUsername(id, username) {
-        const [userObj, userIndex] = this.findUser(id);
-        const updateUsernm = Object.assign({}, userObj);
-        if (username) {
-            this.duplicateUser(id, username);
-            updateUsernm.username = username;
+    async getUserById(id) {
+        const found = await this.userRepository.findOne(id);
+        if (!found) {
+            throw new common_1.NotFoundException(`User with ID "${id}" not found`);
         }
-        this.users[userIndex] = updateUsernm;
+        return found;
     }
-    updateAvatar(id, avatar) {
-        const [userObj, userIndex] = this.findUser(id);
-        const updateUser = Object.assign({}, userObj);
-        updateUser.avatar = avatar;
-        this.users[userIndex] = updateUser;
-    }
-    updateLevel(id, lvl) {
-        const [userObj, userIndex] = this.findUser(id);
-        const updateUser = Object.assign({}, userObj);
-        if (lvl > updateUser.level) {
-            updateUser.level = lvl;
+    async deleteUser(id) {
+        const del = await this.userRepository.delete(id);
+        if (!del.affected) {
+            throw new common_1.NotFoundException(`User with ID "${id}" not found`);
         }
-        this.users[userIndex] = updateUser;
     }
-    updateStatus(id, status) {
-        const [userObj, userIndex] = this.findUser(id);
-        const updateUser = Object.assign({}, userObj);
-        updateUser.status = status;
-        this.users[userIndex] = updateUser;
+    async updateUsername(id, username) {
+        const updated = await this.getUserById(id);
+        updated.username = username;
+        await updated.save();
+        return updated;
     }
-    findUser(id) {
-        const userIndex = this.users.findIndex(player => player.id === id);
-        const userObj = this.users[userIndex];
-        if (!userObj) {
-            throw new common_1.NotFoundException('Could not find user');
-        }
-        return [userObj, userIndex];
+    async updateAvatar(id, avatar) {
+        const updated = await this.getUserById(id);
+        updated.avatar = avatar;
+        await updated.save();
+        return updated;
     }
-    duplicateUser(id, username) {
-        const usernm = this.users.find(player => player.username === username);
-        if (usernm) {
-            throw new common_1.NotFoundException('username already taken !');
-        }
+    getUsers(FilterDto) {
+        return this.userRepository.getUsers(FilterDto);
     }
 };
 UsersService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(user_repository_1.UserRepository)),
+    __metadata("design:paramtypes", [user_repository_1.UserRepository])
 ], UsersService);
 exports.UsersService = UsersService;
 //# sourceMappingURL=users.service.js.map

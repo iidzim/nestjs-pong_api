@@ -1,0 +1,9 @@
+npm install -g @nestjs/cli
+# Install TypeScript globally if it isn't already installed.
+npm install -g typescript
+npm install typeorm --save
+npm install pg --save
+npm install class-validator class-transformer --save
+
+npm install --save @dicebear/avatars @dicebear/croodles
+https://github.com/arielweinberger/nestjs-course-task-management/tree/validation/task-filtering-and-search

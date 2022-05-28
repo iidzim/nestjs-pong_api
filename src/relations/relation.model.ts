@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToMany } from "typeorm";
-import { User } from '../users/users.model';
+import { User } from '../users/user.entity';
 
 @Entity()
 export class Relation extends BaseEntity{

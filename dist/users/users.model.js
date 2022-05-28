@@ -9,16 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.UserStatus = exports.User = void 0;
 const typeorm_1 = require("typeorm");
+const Match_model_1 = require("../match/Match.model");
+const relation_model_1 = require("../relations/relation.model");
 let User = class User extends typeorm_1.BaseEntity {
     constructor(id, username, avatar, wins, losses, level, status) {
         super();
         this.id = id;
         this.username = username;
         this.avatar = avatar;
-        this.wins = wins;
-        this.losses = losses;
         this.level = level;
         this.status = status;
     }
@@ -38,22 +38,29 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
-], User.prototype, "wins", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], User.prototype, "losses", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
 ], User.prototype, "level", void 0);
 __decorate([
     (0, typeorm_1.Column)({ length: 10 }),
     __metadata("design:type", String)
 ], User.prototype, "status", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(type => Match_model_1.Match, match => match.user1),
+    __metadata("design:type", Array)
+], User.prototype, "matchs", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(type => relation_model_1.Relation),
+    (0, typeorm_1.JoinTable)(),
+    __metadata("design:type", Array)
+], User.prototype, "relations", void 0);
 User = __decorate([
     (0, typeorm_1.Entity)(),
     __metadata("design:paramtypes", [Number, String, String, Number, Number, Number, String])
 ], User);
 exports.User = User;
+var UserStatus;
+(function (UserStatus) {
+    UserStatus["ONLINE"] = "online";
+    UserStatus["OFFLINE"] = "offline";
+    UserStatus["PLAYING"] = "playing";
+})(UserStatus = exports.UserStatus || (exports.UserStatus = {}));
 //# sourceMappingURL=users.model.js.map

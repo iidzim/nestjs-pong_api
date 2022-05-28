@@ -3,19 +3,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { typeOrmConfig } from './config/typeorm.config';
 
 @Module({
-  imports: [UsersModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: '127.0.0.1',
-      port: 5432,
-      username: 'ping',
-      password: 'pong',
-      database: 'pong_db',
-      entities: [],
-      synchronize: true,
-    })],
+  imports: [
+    UsersModule,
+    TypeOrmModule.forRoot(typeOrmConfig)],
   controllers: [AppController],
   providers: [AppService],
 })

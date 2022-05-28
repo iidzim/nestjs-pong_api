@@ -9,14 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Match = void 0;
+exports.MatchStatus = exports.Match = void 0;
 const typeorm_1 = require("typeorm");
+const user_entity_1 = require("../users/user.entity");
 let Match = class Match extends typeorm_1.BaseEntity {
-    constructor(id, user1, user2, winner, loser, score, status) {
+    constructor(id, winner, loser, score, status) {
         super();
         this.id = id;
-        this.user1 = user1;
-        this.user2 = user2;
         this.winner = winner;
         this.loser = loser;
         this.score = score;
@@ -28,12 +27,12 @@ __decorate([
     __metadata("design:type", Number)
 ], Match.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.ManyToOne)(type => user_entity_1.User, user => user.id),
+    __metadata("design:type", user_entity_1.User)
 ], Match.prototype, "user1", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.ManyToOne)(type => user_entity_1.User, user => user.id),
+    __metadata("design:type", user_entity_1.User)
 ], Match.prototype, "user2", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -53,7 +52,12 @@ __decorate([
 ], Match.prototype, "status", void 0);
 Match = __decorate([
     (0, typeorm_1.Entity)(),
-    __metadata("design:paramtypes", [Number, Number, Number, String, String, Number, String])
+    __metadata("design:paramtypes", [Number, String, String, Number, String])
 ], Match);
 exports.Match = Match;
-//# sourceMappingURL=Match.model.js.map
+var MatchStatus;
+(function (MatchStatus) {
+    MatchStatus["PLAYING"] = "playing";
+    MatchStatus["GAMEOVER"] = "gameover";
+})(MatchStatus = exports.MatchStatus || (exports.MatchStatus = {}));
+//# sourceMappingURL=match.model.js.map
