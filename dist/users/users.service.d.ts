@@ -7,8 +7,8 @@ export declare class UsersService {
     constructor(userRepository: UserRepository);
     createUser(createUserDto: CreateUserDto): Promise<User>;
     getUserById(id: number): Promise<User>;
-    deleteUser(id: number): Promise<void>;
+    getUsers(FilterDto: GetUsersFilterDto): Promise<User[]>;
     updateUsername(id: number, username: string): Promise<User>;
     updateAvatar(id: number, avatar: string): Promise<User>;
-    getUsers(FilterDto: GetUsersFilterDto): Promise<User[]>;
+    deleteUser(id: number): Promise<void>;
 }

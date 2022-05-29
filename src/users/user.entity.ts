@@ -16,7 +16,6 @@ export class User extends BaseEntity {
 	@Column()
 	level: number;
 
-	@Column({ length: 10 })
+	@Column()
 	status: UserStatus;
-
 }

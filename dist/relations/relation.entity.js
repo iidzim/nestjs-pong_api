@@ -9,33 +9,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.Relation = void 0;
 const typeorm_1 = require("typeorm");
-const user_status_enum_1 = require("./user_status.enum");
-let User = class User extends typeorm_1.BaseEntity {
-};
+const user_entity_1 = require("../users/user.entity");
+const relation_status_enum_1 = require("./relation_status.enum");
+class Relation extends typeorm_1.BaseEntity {
+}
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], User.prototype, "id", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ length: 50 }),
-    __metadata("design:type", String)
-], User.prototype, "username", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ length: 100 }),
-    __metadata("design:type", String)
-], User.prototype, "avatar", void 0);
+], Relation.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], User.prototype, "level", void 0);
+    __metadata("design:type", user_entity_1.User)
+], Relation.prototype, "user1", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", user_entity_1.User)
+], Relation.prototype, "user2", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], User.prototype, "status", void 0);
-User = __decorate([
-    (0, typeorm_1.Entity)()
-], User);
-exports.User = User;
-//# sourceMappingURL=user.entity.js.map
+], Relation.prototype, "status", void 0);
+exports.Relation = Relation;
+//# sourceMappingURL=relation.entity.js.map

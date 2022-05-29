@@ -8,8 +8,22 @@ import { GetUsersFilterDto } from "./dto/get-user-filter.dto";
 export class UserRepository extends Repository<User> {
 
     async getUsers(FilterDto: GetUsersFilterDto): Promise<User[]> {
-        const { username, avatar } = FilterDto;
+        const { id, username, level, status } = FilterDto;
         const query = this.createQueryBuilder('user');
+        if (id) {
+            query.andWhere('user.id = :id', { id }) // or {status : 'ONLINE' } for a static result
+        }
+        if (username) {
+            query.andWhere('user.username = :username', { username })
+        }
+        if (level) {
+            query.andWhere('user.level == :level', { level })
+        }
+        if (status) {
+            query.andWhere('user.status = :status', { status })
+        }
+        const users = await query.getMany();
+        return users;
     }
 
     async createUser(createUserDto: CreateUserDto): Promise<User> {

@@ -12,8 +12,22 @@ const user_status_enum_1 = require("./user_status.enum");
 const typeorm_1 = require("typeorm");
 let UserRepository = class UserRepository extends typeorm_1.Repository {
     async getUsers(FilterDto) {
-        const { username, avatar } = FilterDto;
+        const { id, username, level, status } = FilterDto;
         const query = this.createQueryBuilder('user');
+        if (id) {
+            query.andWhere('user.id = :id', { id });
+        }
+        if (username) {
+            query.andWhere('user.username = :username', { username });
+        }
+        if (level) {
+            query.andWhere('user.level == :level', { level });
+        }
+        if (status) {
+            query.andWhere('user.status = :status', { status });
+        }
+        const users = await query.getMany();
+        return users;
     }
     async createUser(createUserDto) {
         const { username, avatar } = createUserDto;

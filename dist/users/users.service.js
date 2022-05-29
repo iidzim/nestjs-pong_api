@@ -30,11 +30,8 @@ let UsersService = class UsersService {
         }
         return found;
     }
-    async deleteUser(id) {
-        const del = await this.userRepository.delete(id);
-        if (!del.affected) {
-            throw new common_1.NotFoundException(`User with ID "${id}" not found`);
-        }
+    async getUsers(FilterDto) {
+        return this.userRepository.getUsers(FilterDto);
     }
     async updateUsername(id, username) {
         const updated = await this.getUserById(id);
@@ -48,8 +45,11 @@ let UsersService = class UsersService {
         await updated.save();
         return updated;
     }
-    getUsers(FilterDto) {
-        return this.userRepository.getUsers(FilterDto);
+    async deleteUser(id) {
+        const del = await this.userRepository.delete(id);
+        if (!del.affected) {
+            throw new common_1.NotFoundException(`User with ID "${id}" not found`);
+        }
     }
 };
 UsersService = __decorate([

@@ -13,7 +13,6 @@ export class UsersService {
 		private userRepository: UserRepository,
 	) {}
 
-
 	async createUser(createUserDto: CreateUserDto): Promise<User> {
 		return this.userRepository.createUser(createUserDto);
 	}
@@ -26,20 +25,17 @@ export class UsersService {
 		return found;
 	}
 
-	async deleteUser(id: number): Promise<void> {
-		const del = await this.userRepository.delete(id);
-		if (!del.affected){
-			throw new NotFoundException(`User with ID "${id}" not found`)
-		}
+	async getUsers(FilterDto: GetUsersFilterDto):Promise<User[]> { 
+		return this.userRepository.getUsers(FilterDto);
 	}
-
+	
 	async updateUsername(id: number, username: string): Promise<User> {
 		const updated = await this.getUserById(id);
 		updated.username = username;
 		await updated.save();
 		return updated;
 	}
-
+	
 	async updateAvatar(id: number, avatar: string): Promise<User> {
 		const updated = await this.getUserById(id);
 		updated.avatar = avatar;
@@ -47,14 +43,11 @@ export class UsersService {
 		return updated;
 	}
 
-	getUsers(FilterDto: GetUsersFilterDto):Promise<User[]> { 
-		return this.userRepository.getUsers(FilterDto);
+	async deleteUser(id: number): Promise<void> {
+		const del = await this.userRepository.delete(id);
+		if (!del.affected){
+			throw new NotFoundException(`User with ID "${id}" not found`)
+		}
 	}
 
-// 	private duplicateUser(id: number, username: string){
-// 		const usernm = this.users.find(player => player.username === username);
-// 		if (usernm) {
-// 			throw new NotFoundException('username already taken !');
-// 		}
-// 	}
 }

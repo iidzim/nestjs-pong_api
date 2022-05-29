@@ -11,8 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetUsersFilterDto = void 0;
 const class_validator_1 = require("class-validator");
+const user_status_enum_1 = require("../user_status.enum");
 class GetUsersFilterDto {
 }
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], GetUsersFilterDto.prototype, "id", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsAlphanumeric)(),
@@ -21,7 +28,13 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], GetUsersFilterDto.prototype, "level", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsIn)([user_status_enum_1.UserStatus.OFFLINE, user_status_enum_1.UserStatus.ONLINE, user_status_enum_1.UserStatus.PLAYING]),
     __metadata("design:type", String)
-], GetUsersFilterDto.prototype, "avatar", void 0);
+], GetUsersFilterDto.prototype, "status", void 0);
 exports.GetUsersFilterDto = GetUsersFilterDto;
 //# sourceMappingURL=get-user-filter.dto.js.map

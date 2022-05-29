@@ -8,8 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RelationStatus = exports.Relation = void 0;
+exports.Relation = void 0;
 const typeorm_1 = require("typeorm");
 const user_entity_1 = require("../users/user.entity");
 let Relation = class Relation extends typeorm_1.BaseEntity {
@@ -33,18 +34,11 @@ __decorate([
 ], Relation.prototype, "user2", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
+    __metadata("design:type", typeof (_a = typeof RelationStatus !== "undefined" && RelationStatus) === "function" ? _a : Object)
 ], Relation.prototype, "status", void 0);
 Relation = __decorate([
     (0, typeorm_1.Entity)(),
-    __metadata("design:paramtypes", [Number, String])
+    __metadata("design:paramtypes", [Number, typeof (_b = typeof RelationStatus !== "undefined" && RelationStatus) === "function" ? _b : Object])
 ], Relation);
 exports.Relation = Relation;
-var RelationStatus;
-(function (RelationStatus) {
-    RelationStatus["NONE"] = "none";
-    RelationStatus["PENDING"] = "pending";
-    RelationStatus["FRIEND"] = "friend";
-    RelationStatus["BLOCKED"] = "blocked";
-})(RelationStatus = exports.RelationStatus || (exports.RelationStatus = {}));
 //# sourceMappingURL=relation.model.js.map
