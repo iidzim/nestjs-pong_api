@@ -1,7 +1,8 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { UserStatus } from "./user_status.enum";
 
 @Entity()
+@Unique(['username'])
 export class User extends BaseEntity {
 
 	@PrimaryGeneratedColumn()
@@ -13,12 +14,12 @@ export class User extends BaseEntity {
 	@Column({ length: 100 })
 	avatar: string;
 
-	@Column({default: 0})
+	@Column({ default: 0})
 	level: number;
 
-	@Column({default: UserStatus.ONLINE})
+	@Column({ default: UserStatus.ONLINE})
 	status: UserStatus;
 
-	// @Column()
-	// password: string;
+	@Column({ nullable: true ,length: 50 })
+	password: string;
 }

@@ -1,16 +1,16 @@
 import { Controller, Post, Get, Body, Param, Patch, Delete, ParseIntPipe, Query, ValidationPipe } from "@nestjs/common";
 import { User } from "./user.entity";
-import { UserStatus } from "./user_status.enum";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto-users/create-user.dto";
 import { GetUsersFilterDto } from "./dto-users/get-user-filter.dto";
 
-@Controller('users')
+@Controller('auth')
 export class UsersController {
 	constructor(private readonly usersService: UsersService){}
 
-	@Post()
-	addUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+	@Post('/signup')
+	signUp(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<void> {
+		console.log(createUserDto);
 		return this.usersService.createUser(createUserDto);
 	}
 

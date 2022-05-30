@@ -22,7 +22,7 @@ __decorate([
 ], GetUsersFilterDto.prototype, "id", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsAlphanumeric)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], GetUsersFilterDto.prototype, "username", void 0);
 __decorate([

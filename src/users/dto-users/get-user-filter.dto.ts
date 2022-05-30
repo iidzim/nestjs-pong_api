@@ -1,4 +1,4 @@
-import { IsAlphanumeric, IsIn, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { UserStatus } from "../user_status.enum";
 
 export class GetUsersFilterDto {
@@ -9,7 +9,7 @@ export class GetUsersFilterDto {
     id: number;
 
     @IsOptional()
-    @IsAlphanumeric()
+    @IsString()
     username: string;
 
     @IsOptional()
@@ -20,5 +20,4 @@ export class GetUsersFilterDto {
     @IsOptional()
     @IsIn([UserStatus.OFFLINE, UserStatus.ONLINE, UserStatus.PLAYING])
     status: UserStatus;
-
 }

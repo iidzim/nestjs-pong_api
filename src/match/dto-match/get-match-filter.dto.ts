@@ -15,7 +15,7 @@ export class GetMatchFilterDto {
 
     @IsOptional()
     @IsNotEmpty()
-    user2: User;
+    user2: number;
 
     @IsOptional()
     @IsIn([MatchStatus.GAMEOVER, MatchStatus.PLAYING])

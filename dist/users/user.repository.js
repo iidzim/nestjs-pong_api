@@ -29,15 +29,17 @@ let UserRepository = class UserRepository extends typeorm_1.Repository {
         const users = await query.getMany();
         return users;
     }
-    async createUser(createUserDto) {
-        const { username, avatar } = createUserDto;
+    async signUp(createUserDto) {
+        const { username, avatar, password } = createUserDto;
         const user = new user_entity_1.User();
         user.username = username;
-        user.avatar = avatar;
+        if (avatar) {
+            user.avatar = avatar;
+        }
+        user.password = password;
         user.level = 0;
         user.status = user_status_enum_1.UserStatus.OFFLINE;
         await user.save();
-        return user;
     }
 };
 UserRepository = __decorate([

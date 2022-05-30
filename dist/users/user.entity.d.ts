@@ -6,4 +6,5 @@ export declare class User extends BaseEntity {
     avatar: string;
     level: number;
     status: UserStatus;
+    password: string;
 }

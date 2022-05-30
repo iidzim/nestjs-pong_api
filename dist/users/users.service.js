@@ -21,7 +21,7 @@ let UsersService = class UsersService {
         this.userRepository = userRepository;
     }
     async createUser(createUserDto) {
-        return this.userRepository.createUser(createUserDto);
+        return this.userRepository.signUp(createUserDto);
     }
     async getUserById(id) {
         const found = await this.userRepository.findOne(id);

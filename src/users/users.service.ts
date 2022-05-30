@@ -13,8 +13,8 @@ export class UsersService {
 		private userRepository: UserRepository,
 	) {}
 
-	async createUser(createUserDto: CreateUserDto): Promise<User> {
-		return this.userRepository.createUser(createUserDto);
+	async createUser(createUserDto: CreateUserDto): Promise<void> {
+		return this.userRepository.signUp(createUserDto);
 	}
 
 	async getUserById(id: number): Promise<User> {
@@ -49,4 +49,5 @@ export class UsersService {
 			throw new NotFoundException(`User with ID "${id}" not found`)
 		}
 	}
+
 }

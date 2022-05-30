@@ -5,7 +5,7 @@ import { GetUsersFilterDto } from "./dto-users/get-user-filter.dto";
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
-    addUser(createUserDto: CreateUserDto): Promise<User>;
+    signUp(createUserDto: CreateUserDto): Promise<void>;
     getUserById(id: number): Promise<User>;
     deleteUser(id: number): Promise<void>;
     updateUsername(id: number, username: string): Promise<User>;
