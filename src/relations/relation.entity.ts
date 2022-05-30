@@ -11,8 +11,8 @@ export class Relation extends BaseEntity {
     user1: User;
 
     @Column()
-    user2: User;
+    user2: number;
 
-    @Column()
+    @Column({default: RelationStatus.NONE})
     status: RelationStatus;
 }

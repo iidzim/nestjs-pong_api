@@ -2,8 +2,8 @@ import { Controller, Post, Get, Body, Param, Patch, Delete, ParseIntPipe, Query,
 import { User } from "./user.entity";
 import { UserStatus } from "./user_status.enum";
 import { UsersService } from "./users.service";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { GetUsersFilterDto } from "./dto/get-user-filter.dto";
+import { CreateUserDto } from "./dto-users/create-user.dto";
+import { GetUsersFilterDto } from "./dto-users/get-user-filter.dto";
 
 @Controller('users')
 export class UsersController {
@@ -45,5 +45,4 @@ export class UsersController {
 	getUsers(@Query(ValidationPipe) FilterDto: GetUsersFilterDto) {
 		return this.usersService.getUsers(FilterDto);
 	}
-
 }

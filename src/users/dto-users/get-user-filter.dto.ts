@@ -2,7 +2,6 @@ import { IsAlphanumeric, IsIn, IsNotEmpty, IsNumber, IsOptional } from "class-va
 import { UserStatus } from "../user_status.enum";
 
 export class GetUsersFilterDto {
-
     
     @IsOptional()
     @IsNotEmpty()

@@ -27,11 +27,11 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "avatar", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ default: 0 }),
     __metadata("design:type", Number)
 ], User.prototype, "level", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ default: user_status_enum_1.UserStatus.ONLINE }),
     __metadata("design:type", String)
 ], User.prototype, "status", void 0);
 User = __decorate([

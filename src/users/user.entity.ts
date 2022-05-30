@@ -13,9 +13,12 @@ export class User extends BaseEntity {
 	@Column({ length: 100 })
 	avatar: string;
 
-	@Column()
+	@Column({default: 0})
 	level: number;
 
-	@Column()
+	@Column({default: UserStatus.ONLINE})
 	status: UserStatus;
+
+	// @Column()
+	// password: string;
 }

@@ -1,5 +1,5 @@
-import { CreateUserDto } from "./dto/create-user.dto";
-import { GetUsersFilterDto } from "./dto/get-user-filter.dto";
+import { CreateUserDto } from "./dto-users/create-user.dto";
+import { GetUsersFilterDto } from "./dto-users/get-user-filter.dto";
 import { User } from "./user.entity";
 import { UserRepository } from "./user.repository";
 export declare class UsersService {

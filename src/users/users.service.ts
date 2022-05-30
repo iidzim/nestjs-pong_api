@@ -1,7 +1,7 @@
 import { ConsoleLogger, Injectable, NotFoundException, Param } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { GetUsersFilterDto } from "./dto/get-user-filter.dto";
+import { CreateUserDto } from "./dto-users/create-user.dto";
+import { GetUsersFilterDto } from "./dto-users/get-user-filter.dto";
 import { User } from "./user.entity";
 import { UserRepository } from "./user.repository";
 import { UserStatus } from "./user_status.enum";
@@ -28,14 +28,14 @@ export class UsersService {
 	async getUsers(FilterDto: GetUsersFilterDto):Promise<User[]> { 
 		return this.userRepository.getUsers(FilterDto);
 	}
-	
+
 	async updateUsername(id: number, username: string): Promise<User> {
 		const updated = await this.getUserById(id);
 		updated.username = username;
 		await updated.save();
 		return updated;
 	}
-	
+
 	async updateAvatar(id: number, avatar: string): Promise<User> {
 		const updated = await this.getUserById(id);
 		updated.avatar = avatar;
@@ -49,5 +49,4 @@ export class UsersService {
 			throw new NotFoundException(`User with ID "${id}" not found`)
 		}
 	}
-
 }

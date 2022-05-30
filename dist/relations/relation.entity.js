@@ -25,10 +25,10 @@ __decorate([
 ], Relation.prototype, "user1", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", user_entity_1.User)
+    __metadata("design:type", Number)
 ], Relation.prototype, "user2", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ default: relation_status_enum_1.RelationStatus.NONE }),
     __metadata("design:type", String)
 ], Relation.prototype, "status", void 0);
 exports.Relation = Relation;
