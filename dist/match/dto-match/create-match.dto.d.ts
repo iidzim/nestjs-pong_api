@@ -1,5 +1,5 @@
-import { User } from "../../users/user.entity";
+import { Player } from "../../players/player.entity";
 export declare class CreateMatchDto {
-    user1: User;
+    user1: Player;
     user2: number;
 }

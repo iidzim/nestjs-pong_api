@@ -1,5 +1,5 @@
 import { IsIn, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
-import { User } from "../../users/user.entity";
+import { Player } from "../../players/player.entity";
 import { RelationStatus } from "../relation_status.enum";
 
 export class GetRelationFilterDto {
@@ -11,7 +11,7 @@ export class GetRelationFilterDto {
 
     @IsOptional()
     @IsNotEmpty()
-    user1: User;
+    user1: Player;
 
     @IsOptional()
     @IsNotEmpty()

@@ -22,7 +22,6 @@ let UsersController = class UsersController {
         this.usersService = usersService;
     }
     signUp(createUserDto) {
-        console.log(createUserDto);
         return this.usersService.signUp(createUserDto);
     }
     signIn(createUserDto) {

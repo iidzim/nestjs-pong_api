@@ -1,10 +1,10 @@
 import { IsNotEmpty } from "class-validator";
-import { User } from "../../users/user.entity";
+import { Player } from "../../players/player.entity";
 
 export class CreateRelationDto {
 
     @IsNotEmpty()
-    user1: User;
+    user1: Player;
 
     @IsNotEmpty()
     user2: number;

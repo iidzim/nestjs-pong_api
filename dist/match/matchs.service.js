@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MatchService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const user_repository_1 = require("../users/user.repository");
+const Player_repository_1 = require("../Players/Player.repository");
 const match_repository_1 = require("./match.repository");
 let MatchService = class MatchService {
     constructor(matchRepository) {
@@ -43,7 +43,7 @@ let MatchService = class MatchService {
 };
 MatchService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(user_repository_1.UserRepository)),
+    __param(0, (0, typeorm_1.InjectRepository)(Player_repository_1.PlayerRepository)),
     __metadata("design:paramtypes", [match_repository_1.MatchRepository])
 ], MatchService);
 exports.MatchService = MatchService;

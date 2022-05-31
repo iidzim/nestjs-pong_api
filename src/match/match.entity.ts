@@ -1,6 +1,6 @@
 import { Col } from "sequelize/types/utils";
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, JoinTable } from "typeorm";
-import { User } from '../users/user.entity';
+import { Player } from '../players/player.entity';
 import { MatchStatus } from "./match_status.enum";
 
 @Entity()
@@ -10,7 +10,7 @@ export class Match extends BaseEntity{
     id: number;
 
     @Column()
-    user1: User;
+    user1: Player;
 
     @Column()
     user2: number;

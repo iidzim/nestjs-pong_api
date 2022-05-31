@@ -11,12 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateRelationDto = void 0;
 const class_validator_1 = require("class-validator");
-const user_entity_1 = require("../../users/user.entity");
+const player_entity_1 = require("../../players/player.entity");
 class CreateRelationDto {
 }
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", user_entity_1.User)
+    __metadata("design:type", player_entity_1.Player)
 ], CreateRelationDto.prototype, "user1", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),

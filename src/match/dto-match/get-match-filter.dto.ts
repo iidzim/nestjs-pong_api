@@ -1,5 +1,5 @@
 import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
-import { User } from "../../users/user.entity";
+import { Player } from "../../players/player.entity";
 import { MatchStatus } from "../match_status.enum";
 
 export class GetMatchFilterDto {
@@ -11,7 +11,7 @@ export class GetMatchFilterDto {
 
     @IsOptional()
     @IsNotEmpty()
-    user1: User;
+    user1: Player;
 
     @IsOptional()
     @IsNotEmpty()

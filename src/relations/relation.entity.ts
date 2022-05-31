@@ -1,5 +1,5 @@
 import { BaseEntity, Column, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "../users/user.entity";
+import { Player } from "../players/player.entity";
 import { RelationStatus } from "./relation_status.enum";
 
 export class Relation extends BaseEntity {
@@ -8,7 +8,7 @@ export class Relation extends BaseEntity {
     id: number;
 
     @Column()
-    user1: User;
+    user1: Player;
 
     @Column()
     user2: number;

@@ -41,6 +41,7 @@ let UserRepository = class UserRepository extends typeorm_1.Repository {
             user.avatar = avatar;
         }
         else {
+            console.log('generate random avatar ^^');
             let svg = (0, avatars_1.createAvatar)(style, { seed: username + 'svg' });
             user.avatar = svg;
         }
@@ -57,6 +58,7 @@ let UserRepository = class UserRepository extends typeorm_1.Repository {
                 throw new common_1.ConflictException('Username already exists');
             }
             else {
+                console.log('HERE!');
                 throw new common_1.InternalServerErrorException();
             }
         }

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserRepository } from "../users/user.repository";
+import { PlayerRepository } from "../Players/Player.repository";
 import { CreateMatchDto } from "./dto-match/create-match.dto";
 import { GetMatchFilterDto } from "./dto-match/get-match-filter.dto";
 import { Match } from "./match.entity";
@@ -9,7 +9,7 @@ import { MatchRepository } from "./match.repository";
 @Injectable()
 export class MatchService {
     constructor(
-        @InjectRepository(UserRepository)
+        @InjectRepository(PlayerRepository)
         private matchRepository: MatchRepository,
     ) {}
 
