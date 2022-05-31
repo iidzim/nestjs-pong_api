@@ -23,7 +23,10 @@ let UsersController = class UsersController {
     }
     signUp(createUserDto) {
         console.log(createUserDto);
-        return this.usersService.createUser(createUserDto);
+        return this.usersService.signUp(createUserDto);
+    }
+    signIn(createUserDto) {
+        return this.usersService.signIn(createUserDto);
     }
     getUserById(id) {
         return this.usersService.getUserById(id);
@@ -43,11 +46,18 @@ let UsersController = class UsersController {
 };
 __decorate([
     (0, common_1.Post)('/signup'),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "signUp", null);
+__decorate([
+    (0, common_1.Post)('/signin'),
+    __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "signIn", null);
 __decorate([
     (0, common_1.Get)('/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
@@ -63,7 +73,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "deleteUser", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
+    (0, common_1.Patch)('/editprofile/username/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)('username')),
     __metadata("design:type", Function),
@@ -71,7 +81,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateUsername", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
+    (0, common_1.Patch)('/editprofile/avatar/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)('avatar')),
     __metadata("design:type", Function),

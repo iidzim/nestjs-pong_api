@@ -1,5 +1,6 @@
 import { createAvatar } from '@dicebear/avatars';
 import * as style from '@dicebear/croodles';
+import * as bcrypt from 'bcrypt';
 import { User } from "./user.entity";
 import { UserStatus } from "./user_status.enum";
 import { EntityRepository, Repository } from "typeorm";
@@ -35,12 +36,12 @@ export class UserRepository extends Repository<User> {
 		user.username = username;
 		if (avatar) {
 			user.avatar = avatar;
-		}
-		else {
+		} else {
 			let svg = createAvatar(style, {seed: username + 'svg'});
 			user.avatar = svg;
 		}
-		user.password = password;
+		user.salt = await bcrypt.genSalt();
+		user.password = await this.hashPassword(password, user.salt);
 		user.level = 0;
 		user.status = UserStatus.OFFLINE;
 		try {
@@ -53,5 +54,20 @@ export class UserRepository extends Repository<User> {
 				throw new InternalServerErrorException();
 			}
 		}
+		console.log('HERE !!');
+	}
+
+	async validateUserPassword(createUserDto: CreateUserDto): Promise<string> {
+		const { username, password } = createUserDto;
+		const user = await this.findOne({ username });
+		if (user && await user.validatePassword(password)) {
+			return user.username;
+		} else {
+			return null;
+		}
+	}
+
+	private async hashPassword(password: string, salt: string): Promise<string> {
+		return bcrypt.hash(password, salt);
 	}
 }

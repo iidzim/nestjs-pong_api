@@ -7,9 +7,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserRepository = void 0;
+const avatars_1 = require("@dicebear/avatars");
+const style = require("@dicebear/croodles");
+const bcrypt = require("bcrypt");
 const user_entity_1 = require("./user.entity");
 const user_status_enum_1 = require("./user_status.enum");
 const typeorm_1 = require("typeorm");
+const common_1 = require("@nestjs/common");
 let UserRepository = class UserRepository extends typeorm_1.Repository {
     async getUsers(FilterDto) {
         const { id, username, level, status } = FilterDto;
@@ -36,10 +40,40 @@ let UserRepository = class UserRepository extends typeorm_1.Repository {
         if (avatar) {
             user.avatar = avatar;
         }
-        user.password = password;
+        else {
+            let svg = (0, avatars_1.createAvatar)(style, { seed: username + 'svg' });
+            user.avatar = svg;
+        }
+        user.salt = await bcrypt.genSalt();
+        user.password = await this.hashPassword(password, user.salt);
         user.level = 0;
         user.status = user_status_enum_1.UserStatus.OFFLINE;
-        await user.save();
+        try {
+            await user.save();
+        }
+        catch (error) {
+            console.log(error.code);
+            if (error.code === '23505') {
+                throw new common_1.ConflictException('Username already exists');
+            }
+            else {
+                throw new common_1.InternalServerErrorException();
+            }
+        }
+        console.log('HERE !!');
+    }
+    async validateUserPassword(createUserDto) {
+        const { username, password } = createUserDto;
+        const user = await this.findOne({ username });
+        if (user && await user.validatePassword(password)) {
+            return user.username;
+        }
+        else {
+            return null;
+        }
+    }
+    async hashPassword(password, salt) {
+        return bcrypt.hash(password, salt);
     }
 };
 UserRepository = __decorate([

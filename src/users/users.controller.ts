@@ -11,7 +11,12 @@ export class UsersController {
 	@Post('/signup')
 	signUp(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<void> {
 		console.log(createUserDto);
-		return this.usersService.createUser(createUserDto);
+		return this.usersService.signUp(createUserDto);
+	}
+
+	@Post('/signin')
+	signIn(@Body(ValidationPipe) createUserDto: CreateUserDto){
+		return this.usersService.signIn(createUserDto);
 	}
 
 	@Get('/:id')
@@ -24,7 +29,7 @@ export class UsersController {
 		return this.usersService.deleteUser(id);
 	}
 
-	@Patch(':id')
+	@Patch('/editprofile/username/:id')
 	updateUsername(
 		@Param('id', ParseIntPipe) id: number,
 		@Body('username', ) username: string,
@@ -33,7 +38,7 @@ export class UsersController {
 		return this.usersService.updateUsername(id, username);
 	}
 
-	@Patch(':id')
+	@Patch('/editprofile/avatar/:id')
 	updateAvatar(
 		@Param('id', ParseIntPipe) id: number,
 		@Body('avatar', ) avatar: string,

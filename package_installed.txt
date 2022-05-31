@@ -6,4 +6,7 @@ npm install pg --save
 npm install class-validator class-transformer --save
 
 npm install --save @dicebear/avatars @dicebear/croodles
+npm install bcrypt --save
+
+
 https://github.com/arielweinberger/nestjs-course-task-management/tree/validation/task-filtering-and-search

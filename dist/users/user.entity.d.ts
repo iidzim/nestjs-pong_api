@@ -7,4 +7,6 @@ export declare class User extends BaseEntity {
     level: number;
     status: UserStatus;
     password: string;
+    salt: string;
+    validatePassword(password: string): Promise<Boolean>;
 }

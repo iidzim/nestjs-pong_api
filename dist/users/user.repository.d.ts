@@ -5,4 +5,6 @@ import { GetUsersFilterDto } from "./dto-users/get-user-filter.dto";
 export declare class UserRepository extends Repository<User> {
     getUsers(FilterDto: GetUsersFilterDto): Promise<User[]>;
     signUp(createUserDto: CreateUserDto): Promise<void>;
+    validateUserPassword(createUserDto: CreateUserDto): Promise<string>;
+    private hashPassword;
 }

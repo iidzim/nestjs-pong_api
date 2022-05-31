@@ -5,7 +5,8 @@ import { UserRepository } from "./user.repository";
 export declare class UsersService {
     private userRepository;
     constructor(userRepository: UserRepository);
-    createUser(createUserDto: CreateUserDto): Promise<void>;
+    signUp(createUserDto: CreateUserDto): Promise<void>;
+    signIn(createUserDto: CreateUserDto): Promise<void>;
     getUserById(id: number): Promise<User>;
     getUsers(FilterDto: GetUsersFilterDto): Promise<User[]>;
     updateUsername(id: number, username: string): Promise<User>;

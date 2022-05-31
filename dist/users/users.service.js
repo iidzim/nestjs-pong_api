@@ -20,8 +20,15 @@ let UsersService = class UsersService {
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
-    async createUser(createUserDto) {
+    async signUp(createUserDto) {
         return this.userRepository.signUp(createUserDto);
+    }
+    async signIn(createUserDto) {
+        const username = await this.userRepository.validateUserPassword(createUserDto);
+        console.log(username);
+        if (!username) {
+            throw new common_1.UnauthorizedException('Invalid credentials');
+        }
     }
     async getUserById(id) {
         const found = await this.userRepository.findOne(id);

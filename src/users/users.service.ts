@@ -1,4 +1,4 @@
-import { ConsoleLogger, Injectable, NotFoundException, Param } from "@nestjs/common";
+import { ConsoleLogger, Injectable, NotFoundException, Param, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateUserDto } from "./dto-users/create-user.dto";
 import { GetUsersFilterDto } from "./dto-users/get-user-filter.dto";
@@ -13,8 +13,16 @@ export class UsersService {
 		private userRepository: UserRepository,
 	) {}
 
-	async createUser(createUserDto: CreateUserDto): Promise<void> {
+	async signUp(createUserDto: CreateUserDto): Promise<void> {
 		return this.userRepository.signUp(createUserDto);
+	}
+
+	async signIn(createUserDto: CreateUserDto) {
+		const username = await this.userRepository.validateUserPassword(createUserDto);
+		console.log(username);
+		if (!username) {
+			throw new UnauthorizedException('Invalid credentials')
+		}
 	}
 
 	async getUserById(id: number): Promise<User> {
