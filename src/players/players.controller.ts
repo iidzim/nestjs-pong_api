@@ -1,8 +1,9 @@
-import { Controller, Post, Get, Body, Param, Patch, Delete, ParseIntPipe, Query, ValidationPipe } from "@nestjs/common";
+import { Controller, Post, Get, Body, Param, Patch, Delete, ParseIntPipe, Query, ValidationPipe, UseGuards, Req } from "@nestjs/common";
 import { Player } from "./player.entity";
 import { UsersService } from "./players.service";
 import { CreateUserDto } from "./dto-players/create-player.dto";
 import { GetPlayersFilterDto } from "./dto-players/get-player-filter.dto";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller('auth')
 export class UsersController {
@@ -16,6 +17,12 @@ export class UsersController {
 	@Post('/signin')
 	signIn(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<{ accessToken: string }>{
 		return this.usersService.signIn(createUserDto);
+	}
+
+	@Post('/test')
+	@UseGuards(AuthGuard())
+	test(@Req() req) {
+		console.log(req);
 	}
 
 	@Get('/:id')

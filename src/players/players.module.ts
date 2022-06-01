@@ -5,12 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlayerRepository } from './player.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
     imports: [
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.register({
-            secret: 'pingpong1337',
+            secret: 'pingpong',
             signOptions: {
                 expiresIn: 3600,
             },
@@ -18,6 +19,13 @@ import { PassportModule } from '@nestjs/passport';
         TypeOrmModule.forFeature([PlayerRepository]),
     ],
     controllers: [UsersController],
-    providers: [UsersService],
+    providers: [
+        UsersService,
+        JwtStrategy,
+    ],
+    exports: [
+        JwtStrategy,
+        PassportModule,
+    ],
 })
 export class UsersModule {}

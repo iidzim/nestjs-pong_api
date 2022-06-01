@@ -33,7 +33,7 @@ export class UsersService {
 	async getUserById(id: number): Promise<Player> {
 		const found = await this.userRepository.findOne(id);
 		if (!found){
-			throw new NotFoundException(`User with ID "${id}" not found`)
+			throw new NotFoundException(`User with ID "${id}" not found`);
 		}
 		return found;
 	}

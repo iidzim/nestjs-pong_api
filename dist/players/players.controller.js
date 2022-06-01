@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const players_service_1 = require("./players.service");
 const create_player_dto_1 = require("./dto-players/create-player.dto");
 const get_player_filter_dto_1 = require("./dto-players/get-player-filter.dto");
+const passport_1 = require("@nestjs/passport");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -26,6 +27,9 @@ let UsersController = class UsersController {
     }
     signIn(createUserDto) {
         return this.usersService.signIn(createUserDto);
+    }
+    test(req) {
+        console.log(req);
     }
     getUserById(id) {
         return this.usersService.getUserById(id);
@@ -57,6 +61,14 @@ __decorate([
     __metadata("design:paramtypes", [create_player_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "signIn", null);
+__decorate([
+    (0, common_1.Post)('/test'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "test", null);
 __decorate([
     (0, common_1.Get)('/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
