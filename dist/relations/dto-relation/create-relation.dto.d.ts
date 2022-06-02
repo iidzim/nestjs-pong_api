@@ -1,5 +1,4 @@
-import { Player } from "../../players/player.entity";
 export declare class CreateRelationDto {
-    user1: Player;
+    user1: number;
     user2: number;
 }

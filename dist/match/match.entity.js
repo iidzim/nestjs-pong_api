@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Match = void 0;
 const typeorm_1 = require("typeorm");
-const player_entity_1 = require("../players/player.entity");
 const match_status_enum_1 = require("./match_status.enum");
 let Match = class Match extends typeorm_1.BaseEntity {
 };
@@ -21,7 +20,7 @@ __decorate([
 ], Match.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", player_entity_1.Player)
+    __metadata("design:type", Number)
 ], Match.prototype, "user1", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -40,7 +39,7 @@ __decorate([
     __metadata("design:type", String)
 ], Match.prototype, "status", void 0);
 Match = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)('match')
 ], Match);
 exports.Match = Match;
 //# sourceMappingURL=match.entity.js.map

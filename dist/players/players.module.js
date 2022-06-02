@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersModule = void 0;
+exports.PlayerModule = void 0;
 const common_1 = require("@nestjs/common");
 const players_controller_1 = require("./players.controller");
 const players_service_1 = require("./players.service");
@@ -15,9 +15,9 @@ const player_repository_1 = require("./player.repository");
 const jwt_1 = require("@nestjs/jwt");
 const passport_1 = require("@nestjs/passport");
 const jwt_strategy_1 = require("./jwt.strategy");
-let UsersModule = class UsersModule {
+let PlayerModule = class PlayerModule {
 };
-UsersModule = __decorate([
+PlayerModule = __decorate([
     (0, common_1.Module)({
         imports: [
             passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
@@ -39,6 +39,6 @@ UsersModule = __decorate([
             passport_1.PassportModule,
         ],
     })
-], UsersModule);
-exports.UsersModule = UsersModule;
+], PlayerModule);
+exports.PlayerModule = PlayerModule;
 //# sourceMappingURL=players.module.js.map

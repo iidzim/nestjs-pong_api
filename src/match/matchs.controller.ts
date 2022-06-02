@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, UsePipes, ValidationPipe } from "@nestjs/common";
 import { CreateMatchDto } from "./dto-match/create-match.dto";
 import { GetMatchFilterDto } from "./dto-match/get-match-filter.dto";
 import { Match } from "./match.entity";
@@ -9,6 +9,7 @@ export class MatchController {
 	constructor(private readonly matchService: MatchService){}
 
 	@Post()
+	@UsePipes(ValidationPipe)
 	addMatch(@Body() createMatchDto: CreateMatchDto): Promise<Match> {
 		return this.matchService.createMatch(createMatchDto);
 	}

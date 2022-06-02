@@ -11,7 +11,7 @@ export class GetMatchFilterDto {
 
     @IsOptional()
     @IsNotEmpty()
-    user1: Player;
+    user1: number;
 
     @IsOptional()
     @IsNotEmpty()

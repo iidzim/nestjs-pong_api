@@ -42,8 +42,7 @@ let PlayerRepository = class PlayerRepository extends typeorm_1.Repository {
         }
         else {
             console.log('generate random avatar ^^');
-            let svg = (0, avatars_1.createAvatar)(style, { seed: username + 'svg' });
-            user.avatar = svg;
+            user.avatar = (0, avatars_1.createAvatar)(style, { seed: username + '.svg' });
         }
         user.salt = await bcrypt.genSalt();
         user.password = await this.hashPassword(password, user.salt);

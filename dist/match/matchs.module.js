@@ -12,11 +12,15 @@ const matchs_service_1 = require("./matchs.service");
 const matchs_controller_1 = require("./matchs.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const match_repository_1 = require("./match.repository");
+const players_module_1 = require("../players/players.module");
 let MatchModule = class MatchModule {
 };
 MatchModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([match_repository_1.MatchRepository])],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([match_repository_1.MatchRepository]),
+            players_module_1.PlayerModule,
+        ],
         controllers: [matchs_controller_1.MatchController],
         providers: [matchs_service_1.MatchService],
     })

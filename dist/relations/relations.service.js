@@ -20,8 +20,8 @@ let RelationsService = class RelationsService {
     constructor(relationRepository) {
         this.relationRepository = relationRepository;
     }
-    async createRelation(CreateRelationDto) {
-        return this.relationRepository.createrelation(CreateRelationDto);
+    async createRelation(CreateRelationDto, player) {
+        return this.relationRepository.createrelation(CreateRelationDto, player);
     }
     async getRelationById(id) {
         const found = await this.relationRepository.findOne(id);

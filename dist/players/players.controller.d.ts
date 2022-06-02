@@ -9,7 +9,6 @@ export declare class UsersController {
     signIn(createUserDto: CreateUserDto): Promise<{
         accessToken: string;
     }>;
-    test(req: any): void;
     getUserById(id: number): Promise<Player>;
     deleteUser(id: number): Promise<void>;
     updateUsername(id: number, username: string): Promise<Player>;

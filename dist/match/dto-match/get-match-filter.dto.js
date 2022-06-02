@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetMatchFilterDto = void 0;
 const class_validator_1 = require("class-validator");
-const player_entity_1 = require("../../players/player.entity");
 const match_status_enum_1 = require("../match_status.enum");
 class GetMatchFilterDto {
 }
@@ -24,7 +23,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", player_entity_1.Player)
+    __metadata("design:type", Number)
 ], GetMatchFilterDto.prototype, "user1", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),

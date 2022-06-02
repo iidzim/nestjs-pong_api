@@ -4,7 +4,7 @@ import { Player } from "../../players/player.entity";
 export class CreateRelationDto {
 
     @IsNotEmpty()
-    user1: Player;
+    user1: number;
 
     @IsNotEmpty()
     user2: number;

@@ -3,7 +3,8 @@ import { Player } from "./player.entity";
 import { UsersService } from "./players.service";
 import { CreateUserDto } from "./dto-players/create-player.dto";
 import { GetPlayersFilterDto } from "./dto-players/get-player-filter.dto";
-import { AuthGuard } from "@nestjs/passport";
+// import { AuthGuard } from "@nestjs/passport";
+// import { GetPlayer } from "./get-player.decorator";
 
 @Controller('auth')
 export class UsersController {
@@ -19,11 +20,18 @@ export class UsersController {
 		return this.usersService.signIn(createUserDto);
 	}
 
-	@Post('/test')
-	@UseGuards(AuthGuard())
-	test(@Req() req) {
-		console.log(req);
-	}
+	// @Post('/test')
+	// @UseGuards(AuthGuard())
+	// test(@Req() req) {
+	// 	// console.log(req.user);
+	// 	console.log(req);
+	// }
+	// test(@GetPlayer() player: Player) {
+	// 	console.log('HERE');
+	// 	console.log(player);
+	// }
+
+
 
 	@Get('/:id')
 	getUserById(@Param('id', ParseIntPipe) id: number): Promise<Player> {

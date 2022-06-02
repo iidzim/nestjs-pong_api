@@ -1,9 +1,10 @@
-import { Repository } from "typeorm";
+import { EntityRepository, Repository } from "typeorm";
 import { CreateMatchDto } from "./dto-match/create-match.dto";
 import { GetMatchFilterDto } from "./dto-match/get-match-filter.dto";
 import { Match } from "./match.entity";
 import { MatchStatus } from "./match_status.enum";
 
+@EntityRepository(Match)
 export class MatchRepository extends Repository<Match> {
 
 	async getMatch(FilterDto: GetMatchFilterDto): Promise<Match[]> {

@@ -1,13 +1,17 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './players/players.module';
+import { PlayerModule } from './players/players.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
+import { RelationModule } from './relations/relations.module';
+import { MatchModule } from './match/matchs.module';
 
 @Module({
   imports: [
-    UsersModule,
+    PlayerModule,
+    RelationModule,
+    // MatchModule,
     TypeOrmModule.forRoot(typeOrmConfig)],
   controllers: [AppController],
   providers: [AppService],

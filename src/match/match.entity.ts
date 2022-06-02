@@ -3,14 +3,14 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, JoinTabl
 import { Player } from '../players/player.entity';
 import { MatchStatus } from "./match_status.enum";
 
-@Entity()
+@Entity('match')
 export class Match extends BaseEntity{
 
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    user1: Player;
+    user1: number;
 
     @Column()
     user2: number;

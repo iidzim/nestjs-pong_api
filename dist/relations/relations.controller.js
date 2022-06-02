@@ -14,6 +14,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RelationsController = void 0;
 const common_1 = require("@nestjs/common");
+const passport_1 = require("@nestjs/passport");
+const get_player_decorator_1 = require("../players/get-player.decorator");
+const player_entity_1 = require("../players/player.entity");
 const create_relation_dto_1 = require("./dto-relation/create-relation.dto");
 const get_relation_filter_dto_1 = require("./dto-relation/get-relation-filter.dto");
 const relations_service_1 = require("./relations.service");
@@ -21,49 +24,53 @@ let RelationsController = class RelationsController {
     constructor(relationService) {
         this.relationService = relationService;
     }
-    addMatch(createMatchDto) {
-        return this.relationService.createRelation(createMatchDto);
-    }
-    getUserById(id) {
-        return this.relationService.getRelationById(id);
-    }
-    deleteUser(id) {
-        return this.relationService.deleteRelation(id);
-    }
-    getUsers(FilterDto) {
+    getRelations(FilterDto) {
         return this.relationService.getRelation(FilterDto);
     }
+    getRelationById(id) {
+        return this.relationService.getRelationById(id);
+    }
+    addRelation(createRelationDto, player) {
+        return this.relationService.createRelation(createRelationDto, player);
+    }
+    deleteRelation(id) {
+        return this.relationService.deleteRelation(id);
+    }
 };
-__decorate([
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_relation_dto_1.CreateRelationDto]),
-    __metadata("design:returntype", Promise)
-], RelationsController.prototype, "addMatch", null);
-__decorate([
-    (0, common_1.Get)('/:id'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], RelationsController.prototype, "getUserById", null);
-__decorate([
-    (0, common_1.Delete)('/:id'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], RelationsController.prototype, "deleteUser", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)(common_1.ValidationPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [get_relation_filter_dto_1.GetRelationFilterDto]),
     __metadata("design:returntype", void 0)
-], RelationsController.prototype, "getUsers", null);
+], RelationsController.prototype, "getRelations", null);
+__decorate([
+    (0, common_1.Get)('/:id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], RelationsController.prototype, "getRelationById", null);
+__decorate([
+    (0, common_1.Post)(),
+    (0, common_1.UsePipes)(common_1.ValidationPipe),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, get_player_decorator_1.GetPlayer)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_relation_dto_1.CreateRelationDto,
+        player_entity_1.Player]),
+    __metadata("design:returntype", Promise)
+], RelationsController.prototype, "addRelation", null);
+__decorate([
+    (0, common_1.Delete)('/:id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], RelationsController.prototype, "deleteRelation", null);
 RelationsController = __decorate([
-    (0, common_1.Controller)(),
+    (0, common_1.Controller)('link'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     __metadata("design:paramtypes", [relations_service_1.RelationsService])
 ], RelationsController);
 exports.RelationsController = RelationsController;

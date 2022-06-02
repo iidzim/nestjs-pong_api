@@ -1,9 +1,12 @@
-import { Repository } from "typeorm";
+import { EntityRepository, Repository } from "typeorm";
+import { GetPlayer } from "../players/get-player.decorator";
+import { Player } from "../players/player.entity";
 import { CreateRelationDto } from "./dto-relation/create-relation.dto";
 import { GetRelationFilterDto } from "./dto-relation/get-relation-filter.dto";
 import { Relation } from "./relation.entity";
 import { RelationStatus } from "./relation_status.enum";
 
+@EntityRepository(Relation)
 export class RelationRepository extends Repository<Relation> {
 
 	async getRelations(FilterDto: GetRelationFilterDto): Promise<Relation[]> {
@@ -25,11 +28,14 @@ export class RelationRepository extends Repository<Relation> {
 		return relations;
 	}
 
-	async createrelation(createMacthDto: CreateRelationDto): Promise<Relation> {
+	async createrelation(
+		createMacthDto: CreateRelationDto,
+		player: Player,
+	): Promise<Relation> {
 		const { user1, user2 } = createMacthDto;
 		const relation = new Relation();
 		relation.user1 = user1;
-		relation.user2 = user2;
+		relation.user2 = player;
 		relation.status = RelationStatus.NONE;
 		await relation.save();
 		return relation;

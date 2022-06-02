@@ -3,9 +3,13 @@ import { MatchService } from "./matchs.service";
 import { MatchController } from "./matchs.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { MatchRepository } from "./match.repository";
+import { PlayerModule } from "../players/players.module";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([MatchRepository])],
+    imports: [
+        TypeOrmModule.forFeature([MatchRepository]),
+        PlayerModule,
+    ],
     controllers: [MatchController],
     providers: [MatchService],
 })

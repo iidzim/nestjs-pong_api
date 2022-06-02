@@ -1,8 +1,9 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { UserStatus } from "./player_status.enum";
 import * as bcrypt from 'bcrypt';
+import { Relation } from "../relations/relation.entity";
 
-@Entity()
+@Entity('player')
 @Unique(['username'])
 export class Player extends BaseEntity {
 
@@ -26,6 +27,9 @@ export class Player extends BaseEntity {
 
 	@Column()//({ nullable: true })
 	salt: string;
+
+	@OneToMany(type => Relation, relation => relation.user2, { eager: true})
+	relations: Relation[];
 
 	async validatePassword(password: string): Promise<Boolean> {
 		const hash = await bcrypt.hash(password, this.salt);

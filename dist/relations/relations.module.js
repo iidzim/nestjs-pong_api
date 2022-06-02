@@ -12,11 +12,15 @@ const typeorm_1 = require("@nestjs/typeorm");
 const relations_controller_1 = require("./relations.controller");
 const relation_repository_1 = require("./relation.repository");
 const relations_service_1 = require("./relations.service");
+const players_module_1 = require("../players/players.module");
 let RelationModule = class RelationModule {
 };
 RelationModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([relation_repository_1.RelationRepository])],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([relation_repository_1.RelationRepository]),
+            players_module_1.PlayerModule,
+        ],
         controllers: [relations_controller_1.RelationsController],
         providers: [relations_service_1.RelationsService],
     })

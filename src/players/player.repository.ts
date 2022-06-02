@@ -38,8 +38,7 @@ export class PlayerRepository extends Repository<Player> {
 			user.avatar = avatar;
 		} else {
 			console.log('generate random avatar ^^')
-			let svg = createAvatar(style, {seed: username + 'svg'});
-			user.avatar = svg;
+			user.avatar = createAvatar(style, {seed: username + '.svg'});
 		}
 		user.salt = await bcrypt.genSalt();
 		user.password = await this.hashPassword(password, user.salt);
