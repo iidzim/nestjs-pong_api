@@ -21,8 +21,8 @@ let MatchService = class MatchService {
     constructor(matchRepository) {
         this.matchRepository = matchRepository;
     }
-    async createMatch(createMatchDto) {
-        return this.matchRepository.createMatch(createMatchDto);
+    async createMatch(createMatchDto, player) {
+        return this.matchRepository.createMatch(createMatchDto, player);
     }
     async getMatchById(id) {
         const found = await this.matchRepository.findOne(id);

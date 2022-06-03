@@ -12,9 +12,6 @@ export class Match extends BaseEntity{
     @Column()
     user1: number;
 
-    // @Column()
-    // user2: number;
-
     @Column({ nullable: true })
     winner: string;
 

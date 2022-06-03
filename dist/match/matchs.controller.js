@@ -14,6 +14,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MatchController = void 0;
 const common_1 = require("@nestjs/common");
+const get_player_decorator_1 = require("../players/get-player.decorator");
+const player_entity_1 = require("../players/player.entity");
 const create_match_dto_1 = require("./dto-match/create-match.dto");
 const get_match_filter_dto_1 = require("./dto-match/get-match-filter.dto");
 const matchs_service_1 = require("./matchs.service");
@@ -21,27 +23,26 @@ let MatchController = class MatchController {
     constructor(matchService) {
         this.matchService = matchService;
     }
-    addMatch(createMatchDto) {
-        return this.matchService.createMatch(createMatchDto);
+    getUsers(FilterDto) {
+        return this.matchService.getMatch(FilterDto);
     }
     getUserById(id) {
         return this.matchService.getMatchById(id);
     }
+    addMatch(createMatchDto, player) {
+        return this.matchService.createMatch(createMatchDto, player);
+    }
     deleteUser(id) {
         return this.matchService.deleteMatch(id);
     }
-    getUsers(FilterDto) {
-        return this.matchService.getMatch(FilterDto);
-    }
 };
 __decorate([
-    (0, common_1.Post)(),
-    (0, common_1.UsePipes)(common_1.ValidationPipe),
-    __param(0, (0, common_1.Body)()),
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)(common_1.ValidationPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_match_dto_1.CreateMatchDto]),
-    __metadata("design:returntype", Promise)
-], MatchController.prototype, "addMatch", null);
+    __metadata("design:paramtypes", [get_match_filter_dto_1.GetMatchFilterDto]),
+    __metadata("design:returntype", void 0)
+], MatchController.prototype, "getUsers", null);
 __decorate([
     (0, common_1.Get)('/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
@@ -50,19 +51,22 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], MatchController.prototype, "getUserById", null);
 __decorate([
+    (0, common_1.Post)(),
+    (0, common_1.UsePipes)(common_1.ValidationPipe),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, get_player_decorator_1.GetPlayer)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_match_dto_1.CreateMatchDto,
+        player_entity_1.Player]),
+    __metadata("design:returntype", Promise)
+], MatchController.prototype, "addMatch", null);
+__decorate([
     (0, common_1.Delete)('/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], MatchController.prototype, "deleteUser", null);
-__decorate([
-    (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)(common_1.ValidationPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [get_match_filter_dto_1.GetMatchFilterDto]),
-    __metadata("design:returntype", void 0)
-], MatchController.prototype, "getUsers", null);
 MatchController = __decorate([
     (0, common_1.Controller)('match'),
     __metadata("design:paramtypes", [matchs_service_1.MatchService])

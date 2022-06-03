@@ -1,4 +1,5 @@
 import { EntityRepository, Repository } from "typeorm";
+import { Player } from "../players/player.entity";
 import { CreateMatchDto } from "./dto-match/create-match.dto";
 import { GetMatchFilterDto } from "./dto-match/get-match-filter.dto";
 import { Match } from "./match.entity";
@@ -26,11 +27,14 @@ export class MatchRepository extends Repository<Match> {
 		return matchs;
 	}
 
-	async createMatch(createMacthDto: CreateMatchDto): Promise<Match> {
+	async createMatch(
+		createMacthDto: CreateMatchDto,
+		player: Player,
+	): Promise<Match> {
 		const { user1, user2 } = createMacthDto;
 		const match = new Match();
 		match.user1 = user1;
-		match.user2 = user2;
+		match.user2 = player;
 		match.winner = '';
 		match.score = 0;
 		match.status = MatchStatus.GAMEOVER;

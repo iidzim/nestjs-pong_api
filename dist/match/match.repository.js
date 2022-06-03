@@ -29,11 +29,11 @@ let MatchRepository = class MatchRepository extends typeorm_1.Repository {
         const matchs = await query.getMany();
         return matchs;
     }
-    async createMatch(createMacthDto) {
+    async createMatch(createMacthDto, player) {
         const { user1, user2 } = createMacthDto;
         const match = new match_entity_1.Match();
         match.user1 = user1;
-        match.user2 = user2;
+        match.user2 = player;
         match.winner = '';
         match.score = 0;
         match.status = match_status_enum_1.MatchStatus.GAMEOVER;

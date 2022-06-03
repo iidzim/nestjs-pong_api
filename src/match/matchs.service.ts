@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Player } from "../players/player.entity";
 import { PlayerRepository } from "../Players/Player.repository";
 import { CreateMatchDto } from "./dto-match/create-match.dto";
 import { GetMatchFilterDto } from "./dto-match/get-match-filter.dto";
@@ -13,8 +14,11 @@ export class MatchService {
         private matchRepository: MatchRepository,
     ) {}
 
-    async createMatch(createMatchDto: CreateMatchDto): Promise<Match> {
-        return this.matchRepository.createMatch(createMatchDto);
+    async createMatch(
+		createMatchDto: CreateMatchDto,
+		player: Player,
+	): Promise<Match> {
+        return this.matchRepository.createMatch(createMatchDto, player);
     }
 
     async getMatchById(id: number): Promise<Match> {
