@@ -72,7 +72,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "deleteUser", null);
 __decorate([
-    (0, common_1.Patch)('/editprofile/username/:id'),
+    (0, common_1.Patch)('/settings/username/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)('username')),
     __metadata("design:type", Function),
@@ -80,7 +80,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateUsername", null);
 __decorate([
-    (0, common_1.Patch)('/editprofile/avatar/:id'),
+    (0, common_1.Patch)('/settings/avatar/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)('avatar')),
     __metadata("design:type", Function),

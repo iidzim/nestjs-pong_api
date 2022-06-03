@@ -1,6 +1,7 @@
 import { BaseEntity } from "typeorm";
 import { UserStatus } from "./player_status.enum";
 import { Relation } from "../relations/relation.entity";
+import { Match } from "../match/match.entity";
 export declare class Player extends BaseEntity {
     id: number;
     username: string;
@@ -10,5 +11,6 @@ export declare class Player extends BaseEntity {
     password: string;
     salt: string;
     relations: Relation[];
+    matchs: Match[];
     validatePassword(password: string): Promise<Boolean>;
 }

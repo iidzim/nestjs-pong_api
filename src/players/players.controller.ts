@@ -43,7 +43,7 @@ export class UsersController {
 		return this.usersService.deleteUser(id);
 	}
 
-	@Patch('/editprofile/username/:id')
+	@Patch('/settings/username/:id')
 	updateUsername(
 		@Param('id', ParseIntPipe) id: number,
 		@Body('username', ) username: string,
@@ -52,7 +52,7 @@ export class UsersController {
 		return this.usersService.updateUsername(id, username);
 	}
 
-	@Patch('/editprofile/avatar/:id')
+	@Patch('/settings/avatar/:id')
 	updateAvatar(
 		@Param('id', ParseIntPipe) id: number,
 		@Body('avatar', ) avatar: string,

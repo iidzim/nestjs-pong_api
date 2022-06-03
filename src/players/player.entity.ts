@@ -1,7 +1,8 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { BaseEntity, Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { UserStatus } from "./player_status.enum";
 import * as bcrypt from 'bcrypt';
 import { Relation } from "../relations/relation.entity";
+import { Match } from "../match/match.entity";
 
 @Entity('player')
 @Unique(['username'])
@@ -28,8 +29,12 @@ export class Player extends BaseEntity {
 	@Column()//({ nullable: true })
 	salt: string;
 
+	// @ManyToMany(type => Relation, relation => relation.user2, { eager: true})
 	@OneToMany(type => Relation, relation => relation.user2, { eager: true})
 	relations: Relation[];
+
+	@OneToMany(type => Match, match => match.user2, {eager: true})
+	matchs: Match[];
 
 	async validatePassword(password: string): Promise<Boolean> {
 		const hash = await bcrypt.hash(password, this.salt);
