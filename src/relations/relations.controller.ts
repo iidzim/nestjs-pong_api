@@ -24,11 +24,8 @@ export class RelationsController {
 
 	@Post()
 	@UsePipes(ValidationPipe)
-	addRelation(
-		@Body() createRelationDto: CreateRelationDto,
-		@GetPlayer() player: Player,
-	): Promise<Relation> {
-		return this.relationService.createRelation(createRelationDto, player);
+	addRelation(@Body() createRelationDto: CreateRelationDto): Promise<Relation> {
+		return this.relationService.createRelation(createRelationDto);
 	}
 
 	@Delete('/:id')

@@ -9,7 +9,7 @@ import { MatchStatus } from "./match_status.enum";
 export class MatchRepository extends Repository<Match> {
 
 	async getMatch(FilterDto: GetMatchFilterDto): Promise<Match[]> {
-		const { id, user1, user2, status } = FilterDto;
+		const { id, user1, winner, status } = FilterDto;
 		const query = this.createQueryBuilder('match');
 		if (id) {
 			query.andWhere('match.id = :id', { id });
@@ -17,8 +17,8 @@ export class MatchRepository extends Repository<Match> {
 		if (user1) {
 			query.andWhere('match.user1 = :user1', { user1 });
 		}
-		if (user2) {
-			query.andWhere('match.user2 = :user2', { user2 });
+		if (winner) {
+			query.andWhere('match.winner = :winner', { winner });
 		}
 		if (status) {
 			query.andWhere('match.status = :status', { status });
@@ -31,10 +31,10 @@ export class MatchRepository extends Repository<Match> {
 		createMacthDto: CreateMatchDto,
 		player: Player,
 	): Promise<Match> {
-		const { user1, user2 } = createMacthDto;
+		const { user1 } = createMacthDto;
 		const match = new Match();
 		match.user1 = user1;
-		match.user2 = player;
+		// match.user2 = player;
 		match.winner = '';
 		match.score = 0;
 		match.status = MatchStatus.GAMEOVER;

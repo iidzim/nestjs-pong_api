@@ -48,6 +48,7 @@ let PlayerRepository = class PlayerRepository extends typeorm_1.Repository {
         user.password = await this.hashPassword(password, user.salt);
         user.level = 0;
         user.status = player_status_enum_1.UserStatus.OFFLINE;
+        user.two_fa = false;
         try {
             await user.save();
         }

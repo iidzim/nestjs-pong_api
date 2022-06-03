@@ -26,6 +26,7 @@ import { JwtStrategy } from './jwt.strategy';
     exports: [
         JwtStrategy,
         PassportModule,
+        PlayerRepository,
     ],
 })
 export class PlayerModule {}

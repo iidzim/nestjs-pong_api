@@ -15,5 +15,6 @@ export declare class UsersService {
     getUsers(FilterDto: GetPlayersFilterDto): Promise<Player[]>;
     updateUsername(id: number, username: string): Promise<Player>;
     updateAvatar(id: number, avatar: string): Promise<Player>;
+    updateTwoFa(id: number): Promise<Player>;
     deleteUser(id: number): Promise<void>;
 }

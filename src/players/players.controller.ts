@@ -60,6 +60,14 @@ export class UsersController {
 		return this.usersService.updateAvatar(id, avatar);
 	}
 
+	@Patch('/settings/avatar/:id')
+	updateTwoFa(
+		@Param('id', ParseIntPipe) id: number,
+		// @Body('avatar', ) avatar: string,
+	){
+		return this.usersService.updateTwoFa(id);
+	}
+
 	@Get()
 	getUsers(@Query(ValidationPipe) FilterDto: GetPlayersFilterDto) {
 		return this.usersService.getUsers(FilterDto);

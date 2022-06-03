@@ -6,12 +6,12 @@ export class CreateUserDto {
 	@IsString()
 	@MaxLength(50)
     username: string;
-	
+
 	@IsOptional()
 	@IsString()
 	@MaxLength(100)
 	avatar: string;
-	
+
 	@IsNotEmpty()
 	@IsString()
 	@MinLength(8)

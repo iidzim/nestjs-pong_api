@@ -13,5 +13,6 @@ export declare class UsersController {
     deleteUser(id: number): Promise<void>;
     updateUsername(id: number, username: string): Promise<Player>;
     updateAvatar(id: number, avatar: string): Promise<Player>;
+    updateTwoFa(id: number): Promise<Player>;
     getUsers(FilterDto: GetPlayersFilterDto): Promise<Player[]>;
 }

@@ -12,7 +12,7 @@ export class Match extends BaseEntity{
     @Column()
     user1: number;
 
-    @Column({ nullable: true })
+    @Column()
     winner: string;
 
     @Column()
@@ -21,6 +21,6 @@ export class Match extends BaseEntity{
     @Column({default: MatchStatus.GAMEOVER})
     status: MatchStatus;
 
-    @ManyToOne(type => Player, player => player.matchs, { eager: false})
-    user2: Player;
+    // @ManyToOne(type => Player, player => player.matchs, { eager: false})
+    // user2: Player;
 }

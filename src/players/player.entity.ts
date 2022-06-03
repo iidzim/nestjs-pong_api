@@ -2,7 +2,7 @@ import { BaseEntity, Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne
 import { UserStatus } from "./player_status.enum";
 import * as bcrypt from 'bcrypt';
 import { Relation } from "../relations/relation.entity";
-import { Match } from "../match/match.entity";
+import { Match } from "../matchs/match.entity";
 
 @Entity('player')
 @Unique(['username'])
@@ -24,17 +24,19 @@ export class Player extends BaseEntity {
 	status: UserStatus;
 
 	@Column()
+	two_fa: boolean;
+
+	@Column()
 	password: string;
 
 	@Column()//({ nullable: true })
 	salt: string;
 
-	// @ManyToMany(type => Relation, relation => relation.user2, { eager: true})
-	@OneToMany(type => Relation, relation => relation.user2, { eager: true})
-	relations: Relation[];
+	// @OneToMany(type => Relation, relation => relation.user2, { eager: true})
+	// relations: Relation[];
 
-	@OneToMany(type => Match, match => match.user2, {eager: true})
-	matchs: Match[];
+	// @OneToMany(type => Match, match => match.user2, {eager: true})
+	// matchs: Match[];
 
 	async validatePassword(password: string): Promise<Boolean> {
 		const hash = await bcrypt.hash(password, this.salt);

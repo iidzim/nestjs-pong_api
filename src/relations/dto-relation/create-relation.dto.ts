@@ -1,11 +1,10 @@
-import { IsNotEmpty } from "class-validator";
-import { Player } from "../../players/player.entity";
+import { IsIn, IsNotEmpty } from "class-validator";
+import { RelationStatus } from "../relation_status.enum";
 
 export class CreateRelationDto {
 
     @IsNotEmpty()
-    user1: number;
+    @IsIn([RelationStatus.NONE, RelationStatus.PENDING, RelationStatus.FRIEND, RelationStatus.BLOCKED])
+    status: RelationStatus;
 
-    @IsNotEmpty()
-    user2: number;
 }

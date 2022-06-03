@@ -9,11 +9,8 @@ export class Relation extends BaseEntity {
     id: number;
 
     @Column()
-    user1: number;
-
-    @Column({default: RelationStatus.NONE})
     status: RelationStatus;
 
-    @ManyToOne(type => Player, player => player.relations, { eager: false })
-    user2: Player;
+    // @ManyToOne(type => Player, player => player.relations, { eager: false })
+    // user2: Player;
 }

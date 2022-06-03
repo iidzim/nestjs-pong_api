@@ -10,14 +10,6 @@ export class GetRelationFilterDto {
     id: number;
 
     @IsOptional()
-    @IsNotEmpty()
-    user1: number;
-
-    @IsOptional()
-    @IsNotEmpty()
-    user2: number;
-
-    @IsOptional()
     @IsIn([RelationStatus.NONE, RelationStatus.PENDING, RelationStatus.FRIEND, RelationStatus.BLOCKED])
     status: RelationStatus;
 }

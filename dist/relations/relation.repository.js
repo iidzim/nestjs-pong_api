@@ -12,16 +12,10 @@ const relation_entity_1 = require("./relation.entity");
 const relation_status_enum_1 = require("./relation_status.enum");
 let RelationRepository = class RelationRepository extends typeorm_1.Repository {
     async getRelations(FilterDto) {
-        const { id, user1, user2, status } = FilterDto;
+        const { id, status } = FilterDto;
         const query = this.createQueryBuilder('relation');
         if (id) {
             query.andWhere('relation.id = :id', { id });
-        }
-        if (user1) {
-            query.andWhere('relation.user1 = :user1', { user1 });
-        }
-        if (user2) {
-            query.andWhere('relation.user2 = :user2', { user2 });
         }
         if (status) {
             query.andWhere('relation.status = :status', { status });
@@ -29,11 +23,8 @@ let RelationRepository = class RelationRepository extends typeorm_1.Repository {
         const relations = await query.getMany();
         return relations;
     }
-    async createrelation(createMacthDto, player) {
-        const { user1, user2 } = createMacthDto;
+    async createRelation(createMacthDto) {
         const relation = new relation_entity_1.Relation();
-        relation.user1 = user1;
-        relation.user2 = player;
         relation.status = relation_status_enum_1.RelationStatus.NONE;
         await relation.save();
         return relation;

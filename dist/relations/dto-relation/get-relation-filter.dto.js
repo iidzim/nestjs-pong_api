@@ -22,16 +22,6 @@ __decorate([
 ], GetRelationFilterDto.prototype, "id", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", Number)
-], GetRelationFilterDto.prototype, "user1", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", Number)
-], GetRelationFilterDto.prototype, "user2", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsIn)([relation_status_enum_1.RelationStatus.NONE, relation_status_enum_1.RelationStatus.PENDING, relation_status_enum_1.RelationStatus.FRIEND, relation_status_enum_1.RelationStatus.BLOCKED]),
     __metadata("design:type", String)
 ], GetRelationFilterDto.prototype, "status", void 0);

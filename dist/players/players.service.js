@@ -56,6 +56,12 @@ let UsersService = class UsersService {
         await updated.save();
         return updated;
     }
+    async updateTwoFa(id) {
+        const updated = await this.getUserById(id);
+        updated.two_fa = true;
+        await updated.save();
+        return updated;
+    }
     async deleteUser(id) {
         const del = await this.userRepository.delete(id);
         if (!del.affected) {

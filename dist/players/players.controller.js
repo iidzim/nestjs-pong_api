@@ -39,6 +39,9 @@ let UsersController = class UsersController {
     updateAvatar(id, avatar) {
         return this.usersService.updateAvatar(id, avatar);
     }
+    updateTwoFa(id) {
+        return this.usersService.updateTwoFa(id);
+    }
     getUsers(FilterDto) {
         return this.usersService.getUsers(FilterDto);
     }
@@ -87,6 +90,13 @@ __decorate([
     __metadata("design:paramtypes", [Number, String]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateAvatar", null);
+__decorate([
+    (0, common_1.Patch)('/settings/avatar/:id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "updateTwoFa", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)(common_1.ValidationPipe)),

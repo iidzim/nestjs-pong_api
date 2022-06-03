@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Player } from "../players/player.entity";
 import { CreateRelationDto } from "./dto-relation/create-relation.dto";
 import { GetRelationFilterDto } from "./dto-relation/get-relation-filter.dto";
 import { Relation } from "./relation.entity";
@@ -13,11 +12,8 @@ export class RelationsService {
 		private relationRepository: RelationRepository,
 	) {}
 
-	async createRelation(
-		CreateRelationDto: CreateRelationDto,
-		player: Player,
-	): Promise<Relation> {
-		return this.relationRepository.createrelation(CreateRelationDto, player);
+	async createRelation(CreateRelationDto: CreateRelationDto): Promise<Relation> {
+		return this.relationRepository.createRelation(CreateRelationDto);
 	}
 
 	async getRelationById(id: number): Promise<Relation> {

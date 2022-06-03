@@ -12,7 +12,7 @@ const match_entity_1 = require("./match.entity");
 const match_status_enum_1 = require("./match_status.enum");
 let MatchRepository = class MatchRepository extends typeorm_1.Repository {
     async getMatch(FilterDto) {
-        const { id, user1, user2, status } = FilterDto;
+        const { id, user1, winner, status } = FilterDto;
         const query = this.createQueryBuilder('match');
         if (id) {
             query.andWhere('match.id = :id', { id });
@@ -20,8 +20,8 @@ let MatchRepository = class MatchRepository extends typeorm_1.Repository {
         if (user1) {
             query.andWhere('match.user1 = :user1', { user1 });
         }
-        if (user2) {
-            query.andWhere('match.user2 = :user2', { user2 });
+        if (winner) {
+            query.andWhere('match.winner = :winner', { winner });
         }
         if (status) {
             query.andWhere('match.status = :status', { status });

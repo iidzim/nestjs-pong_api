@@ -56,6 +56,13 @@ export class UsersService {
 		return updated;
 	}
 
+	async updateTwoFa(id: number): Promise<Player> {
+		const updated = await this.getUserById(id);
+		updated.two_fa = true;
+		await updated.save();
+		return updated;
+	}
+
 	async deleteUser(id: number): Promise<void> {
 		const del = await this.userRepository.delete(id);
 		if (!del.affected){

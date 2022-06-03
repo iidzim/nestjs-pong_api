@@ -5,13 +5,13 @@ import { PlayerModule } from './players/players.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
 import { RelationModule } from './relations/relations.module';
-import { MatchModule } from './match/matchs.module';
+import { MatchModule } from './matchs/matchs.module';
 
 @Module({
   imports: [
     PlayerModule,
     RelationModule,
-    // MatchModule,
+    MatchModule,
     TypeOrmModule.forRoot(typeOrmConfig)],
   controllers: [AppController],
   providers: [AppService],

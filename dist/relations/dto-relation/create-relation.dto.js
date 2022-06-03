@@ -11,15 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateRelationDto = void 0;
 const class_validator_1 = require("class-validator");
+const relation_status_enum_1 = require("../relation_status.enum");
 class CreateRelationDto {
 }
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", Number)
-], CreateRelationDto.prototype, "user1", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", Number)
-], CreateRelationDto.prototype, "user2", void 0);
+    (0, class_validator_1.IsIn)([relation_status_enum_1.RelationStatus.NONE, relation_status_enum_1.RelationStatus.PENDING, relation_status_enum_1.RelationStatus.FRIEND, relation_status_enum_1.RelationStatus.BLOCKED]),
+    __metadata("design:type", String)
+], CreateRelationDto.prototype, "status", void 0);
 exports.CreateRelationDto = CreateRelationDto;
 //# sourceMappingURL=create-relation.dto.js.map

@@ -44,6 +44,7 @@ export class PlayerRepository extends Repository<Player> {
 		user.password = await this.hashPassword(password, user.salt);
 		user.level = 0;
 		user.status = UserStatus.OFFLINE;
+		user.two_fa = false;
 		try {
 			await user.save();
 		} catch (error) {

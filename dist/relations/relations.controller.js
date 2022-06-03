@@ -15,8 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RelationsController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
-const get_player_decorator_1 = require("../players/get-player.decorator");
-const player_entity_1 = require("../players/player.entity");
 const create_relation_dto_1 = require("./dto-relation/create-relation.dto");
 const get_relation_filter_dto_1 = require("./dto-relation/get-relation-filter.dto");
 const relations_service_1 = require("./relations.service");
@@ -30,8 +28,8 @@ let RelationsController = class RelationsController {
     getRelationById(id) {
         return this.relationService.getRelationById(id);
     }
-    addRelation(createRelationDto, player) {
-        return this.relationService.createRelation(createRelationDto, player);
+    addRelation(createRelationDto) {
+        return this.relationService.createRelation(createRelationDto);
     }
     deleteRelation(id) {
         return this.relationService.deleteRelation(id);
@@ -55,10 +53,8 @@ __decorate([
     (0, common_1.Post)(),
     (0, common_1.UsePipes)(common_1.ValidationPipe),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, get_player_decorator_1.GetPlayer)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_relation_dto_1.CreateRelationDto,
-        player_entity_1.Player]),
+    __metadata("design:paramtypes", [create_relation_dto_1.CreateRelationDto]),
     __metadata("design:returntype", Promise)
 ], RelationsController.prototype, "addRelation", null);
 __decorate([
