@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Relation = void 0;
 const typeorm_1 = require("typeorm");
+const player_relations_entity_1 = require("../player-relations/player_relations.entity");
 const relation_status_enum_1 = require("./relation_status.enum");
 let Relation = class Relation extends typeorm_1.BaseEntity {
 };
@@ -22,6 +23,10 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Relation.prototype, "status", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(type => player_relations_entity_1.Player_relation, pr => pr.relation, { eager: true }),
+    __metadata("design:type", Array)
+], Relation.prototype, "pr", void 0);
 Relation = __decorate([
     (0, typeorm_1.Entity)('relation')
 ], Relation);

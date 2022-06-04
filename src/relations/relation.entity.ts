@@ -1,5 +1,5 @@
-import { BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Player } from "../players/player.entity";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Player_relation } from "../player-relations/player_relations.entity";
 import { RelationStatus } from "./relation_status.enum";
 
 @Entity('relation')
@@ -11,6 +11,6 @@ export class Relation extends BaseEntity {
     @Column()
     status: RelationStatus;
 
-    // @ManyToOne(type => Player, player => player.relations, { eager: false })
-    // user2: Player;
+    @OneToMany(type => Player_relation, pr => pr.relation, {eager: true})
+    pr: Player_relation[];
 }

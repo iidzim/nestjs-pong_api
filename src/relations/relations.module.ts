@@ -10,5 +10,6 @@ import { RelationsService } from "./relations.service";
     ],
     controllers: [RelationsController],
     providers: [RelationsService],
+    exports: [RelationRepository],
 })
 export class RelationModule {}

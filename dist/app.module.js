@@ -14,7 +14,15 @@ const players_module_1 = require("./players/players.module");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_config_1 = require("./config/typeorm.config");
 const relations_module_1 = require("./relations/relations.module");
-const matchs_module_1 = require("./matchs/matchs.module");
+const games_module_1 = require("./games/games.module");
+const player_relations_module_1 = require("./player-relations/player-relations.module");
+const achievements_service_1 = require("./achievements/achievements.service");
+const achievements_controller_1 = require("./achievements/achievements.controller");
+const achievements_module_1 = require("./achievements/achievements.module");
+const players_service_1 = require("./players/players.service");
+const relations_service_1 = require("./relations/relations.service");
+const player_relations_service_1 = require("./player-relations/player-relations.service");
+const match_players_module_1 = require("./match-players/match-players.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -22,11 +30,14 @@ AppModule = __decorate([
         imports: [
             players_module_1.PlayerModule,
             relations_module_1.RelationModule,
-            matchs_module_1.MatchModule,
-            typeorm_1.TypeOrmModule.forRoot(typeorm_config_1.typeOrmConfig)
+            games_module_1.MatchModule,
+            typeorm_1.TypeOrmModule.forRoot(typeorm_config_1.typeOrmConfig),
+            player_relations_module_1.PlayerRelationModule,
+            achievements_module_1.AchievementsModule,
+            match_players_module_1.MatchPlayersModule,
         ],
-        controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        controllers: [app_controller_1.AppController, achievements_controller_1.AchievementsController],
+        providers: [app_service_1.AppService, players_service_1.UsersService, relations_service_1.RelationsService, player_relations_service_1.PlayerRelationService, achievements_service_1.AchievementsService],
     })
 ], AppModule);
 exports.AppModule = AppModule;

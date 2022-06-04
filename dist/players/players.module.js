@@ -37,7 +37,6 @@ PlayerModule = __decorate([
         exports: [
             jwt_strategy_1.JwtStrategy,
             passport_1.PassportModule,
-            player_repository_1.PlayerRepository,
         ],
     })
 ], PlayerModule);

@@ -21,6 +21,7 @@ RelationModule = __decorate([
         ],
         controllers: [relations_controller_1.RelationsController],
         providers: [relations_service_1.RelationsService],
+        exports: [relation_repository_1.RelationRepository],
     })
 ], RelationModule);
 exports.RelationModule = RelationModule;

@@ -2,7 +2,10 @@ import { BaseEntity, Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne
 import { UserStatus } from "./player_status.enum";
 import * as bcrypt from 'bcrypt';
 import { Relation } from "../relations/relation.entity";
-import { Match } from "../matchs/match.entity";
+import { Game } from "../games/game.entity";
+import { Player_relation } from "../player-relations/player_relations.entity";
+import { Achievement } from "../achievements/achievement.entity";
+import { Match_players } from "../match-players/match-player.entity";
 
 @Entity('player')
 @Unique(['username'])
@@ -14,7 +17,7 @@ export class Player extends BaseEntity {
 	@Column()//({ length: 50 })
 	username: string;
 
-	@Column()//({ length: 100 })
+	@Column()
 	avatar: string;
 
 	@Column()
@@ -32,8 +35,14 @@ export class Player extends BaseEntity {
 	@Column()//({ nullable: true })
 	salt: string;
 
-	// @OneToMany(type => Relation, relation => relation.user2, { eager: true})
-	// relations: Relation[];
+	@OneToMany(type => Player_relation, pr => pr.user, { eager: true})
+	pr: Player_relation[];
+
+	@OneToMany(type => Match_players, mp => mp.user, { eager: true})
+	mp: Match_players[];
+
+	@OneToMany(type => Achievement, achv => achv.user, { eager: true})
+	achievements: Achievement[];
 
 	// @OneToMany(type => Match, match => match.user2, {eager: true})
 	// matchs: Match[];
