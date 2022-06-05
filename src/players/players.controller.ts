@@ -6,7 +6,7 @@ import { GetPlayersFilterDto } from "./dto-players/get-player-filter.dto";
 // import { AuthGuard } from "@nestjs/passport";
 // import { GetPlayer } from "./get-player.decorator";
 
-@Controller('auth')
+@Controller()
 export class UsersController {
 	constructor(private readonly usersService: UsersService){}
 
@@ -20,23 +20,21 @@ export class UsersController {
 		return this.usersService.signIn(createUserDto);
 	}
 
-	// @Post('/test')
-	// @UseGuards(AuthGuard())
-	// test(@Req() req) {
-	// 	// console.log(req.user);
-	// 	console.log(req);
-	// }
-	// test(@GetPlayer() player: Player) {
-	// 	console.log('HERE');
-	// 	console.log(player);
+	// @Get('profile/:id')
+	// getProfile(@Param('id', ParseIntPipe) id: number): Promise<any> {
+	// 	// return this.usersService.getUserById(id);
 	// }
 
+	// @Get('/profile')
+	// getUserById(@Param('id', ParseIntPipe) id: number): Promise<any> {
+	// 	const playerData = this.usersService.getUserById(id);
+	// 	const match = {}
 
-
-	@Get('/:id')
-	getUserById(@Param('id', ParseIntPipe) id: number): Promise<Player> {
-		return this.usersService.getUserById(id);
-	}
+	// 	const data = {
+	// 		"profile": playerData,
+	// 	};
+	// 	return data;
+	// }
 
 	@Delete('/:id')
 	deleteUser(@Param('id', ParseIntPipe) id: number): Promise<void> {

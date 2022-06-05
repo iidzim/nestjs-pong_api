@@ -1,11 +1,12 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsIn, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 import { Player } from "../../players/player.entity";
+import { AchievementStatus } from "../achievement_status.enum";
 
 export class GetAchievFilterDto {
 
 	@IsOptional()
-	@IsString()
-	name: string;
+	@IsIn([AchievementStatus.FIRST, AchievementStatus.BRONZE, AchievementStatus.SILVER, AchievementStatus.GOLD])
+	category: AchievementStatus;
 
 	@IsOptional()
 	@IsNotEmpty()

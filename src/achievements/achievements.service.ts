@@ -9,24 +9,24 @@ import { GetAchievFilterDto } from './dto-achievement/get-achievement-filter.dto
 
 @Injectable()
 export class AchievementsService {
-    constructor(
-        @InjectRepository(AchievementRepository)
-        private achievementRepository: AchievementRepository,
-    ) {}
+	constructor(
+		@InjectRepository(AchievementRepository)
+		private achievementRepository: AchievementRepository,
+	) {}
 
-    async createAchievement(createAchievDto: CreateAchievDto): Promise<Achievement> {
-        return this.achievementRepository.createAchievement(createAchievDto);
-    }
+	async createAchievement(createAchievDto: CreateAchievDto): Promise<Achievement> {
+		return this.achievementRepository.createAchievement(createAchievDto);
+	}
 
-    // async getAchievementByPlayer(player: Player): Promise<Achievement> {
-    //     const found = await this.achievementRepository.findOne(user);
-    //     if (!found){
-	// 		throw new NotFoundException(`Achievement not found`)
-    //     }
-	// 	return found;
-    // }
+	async getAchievementByPlayer(id: number){//: Promise<Achievement> {
+		const found = await this.achievementRepository.find()
+		// if (!found){
+		// 	throw new NotFoundException(`Achievement not found`)
+		// }
+		// return found;
+	}
 
-    async getAchievement(FilterDto: GetAchievFilterDto):Promise<Achievement[]> { 
+	async getAchievement(FilterDto: GetAchievFilterDto):Promise<Achievement[]> { 
 		return this.achievementRepository.getAchievement(FilterDto);
 	}
 }

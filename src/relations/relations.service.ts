@@ -15,6 +15,12 @@ export class RelationsService {
 	async createRelation(CreateRelationDto: CreateRelationDto): Promise<Relation> {
 		return this.relationRepository.createRelation(CreateRelationDto);
 	}
+	// async createRelation(
+	// 	CreateRelationDto: CreateRelationDto,
+	// 	player: Player,
+	// ): Promise<Relation> {
+	// 	return this.relationRepository.createrelation(CreateRelationDto, player);
+	// }
 
 	async getRelationById(id: number): Promise<Relation> {
 		const found = await this.relationRepository.findOne(id);

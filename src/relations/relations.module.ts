@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RelationsController } from "./relations.controller";
 import { RelationRepository } from './relation.repository';
+import { RelationsController } from "./relations.controller";
 import { RelationsService } from "./relations.service";
 
 @Module({

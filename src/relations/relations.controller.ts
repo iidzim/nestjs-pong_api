@@ -27,6 +27,14 @@ export class RelationsController {
 	addRelation(@Body() createRelationDto: CreateRelationDto): Promise<Relation> {
 		return this.relationService.createRelation(createRelationDto);
 	}
+	// @Post()
+	// @UsePipes(ValidationPipe)
+	// addRelation(
+	// 	@Body() createRelationDto: CreateRelationDto,
+	// 	@GetPlayer() player: Player,
+	// ): Promise<Relation> {
+	// 	return this.relationService.createRelation(createRelationDto, player);
+	// }
 
 	@Delete('/:id')
 	deleteRelation(@Param('id', ParseIntPipe) id: number): Promise<void> {

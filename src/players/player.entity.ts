@@ -1,8 +1,6 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { UserStatus } from "./player_status.enum";
 import * as bcrypt from 'bcrypt';
-import { Relation } from "../relations/relation.entity";
-import { Game } from "../games/game.entity";
 import { Player_relation } from "../player-relations/player_relations.entity";
 import { Achievement } from "../achievements/achievement.entity";
 import { Match_players } from "../match-players/match-player.entity";
@@ -43,9 +41,6 @@ export class Player extends BaseEntity {
 
 	@OneToMany(type => Achievement, achv => achv.user, { eager: true})
 	achievements: Achievement[];
-
-	// @OneToMany(type => Match, match => match.user2, {eager: true})
-	// matchs: Match[];
 
 	async validatePassword(password: string): Promise<Boolean> {
 		const hash = await bcrypt.hash(password, this.salt);

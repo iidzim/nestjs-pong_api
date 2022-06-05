@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Achievement = void 0;
 const typeorm_1 = require("typeorm");
 const player_entity_1 = require("../players/player.entity");
+const achievement_status_enum_1 = require("./achievement_status.enum");
 class Achievement extends typeorm_1.BaseEntity {
 }
 __decorate([
@@ -21,11 +22,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Achievement.prototype, "name", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Achievement.prototype, "description", void 0);
+], Achievement.prototype, "category", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)

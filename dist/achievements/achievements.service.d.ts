@@ -6,5 +6,6 @@ export declare class AchievementsService {
     private achievementRepository;
     constructor(achievementRepository: AchievementRepository);
     createAchievement(createAchievDto: CreateAchievDto): Promise<Achievement>;
+    getAchievementByPlayer(id: number): Promise<void>;
     getAchievement(FilterDto: GetAchievFilterDto): Promise<Achievement[]>;
 }

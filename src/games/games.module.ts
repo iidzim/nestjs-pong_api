@@ -14,4 +14,4 @@ import { PlayerRepository } from "../players/player.repository";
     controllers: [GameController],
     providers: [GameService],
 })
-export class MatchModule {}
+export class GameModule {}

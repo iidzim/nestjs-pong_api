@@ -1,2 +1,2 @@
-export declare class MatchModule {
+export declare class GameModule {
 }

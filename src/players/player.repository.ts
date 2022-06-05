@@ -72,4 +72,4 @@ export class PlayerRepository extends Repository<Player> {
 	private async hashPassword(password: string, salt: string): Promise<string> {
 		return bcrypt.hash(password, salt);
 	}
-}
+}	

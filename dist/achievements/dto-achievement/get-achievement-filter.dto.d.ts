@@ -1,6 +1,7 @@
 import { Player } from "../../players/player.entity";
+import { AchievementStatus } from "../achievement_status.enum";
 export declare class GetAchievFilterDto {
-    name: string;
+    category: AchievementStatus;
     require: number;
     user: Player;
 }

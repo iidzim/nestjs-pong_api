@@ -23,6 +23,9 @@ let AchievementsService = class AchievementsService {
     async createAchievement(createAchievDto) {
         return this.achievementRepository.createAchievement(createAchievDto);
     }
+    async getAchievementByPlayer(id) {
+        const found = await this.achievementRepository.find();
+    }
     async getAchievement(FilterDto) {
         return this.achievementRepository.getAchievement(FilterDto);
     }

@@ -6,16 +6,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MatchModule = void 0;
+exports.GameModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const games_service_1 = require("./games.service");
 const games_controller_1 = require("./games.controller");
 const game_repository_1 = require("./game.repository");
 const players_module_1 = require("../players/players.module");
-let MatchModule = class MatchModule {
+let GameModule = class GameModule {
 };
-MatchModule = __decorate([
+GameModule = __decorate([
     (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forFeature([game_repository_1.GameRepository]),
@@ -24,6 +24,6 @@ MatchModule = __decorate([
         controllers: [games_controller_1.GameController],
         providers: [games_service_1.GameService],
     })
-], MatchModule);
-exports.MatchModule = MatchModule;
+], GameModule);
+exports.GameModule = GameModule;
 //# sourceMappingURL=games.module.js.map

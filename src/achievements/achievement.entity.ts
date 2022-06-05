@@ -1,6 +1,7 @@
 
 import { BaseEntity, Column, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Player } from "../players/player.entity";
+import { AchievementStatus } from "./achievement_status.enum";
 
 export class Achievement extends BaseEntity {
 
@@ -8,10 +9,7 @@ export class Achievement extends BaseEntity {
 	id: number;
 
 	@Column()
-	name: string;
-
-	@Column()
-    description: string;
+	category: AchievementStatus;
 
 	@Column()
 	require: number;

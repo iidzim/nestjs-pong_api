@@ -27,9 +27,6 @@ let UsersController = class UsersController {
     signIn(createUserDto) {
         return this.usersService.signIn(createUserDto);
     }
-    getUserById(id) {
-        return this.usersService.getUserById(id);
-    }
     deleteUser(id) {
         return this.usersService.deleteUser(id);
     }
@@ -60,13 +57,6 @@ __decorate([
     __metadata("design:paramtypes", [create_player_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "signIn", null);
-__decorate([
-    (0, common_1.Get)('/:id'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getUserById", null);
 __decorate([
     (0, common_1.Delete)('/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
@@ -105,7 +95,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "getUsers", null);
 UsersController = __decorate([
-    (0, common_1.Controller)('auth'),
+    (0, common_1.Controller)(),
     __metadata("design:paramtypes", [players_service_1.UsersService])
 ], UsersController);
 exports.UsersController = UsersController;

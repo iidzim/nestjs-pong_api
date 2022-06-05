@@ -9,8 +9,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RelationModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const relations_controller_1 = require("./relations.controller");
 const relation_repository_1 = require("./relation.repository");
+const relations_controller_1 = require("./relations.controller");
 const relations_service_1 = require("./relations.service");
 let RelationModule = class RelationModule {
 };
