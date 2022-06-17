@@ -3,9 +3,9 @@ import { UsersController } from "./players.controller";
 import { UsersService } from "./players.service";
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlayerRepository } from './player.repository';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt.strategy';
+// import { JwtStrategy } from './jwt.strategy';
 
 @Module({
     imports: [
@@ -21,12 +21,10 @@ import { JwtStrategy } from './jwt.strategy';
     controllers: [UsersController],
     providers: [
         UsersService,
-        JwtStrategy,
     ],
     exports: [
-        JwtStrategy,
-        PassportModule,
-        // PlayerRepository,
+        UsersService,
+        // PassportModule,
     ],
 })
 export class PlayerModule {}

@@ -15,17 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const players_service_1 = require("./players.service");
-const create_player_dto_1 = require("./dto-players/create-player.dto");
 const get_player_filter_dto_1 = require("./dto-players/get-player-filter.dto");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
-    }
-    signUp(createUserDto) {
-        return this.usersService.signUp(createUserDto);
-    }
-    signIn(createUserDto) {
-        return this.usersService.signIn(createUserDto);
     }
     deleteUser(id) {
         return this.usersService.deleteUser(id);
@@ -43,20 +36,6 @@ let UsersController = class UsersController {
         return this.usersService.getUsers(FilterDto);
     }
 };
-__decorate([
-    (0, common_1.Post)('/signup'),
-    __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_player_dto_1.CreateUserDto]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "signUp", null);
-__decorate([
-    (0, common_1.Post)('/signin'),
-    __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_player_dto_1.CreateUserDto]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "signIn", null);
 __decorate([
     (0, common_1.Delete)('/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),

@@ -18,7 +18,7 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
     login() {
-        return this.authService.login();
+        return this.authService.callback();
     }
     logout() {
         return this.authService.logout();

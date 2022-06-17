@@ -12,12 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Player = void 0;
 const typeorm_1 = require("typeorm");
 const player_status_enum_1 = require("./player_status.enum");
-const bcrypt = require("bcrypt");
 let Player = class Player extends typeorm_1.BaseEntity {
-    async validatePassword(password) {
-        const hash = await bcrypt.hash(password, this.salt);
-        return hash === this.password;
-    }
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
@@ -43,14 +38,6 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Boolean)
 ], Player.prototype, "two_fa", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Player.prototype, "password", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Player.prototype, "salt", void 0);
 Player = __decorate([
     (0, typeorm_1.Entity)('player'),
     (0, typeorm_1.Unique)(['username'])

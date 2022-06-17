@@ -44,8 +44,6 @@ let PlayerRepository = class PlayerRepository extends typeorm_1.Repository {
             console.log('generate random avatar ^^');
             user.avatar = (0, avatars_1.createAvatar)(style, { seed: username + '.svg' });
         }
-        user.salt = await bcrypt.genSalt();
-        user.password = await this.hashPassword(password, user.salt);
         user.level = 0;
         user.status = player_status_enum_1.UserStatus.OFFLINE;
         user.two_fa = false;
@@ -64,15 +62,7 @@ let PlayerRepository = class PlayerRepository extends typeorm_1.Repository {
         }
         console.log('HERE !!');
     }
-    async validateUserPassword(createUserDto) {
-        const { username, password } = createUserDto;
-        const user = await this.findOne({ username });
-        if (user && await user.validatePassword(password)) {
-            return user.username;
-        }
-        else {
-            return null;
-        }
+    async findOrCreate() {
     }
     async hashPassword(password, salt) {
         return bcrypt.hash(password, salt);
@@ -82,4 +72,4 @@ PlayerRepository = __decorate([
     (0, typeorm_1.EntityRepository)(player_entity_1.Player)
 ], PlayerRepository);
 exports.PlayerRepository = PlayerRepository;
-//# sourceMappingURL=Player.repository.js.map
+//# sourceMappingURL=player.repository.js.map

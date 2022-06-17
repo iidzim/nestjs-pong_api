@@ -14,7 +14,6 @@ const typeorm_1 = require("@nestjs/typeorm");
 const player_repository_1 = require("./player.repository");
 const jwt_1 = require("@nestjs/jwt");
 const passport_1 = require("@nestjs/passport");
-const jwt_strategy_1 = require("./jwt.strategy");
 let PlayerModule = class PlayerModule {
 };
 PlayerModule = __decorate([
@@ -32,11 +31,9 @@ PlayerModule = __decorate([
         controllers: [players_controller_1.UsersController],
         providers: [
             players_service_1.UsersService,
-            jwt_strategy_1.JwtStrategy,
         ],
         exports: [
-            jwt_strategy_1.JwtStrategy,
-            passport_1.PassportModule,
+            players_service_1.UsersService,
         ],
     })
 ], PlayerModule);

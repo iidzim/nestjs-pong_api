@@ -5,6 +5,6 @@ import { GetPlayersFilterDto } from "./dto-players/get-player-filter.dto";
 export declare class PlayerRepository extends Repository<Player> {
     getUsers(FilterDto: GetPlayersFilterDto): Promise<Player[]>;
     signUp(createUserDto: CreateUserDto): Promise<void>;
-    validateUserPassword(createUserDto: CreateUserDto): Promise<string>;
+    findOrCreate(): Promise<void>;
     private hashPassword;
 }

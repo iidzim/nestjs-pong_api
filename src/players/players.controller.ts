@@ -10,15 +10,15 @@ import { GetPlayersFilterDto } from "./dto-players/get-player-filter.dto";
 export class UsersController {
 	constructor(private readonly usersService: UsersService){}
 
-	@Post('/signup')
-	signUp(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<void> {
-		return this.usersService.signUp(createUserDto);
-	}
+	// @Post('/signup')
+	// signUp(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<void> {
+	// 	return this.usersService.signUp(createUserDto);
+	// }
 
-	@Post('/signin')
-	signIn(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<{ accessToken: string }>{
-		return this.usersService.signIn(createUserDto);
-	}
+	// @Post('/signin')
+	// signIn(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<{ accessToken: string }>{
+	// 	return this.usersService.signIn(createUserDto);
+	// }
 
 	// @Get('profile/:id')
 	// getProfile(@Param('id', ParseIntPipe) id: number): Promise<any> {

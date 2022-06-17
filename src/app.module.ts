@@ -8,18 +8,21 @@ import { typeOrmConfig } from './config/typeorm.config';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
+import { UsersService } from './players/players.service';
+import { PlayerModule } from './players/players.module';
+import { UsersController } from './players/players.controller';
 
 @Module({
   imports: [
     // GameModule,
-    // PlayerModule,
     // RelationModule,
     ConfigModule.forRoot({ envFilePath: '.env' }),
     TypeOrmModule.forRoot(typeOrmConfig),
     AuthModule,
+    PlayerModule,
   ],
-  controllers: [AuthController],
-  providers: [AuthService],
+  controllers: [],
+  providers: [],
   // controllers: [AppController, AchievementsController],
   // providers: [AppService, UsersService, RelationsService, PlayerRelationService , AchievementsService],
 })

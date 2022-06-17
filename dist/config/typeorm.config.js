@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.typeOrmConfig = void 0;
+const player_entity_1 = require("../players/player.entity");
 exports.typeOrmConfig = {
     type: 'postgres',
     host: '127.0.0.1',
@@ -8,9 +9,9 @@ exports.typeOrmConfig = {
     username: 'ping',
     password: 'pong',
     database: 'pong_db',
-    entities: [__dirname + '/../**/*.entity.ts'],
+    entities: [player_entity_1.Player],
     synchronize: true,
-    logging: true,
+    logging: false,
     autoLoadEntities: true,
 };
 //# sourceMappingURL=typeorm.config.js.map

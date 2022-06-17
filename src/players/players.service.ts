@@ -15,20 +15,20 @@ export class UsersService {
 		private jwtService: JwtService,
 	) {}
 
-	async signUp(createUserDto: CreateUserDto): Promise<void> {
-		return this.userRepository.signUp(createUserDto);
-	}
+	// async signUp(createUserDto: CreateUserDto): Promise<void> {
+	// 	return this.userRepository.signUp(createUserDto);
+	// }
 
-	async signIn(createUserDto: CreateUserDto): Promise<{ accessToken: string }> {
-		const username = await this.userRepository.validateUserPassword(createUserDto);
-		if (!username) {
-			throw new UnauthorizedException('Invalid credentials')
-		}
+	// async signIn(createUserDto: CreateUserDto): Promise<{ accessToken: string }> {
+	// 	const username = await this.userRepository.validateUserPassword(createUserDto);
+	// 	if (!username) {
+	// 		throw new UnauthorizedException('Invalid credentials')
+	// 	}
 	
-		const payload: JwtPayload = { username };
-		const accessToken = await this.jwtService.sign(payload);
-		return { accessToken };
-	}
+	// 	const payload: JwtPayload = { username };
+	// 	const accessToken = await this.jwtService.sign(payload);
+	// 	return { accessToken };
+	// }
 
 	async getUserById(id: number): Promise<Player> {
 		const found = await this.userRepository.findOne(id);
@@ -68,6 +68,17 @@ export class UsersService {
 		if (!del.affected){
 			throw new NotFoundException(`User with ID "${id}" not found`)
 		}
+	}
+
+
+	async findOrCreate(@Param('username') username: string): Promise<Player> {
+		const found = await this.userRepository.findOne({ where: { username } });
+		if (found) {
+			return found;
+		}
+		const newUser = new Player();
+		newUser.username = username;
+		return this.userRepository.save(newUser);
 	}
 
 }

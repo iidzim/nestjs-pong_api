@@ -10,7 +10,7 @@ export class AuthController {
 	@Get('callback')
 	@UseGuards(AuthGuard('42'))
 	login(): Promise<any> {
-	    return this.authService.login();
+	    return this.authService.callback();
 	}
 
 	@Get('logout')
@@ -20,13 +20,15 @@ export class AuthController {
 	}
 
 	// @Get('')
+	// // @Get('auth/callback')
 	// @UseGuards(AuthGuard('42'))
-	// async callback(@Req() req: any): Promise<any> {
+	// async login(): Promise<any> {
+	// 	console.log('HERE');
 	//     return this.authService.login();
 	// }
 	// @Get('auth/callback')
 	// @UseGuards(AuthGuard('42'))
-	// Auth42Redirect(@Req() req: any): any {
-	//     return this.authService.logout();
+	// Auth42Redirect(): any {
+	//     return this.authService.callback();
 	// }
 }

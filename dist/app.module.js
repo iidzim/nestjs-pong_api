@@ -11,9 +11,8 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_config_1 = require("./config/typeorm.config");
-const auth_controller_1 = require("./auth/auth.controller");
-const auth_service_1 = require("./auth/auth.service");
 const auth_module_1 = require("./auth/auth.module");
+const players_module_1 = require("./players/players.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -22,9 +21,10 @@ AppModule = __decorate([
             config_1.ConfigModule.forRoot({ envFilePath: '.env' }),
             typeorm_1.TypeOrmModule.forRoot(typeorm_config_1.typeOrmConfig),
             auth_module_1.AuthModule,
+            players_module_1.PlayerModule,
         ],
-        controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService],
+        controllers: [],
+        providers: [],
     })
 ], AppModule);
 exports.AppModule = AppModule;

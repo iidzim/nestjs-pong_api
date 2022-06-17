@@ -40,8 +40,8 @@ export class PlayerRepository extends Repository<Player> {
 			console.log('generate random avatar ^^')
 			user.avatar = createAvatar(style, {seed: username + '.svg'});
 		}
-		user.salt = await bcrypt.genSalt();
-		user.password = await this.hashPassword(password, user.salt);
+		// user.salt = await bcrypt.genSalt();
+		// user.password = await this.hashPassword(password, user.salt);
 		user.level = 0;
 		user.status = UserStatus.OFFLINE;
 		user.two_fa = false;
@@ -59,15 +59,20 @@ export class PlayerRepository extends Repository<Player> {
 		console.log('HERE !!');
 	}
 
-	async validateUserPassword(createUserDto: CreateUserDto): Promise<string> {
-		const { username, password } = createUserDto;
-		const user = await this.findOne({ username });
-		if (user && await user.validatePassword(password)) {
-			return user.username;
-		} else {
-			return null;
-		}
+	async findOrCreate() {
+
+		
 	}
+
+	// async validateUserPassword(createUserDto: CreateUserDto): Promise<string> {
+	// 	const { username, password } = createUserDto;
+	// 	const user = await this.findOne({ username });
+	// 	if (user && await user.validatePassword(password)) {
+	// 		return user.username;
+	// 	} else {
+	// 		return null;
+	// 	}
+	// }
 
 	private async hashPassword(password: string, salt: string): Promise<string> {
 		return bcrypt.hash(password, salt);

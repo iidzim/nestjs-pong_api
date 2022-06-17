@@ -11,5 +11,7 @@ npm install --save @types/express
 npm install dotenv --save
 npm install dotenv
 npm install passport-42
+npm i cookie-parser
+npm i --save @types/cookie-parser
 
 https://github.com/arielweinberger/nestjs-course-task-management/tree/validation/task-filtering-and-search

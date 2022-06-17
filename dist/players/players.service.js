@@ -16,23 +16,12 @@ exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("@nestjs/typeorm");
+const player_entity_1 = require("./player.entity");
 const player_repository_1 = require("./player.repository");
 let UsersService = class UsersService {
     constructor(userRepository, jwtService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
-    }
-    async signUp(createUserDto) {
-        return this.userRepository.signUp(createUserDto);
-    }
-    async signIn(createUserDto) {
-        const username = await this.userRepository.validateUserPassword(createUserDto);
-        if (!username) {
-            throw new common_1.UnauthorizedException('Invalid credentials');
-        }
-        const payload = { username };
-        const accessToken = await this.jwtService.sign(payload);
-        return { accessToken };
     }
     async getUserById(id) {
         const found = await this.userRepository.findOne(id);
@@ -68,7 +57,22 @@ let UsersService = class UsersService {
             throw new common_1.NotFoundException(`User with ID "${id}" not found`);
         }
     }
+    async findOrCreate(username) {
+        const found = await this.userRepository.findOne({ where: { username } });
+        if (found) {
+            return found;
+        }
+        const newUser = new player_entity_1.Player();
+        newUser.username = username;
+        return this.userRepository.save(newUser);
+    }
 };
+__decorate([
+    __param(0, (0, common_1.Param)('username')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersService.prototype, "findOrCreate", null);
 UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(player_repository_1.PlayerRepository)),

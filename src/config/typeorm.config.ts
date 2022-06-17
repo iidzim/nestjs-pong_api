@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { Player } from "../players/player.entity";
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
     type: 'postgres',
@@ -7,9 +8,10 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     username: 'ping',
     password: 'pong',
     database: 'pong_db',
-    entities: [__dirname + '/../**/*.entity.ts'],
+    //entities: [__dirname + '/../**/*.entity.ts'],
+    entities: [Player],
     synchronize: true,
-    logging: true,
+    logging: false,
     autoLoadEntities : true,
 }
 

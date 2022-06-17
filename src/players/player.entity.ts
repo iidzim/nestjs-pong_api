@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { UserStatus } from "./player_status.enum";
 import * as bcrypt from 'bcrypt';
+import { Param } from "@nestjs/common";
 // import { Game } from "../games/game.entity";
 // import { Relation } from "../relations/relation.entity";
 
@@ -41,16 +42,17 @@ export class Player extends BaseEntity {
 
 
 
-	@Column()
-	password: string;
+	// @Column()
+	// password: string;
 
-	@Column()//({ nullable: true })
-	salt: string;
+	// @Column()//({ nullable: true })
+	// salt: string;
 
-	async validatePassword(password: string): Promise<Boolean> {
-		const hash = await bcrypt.hash(password, this.salt);
-		return hash === this.password;
-	}
+	// async validatePassword(password: string): Promise<Boolean> {
+	// 	const hash = await bcrypt.hash(password, this.salt);
+	// 	return hash === this.password;
+	// }
+
 }
 
 //? remove nullable option

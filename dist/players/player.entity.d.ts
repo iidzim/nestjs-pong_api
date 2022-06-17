@@ -7,7 +7,4 @@ export declare class Player extends BaseEntity {
     level: number;
     status: UserStatus;
     two_fa: boolean;
-    password: string;
-    salt: string;
-    validatePassword(password: string): Promise<Boolean>;
 }
