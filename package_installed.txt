@@ -7,6 +7,9 @@ npm install class-validator class-transformer --save
 
 npm install --save @dicebear/avatars @dicebear/croodles
 npm install bcrypt --save
-
+npm install --save @types/express
+npm install dotenv --save
+npm install dotenv
+npm install passport-42
 
 https://github.com/arielweinberger/nestjs-course-task-management/tree/validation/task-filtering-and-search

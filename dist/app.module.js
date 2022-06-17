@@ -8,27 +8,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
-const players_module_1 = require("./players/players.module");
+const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_config_1 = require("./config/typeorm.config");
-const relations_module_1 = require("./relations/relations.module");
-const games_module_1 = require("./games/games.module");
-const player_relations_module_1 = require("./player-relations/player-relations.module");
-const achievements_module_1 = require("./achievements/achievements.module");
-const match_players_module_1 = require("./match-players/match-players.module");
+const auth_controller_1 = require("./auth/auth.controller");
+const auth_service_1 = require("./auth/auth.service");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            achievements_module_1.AchievementsModule,
-            games_module_1.GameModule,
-            match_players_module_1.MatchPlayersModule,
-            player_relations_module_1.PlayerRelationModule,
-            players_module_1.PlayerModule,
-            relations_module_1.RelationModule,
+            config_1.ConfigModule.forRoot({ envFilePath: '.env' }),
             typeorm_1.TypeOrmModule.forRoot(typeorm_config_1.typeOrmConfig),
+            auth_module_1.AuthModule,
         ],
+        controllers: [auth_controller_1.AuthController],
+        providers: [auth_service_1.AuthService],
     })
 ], AppModule);
 exports.AppModule = AppModule;

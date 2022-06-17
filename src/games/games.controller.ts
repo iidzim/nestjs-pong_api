@@ -6,7 +6,7 @@ import { GetGameFilterDto } from "./dto-game/get-game-filter.dto";
 import { Game } from "./game.entity";
 import { GameService } from "./games.service";
 
-@Controller('game')
+@Controller('play')
 export class GameController {
 	constructor(private readonly gameService: GameService){}
 

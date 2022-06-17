@@ -33,7 +33,7 @@ export class GameRepository extends Repository<Game> {
 	): Promise<Game> {
 		// const { user1 } = createGameDto;
 		const game = new Game();
-		game.winner = '';
+		// game.winner = '';
 		game.status = GameStatus.GAMEOVER;
 		await game.save();
 		return game;

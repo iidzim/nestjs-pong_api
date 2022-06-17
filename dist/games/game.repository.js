@@ -31,7 +31,6 @@ let GameRepository = class GameRepository extends typeorm_1.Repository {
     }
     async createGame(createGameDto, player) {
         const game = new game_entity_1.Game();
-        game.winner = '';
         game.status = game_status_enum_1.GameStatus.GAMEOVER;
         await game.save();
         return game;

@@ -68,7 +68,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GameController.prototype, "deleteGame", null);
 GameController = __decorate([
-    (0, common_1.Controller)('game'),
+    (0, common_1.Controller)('play'),
     __metadata("design:paramtypes", [games_service_1.GameService])
 ], GameController);
 exports.GameController = GameController;

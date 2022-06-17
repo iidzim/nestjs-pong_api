@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const Player_repository_1 = require("../Players/Player.repository");
+const Player_repository_1 = require("../players/Player.repository");
 const game_repository_1 = require("./game.repository");
 let GameService = class GameService {
     constructor(gameRepository) {

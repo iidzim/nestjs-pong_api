@@ -4,7 +4,6 @@ import { GameService } from "./games.service";
 import { GameController } from "./games.controller";
 import { GameRepository } from "./game.repository";
 import { PlayerModule } from '../players/players.module';
-import { PlayerRepository } from "../players/player.repository";
 
 @Module({
     imports: [

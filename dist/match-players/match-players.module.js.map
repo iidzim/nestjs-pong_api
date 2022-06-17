@@ -1,1 +1,0 @@
-{"version":3,"file":"match-players.module.js","sourceRoot":"","sources":["../../src/match-players/match-players.module.ts"],"names":[],"mappings":";;;;;;;;;AAAA,2CAAwC;AACxC,mEAA8D;AAC9D,yEAAoE;AAMpE,IAAa,kBAAkB,GAA/B,MAAa,kBAAkB;CAAG,CAAA;AAArB,kBAAkB;IAJ9B,IAAA,eAAM,EAAC;QACN,SAAS,EAAE,CAAC,2CAAmB,CAAC;QAChC,WAAW,EAAE,CAAC,iDAAsB,CAAC;KACtC,CAAC;GACW,kBAAkB,CAAG;AAArB,gDAAkB"}

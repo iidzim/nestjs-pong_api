@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, JoinTable, OneToMany } from "typeorm";
-import { Match_players } from "../match-players/match-player.entity";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, JoinTable, OneToMany, CreateDateColumn } from "typeorm";
+import { Player } from "../players/player.entity";
 import { GameStatus } from "./game_status.enum";
 
 @Entity('match')
@@ -9,11 +9,20 @@ export class Game extends BaseEntity{
 	id: number;
 
 	@Column()
-	winner: string;
+	score_winner: number;
+
+	@Column()
+	score_loser: number;
 
 	@Column({default: GameStatus.GAMEOVER})
 	status: GameStatus;
 
-	@OneToMany(type => Match_players, mp => mp.game, { eager: true})
-	mp: Match_players[];
+	@CreateDateColumn()
+	date: Date;
+
+	// @ManyToOne(type => Player, player => player.wins)
+	// winner: Player;
+
+	// @ManyToOne(type => Player, player => player.losses)
+	// loser: Player;
 }

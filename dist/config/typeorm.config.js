@@ -10,6 +10,7 @@ exports.typeOrmConfig = {
     database: 'pong_db',
     entities: [__dirname + '/../**/*.entity.ts'],
     synchronize: true,
+    logging: true,
     autoLoadEntities: true,
 };
 //# sourceMappingURL=typeorm.config.js.map

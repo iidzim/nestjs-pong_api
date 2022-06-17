@@ -13,9 +13,6 @@ exports.Player = void 0;
 const typeorm_1 = require("typeorm");
 const player_status_enum_1 = require("./player_status.enum");
 const bcrypt = require("bcrypt");
-const player_relations_entity_1 = require("../player-relations/player_relations.entity");
-const achievement_entity_1 = require("../achievements/achievement.entity");
-const match_player_entity_1 = require("../match-players/match-player.entity");
 let Player = class Player extends typeorm_1.BaseEntity {
     async validatePassword(password) {
         const hash = await bcrypt.hash(password, this.salt);
@@ -43,7 +40,7 @@ __decorate([
     __metadata("design:type", String)
 ], Player.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Boolean)
 ], Player.prototype, "two_fa", void 0);
 __decorate([
@@ -54,18 +51,6 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Player.prototype, "salt", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(type => player_relations_entity_1.Player_relation, pr => pr.user, { eager: true }),
-    __metadata("design:type", Array)
-], Player.prototype, "pr", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(type => match_player_entity_1.Match_players, mp => mp.user, { eager: true }),
-    __metadata("design:type", Array)
-], Player.prototype, "mp", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(type => achievement_entity_1.Achievement, achv => achv.user, { eager: true }),
-    __metadata("design:type", Array)
-], Player.prototype, "achievements", void 0);
 Player = __decorate([
     (0, typeorm_1.Entity)('player'),
     (0, typeorm_1.Unique)(['username'])

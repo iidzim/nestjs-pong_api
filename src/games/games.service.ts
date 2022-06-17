@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Player } from "../players/player.entity";
-import { PlayerRepository } from "../Players/Player.repository";
+import { PlayerRepository } from "../players/Player.repository";
 import { CreateGameDto } from "./dto-game/create-game.dto";
 import { GetGameFilterDto } from "./dto-game/get-game-filter.dto";
 import { Game } from "./game.entity";

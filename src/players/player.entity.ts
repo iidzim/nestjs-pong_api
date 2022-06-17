@@ -1,9 +1,8 @@
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { UserStatus } from "./player_status.enum";
 import * as bcrypt from 'bcrypt';
-import { Player_relation } from "../player-relations/player_relations.entity";
-import { Achievement } from "../achievements/achievement.entity";
-import { Match_players } from "../match-players/match-player.entity";
+// import { Game } from "../games/game.entity";
+// import { Relation } from "../relations/relation.entity";
 
 @Entity('player')
 @Unique(['username'])
@@ -24,23 +23,29 @@ export class Player extends BaseEntity {
 	@Column({ default: UserStatus.ONLINE})
 	status: UserStatus;
 
-	@Column()
+	@Column({ nullable: true })
 	two_fa: boolean;
+
+	// @OneToMany(type => Game, game => game.winner, { eager: true})
+	// wins: Game[];
+
+	// @OneToMany(type => Game, game => game.loser, { eager: true})
+	// losses: Game[];
+	
+	// @OneToMany(type => Relation, relation => relation.receiver, { eager: true})
+	// receivers: Relation[];
+	
+	// @OneToMany(type => Relation, relation => relation.sender, { eager: true})
+	// senders: Relation[];
+
+
+
 
 	@Column()
 	password: string;
 
 	@Column()//({ nullable: true })
 	salt: string;
-
-	@OneToMany(type => Player_relation, pr => pr.user, { eager: true})
-	pr: Player_relation[];
-
-	@OneToMany(type => Match_players, mp => mp.user, { eager: true})
-	mp: Match_players[];
-
-	@OneToMany(type => Achievement, achv => achv.user, { eager: true})
-	achievements: Achievement[];
 
 	async validatePassword(password: string): Promise<Boolean> {
 		const hash = await bcrypt.hash(password, this.salt);

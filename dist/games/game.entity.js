@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Game = void 0;
 const typeorm_1 = require("typeorm");
-const match_player_entity_1 = require("../match-players/match-player.entity");
 const game_status_enum_1 = require("./game_status.enum");
 let Game = class Game extends typeorm_1.BaseEntity {
 };
@@ -21,16 +20,20 @@ __decorate([
 ], Game.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Game.prototype, "winner", void 0);
+    __metadata("design:type", Number)
+], Game.prototype, "score_winner", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Game.prototype, "score_loser", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: game_status_enum_1.GameStatus.GAMEOVER }),
     __metadata("design:type", String)
 ], Game.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(type => match_player_entity_1.Match_players, mp => mp.game, { eager: true }),
-    __metadata("design:type", Array)
-], Game.prototype, "mp", void 0);
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], Game.prototype, "date", void 0);
 Game = __decorate([
     (0, typeorm_1.Entity)('match')
 ], Game);

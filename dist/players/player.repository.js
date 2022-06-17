@@ -82,4 +82,4 @@ PlayerRepository = __decorate([
     (0, typeorm_1.EntityRepository)(player_entity_1.Player)
 ], PlayerRepository);
 exports.PlayerRepository = PlayerRepository;
-//# sourceMappingURL=player.repository.js.map
+//# sourceMappingURL=Player.repository.js.map

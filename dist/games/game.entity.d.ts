@@ -1,9 +1,9 @@
 import { BaseEntity } from "typeorm";
-import { Match_players } from "../match-players/match-player.entity";
 import { GameStatus } from "./game_status.enum";
 export declare class Game extends BaseEntity {
     id: number;
-    winner: string;
+    score_winner: number;
+    score_loser: number;
     status: GameStatus;
-    mp: Match_players[];
+    date: Date;
 }

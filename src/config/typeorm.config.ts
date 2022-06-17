@@ -9,6 +9,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     database: 'pong_db',
     entities: [__dirname + '/../**/*.entity.ts'],
     synchronize: true,
+    logging: true,
     autoLoadEntities : true,
 }
 
