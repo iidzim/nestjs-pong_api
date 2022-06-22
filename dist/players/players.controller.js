@@ -20,9 +20,6 @@ let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
     }
-    deleteUser(id) {
-        return this.usersService.deleteUser(id);
-    }
     updateUsername(id, username) {
         return this.usersService.updateUsername(id, username);
     }
@@ -36,13 +33,6 @@ let UsersController = class UsersController {
         return this.usersService.getUsers(FilterDto);
     }
 };
-__decorate([
-    (0, common_1.Delete)('/:id'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "deleteUser", null);
 __decorate([
     (0, common_1.Patch)('/settings/username/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),

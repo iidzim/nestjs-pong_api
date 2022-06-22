@@ -10,7 +10,7 @@ exports.typeOrmConfig = {
     password: 'pong',
     database: 'pong_db',
     entities: [player_entity_1.Player],
-    synchronize: true,
+    synchronize: false,
     logging: false,
     autoLoadEntities: true,
 };

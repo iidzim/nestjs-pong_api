@@ -1,7 +1,7 @@
 import { BaseEntity } from "typeorm";
 import { UserStatus } from "./player_status.enum";
 export declare class Player extends BaseEntity {
-    id: number;
+    id: string;
     username: string;
     avatar: string;
     level: number;

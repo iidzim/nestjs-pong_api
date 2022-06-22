@@ -13,7 +13,7 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const players_service_1 = require("../players/players.service");
 require('dotenv').config({ path: `.env` });
-const { db } = require('../players/player.entity');
+const db = require('../players/player.entity');
 const passport = require('passport');
 const FortyTwoStrategy = require('passport-42').Strategy;
 passport.use(new FortyTwoStrategy({
@@ -21,20 +21,18 @@ passport.use(new FortyTwoStrategy({
     clientSecret: process.env.SECRET,
     callbackURL: process.env.CALLBACK_URL,
 }, async function (accessToken, refreshToken, profile, cb) {
+    console.log("function > number of arguments passed: ", arguments.length);
+    const { id, login } = profile;
     const user = {
         id: profile._json.id,
         login: profile._json.login,
         accessToken: accessToken,
     };
-    console.log('user > ' + user.login);
+    console.log('user id > ' + user.id);
+    console.log('user login > ' + user.login);
     console.log('accessToken > ' + accessToken);
-    const player = await db.Player.findOrCreate({
-        where: { id: profile.id },
-        defaults: {
-            id: profile._json.id,
-            username: profile._json.login
-        }
-    });
+    const player = this.UsersService.findOrCreate(user.id, user.login);
+    console.log('player > ' + player);
     cb(null, user);
 }));
 let AuthService = class AuthService {
@@ -47,7 +45,7 @@ let AuthService = class AuthService {
     }
     callback() {
         console.log('callback');
-        passport.authenticate('42', { successRedirect: `/`, failureRedirect: `/failure` });
+        passport.authenticate('42', { failureRedirect: '/failure' });
     }
     logout() {
         console.log('logout');

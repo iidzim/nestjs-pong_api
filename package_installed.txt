@@ -9,8 +9,7 @@ npm install --save @dicebear/avatars @dicebear/croodles
 npm install bcrypt --save
 npm install --save @types/express
 npm install dotenv --save
-npm install dotenv
-npm install passport-42
+ npm install --save @nestjs/passport passport passport-42
 npm i cookie-parser
 npm i --save @types/cookie-parser
 

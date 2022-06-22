@@ -36,10 +36,10 @@ export class UsersController {
 	// 	return data;
 	// }
 
-	@Delete('/:id')
-	deleteUser(@Param('id', ParseIntPipe) id: number): Promise<void> {
-		return this.usersService.deleteUser(id);
-	}
+	// @Delete('/:id')
+	// deleteUser(@Param('id', ParseIntPipe) id: number): Promise<void> {
+	// 	return this.usersService.deleteUser(id);
+	// }
 
 	@Patch('/settings/username/:id')
 	updateUsername(

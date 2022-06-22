@@ -14,14 +14,15 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
-const jwt_1 = require("@nestjs/jwt");
+const avatars_1 = require("@dicebear/avatars");
+const style = require("@dicebear/croodles");
 const typeorm_1 = require("@nestjs/typeorm");
 const player_entity_1 = require("./player.entity");
 const player_repository_1 = require("./player.repository");
+const player_status_enum_1 = require("./player_status.enum");
 let UsersService = class UsersService {
-    constructor(userRepository, jwtService) {
+    constructor(userRepository) {
         this.userRepository = userRepository;
-        this.jwtService = jwtService;
     }
     async getUserById(id) {
         const found = await this.userRepository.findOne(id);
@@ -51,33 +52,46 @@ let UsersService = class UsersService {
         await updated.save();
         return updated;
     }
-    async deleteUser(id) {
-        const del = await this.userRepository.delete(id);
-        if (!del.affected) {
-            throw new common_1.NotFoundException(`User with ID "${id}" not found`);
-        }
+    async updateLevel(id) {
+        const updated = await this.getUserById(id);
+        updated.level += 0.125;
+        await updated.save();
+        return updated;
     }
-    async findOrCreate(username) {
-        const found = await this.userRepository.findOne({ where: { username } });
+    async StatusPlaying(id) {
+        const updated = await this.getUserById(id);
+        updated.status = player_status_enum_1.UserStatus.PLAYING;
+        await updated.save();
+        return updated;
+    }
+    async findOrCreate(id, login) {
+        console.log("find or create > number of arguments passed: ", arguments.length);
+        console.log(id, login);
+        const found = await this.userRepository.findOne({ where: { id } });
         if (found) {
+            console.log('found !!');
             return found;
         }
+        console.log('not found !!');
         const newUser = new player_entity_1.Player();
-        newUser.username = username;
-        return this.userRepository.save(newUser);
+        newUser.id = id;
+        newUser.username = login;
+        newUser.avatar = (0, avatars_1.createAvatar)(style, { seed: login + '.svg' });
+        newUser.level = 0.0;
+        newUser.status = player_status_enum_1.UserStatus.ONLINE;
+        newUser.two_fa = false;
+        await newUser.save();
+        console.log('new User saved successfully ' + newUser);
+        if (typeof (newUser) == 'undefined') {
+            console.log('newUser is undefined');
+        }
+        return newUser;
     }
 };
-__decorate([
-    __param(0, (0, common_1.Param)('username')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UsersService.prototype, "findOrCreate", null);
 UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(player_repository_1.PlayerRepository)),
-    __metadata("design:paramtypes", [player_repository_1.PlayerRepository,
-        jwt_1.JwtService])
+    __metadata("design:paramtypes", [player_repository_1.PlayerRepository])
 ], UsersService);
 exports.UsersService = UsersService;
 //# sourceMappingURL=players.service.js.map

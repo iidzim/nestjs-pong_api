@@ -8,12 +8,12 @@ import { PlayerModule } from '../players/players.module';
 import { UsersService } from '../players/players.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+// import { AuthStrategy } from './auth.strategy';
 
 @Module({
     imports: [
         PlayerModule,
         TypeOrmModule.forFeature([PlayerRepository]),
-        // PlayerRepository,
     ],
     controllers: [AuthController],
     providers: [
@@ -21,6 +21,7 @@ import { AuthService } from './auth.service';
         UsersService,
         // PassportModule,
         JwtService,
+        // AuthStrategy,
     ],
 })
 export class AuthModule {}

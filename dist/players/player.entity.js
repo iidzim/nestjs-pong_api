@@ -15,8 +15,8 @@ const player_status_enum_1 = require("./player_status.enum");
 let Player = class Player extends typeorm_1.BaseEntity {
 };
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.PrimaryColumn)(),
+    __metadata("design:type", String)
 ], Player.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -35,7 +35,7 @@ __decorate([
     __metadata("design:type", String)
 ], Player.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true, default: false }),
     __metadata("design:type", Boolean)
 ], Player.prototype, "two_fa", void 0);
 Player = __decorate([

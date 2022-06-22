@@ -29,12 +29,8 @@ PlayerModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([player_repository_1.PlayerRepository]),
         ],
         controllers: [players_controller_1.UsersController],
-        providers: [
-            players_service_1.UsersService,
-        ],
-        exports: [
-            players_service_1.UsersService,
-        ],
+        providers: [players_service_1.UsersService],
+        exports: [players_service_1.UsersService],
     })
 ], PlayerModule);
 exports.PlayerModule = PlayerModule;

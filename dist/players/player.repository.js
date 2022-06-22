@@ -45,7 +45,7 @@ let PlayerRepository = class PlayerRepository extends typeorm_1.Repository {
             user.avatar = (0, avatars_1.createAvatar)(style, { seed: username + '.svg' });
         }
         user.level = 0;
-        user.status = player_status_enum_1.UserStatus.OFFLINE;
+        user.status = player_status_enum_1.UserStatus.ONLINE;
         user.two_fa = false;
         try {
             await user.save();

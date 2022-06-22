@@ -15,7 +15,7 @@ export class PlayerRepository extends Repository<Player> {
 		const { id, username, level, status } = FilterDto;
 		const query = this.createQueryBuilder('user');
 		if (id) {
-			query.andWhere('user.id = :id', { id }) // or {status : 'ONLINE' } for a static result
+			query.andWhere('user.id = :id', { id })
 		}
 		if (username) {
 			query.andWhere('user.username = :username', { username })
@@ -43,7 +43,7 @@ export class PlayerRepository extends Repository<Player> {
 		// user.salt = await bcrypt.genSalt();
 		// user.password = await this.hashPassword(password, user.salt);
 		user.level = 0;
-		user.status = UserStatus.OFFLINE;
+		user.status = UserStatus.ONLINE;
 		user.two_fa = false;
 		try {
 			await user.save();

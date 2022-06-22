@@ -8,9 +8,9 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     username: 'ping',
     password: 'pong',
     database: 'pong_db',
-    //entities: [__dirname + '/../**/*.entity.ts'],
+    // entities: [__dirname + '/../**/*.entity.ts'],
     entities: [Player],
-    synchronize: true,
+    synchronize: false,
     logging: false,
     autoLoadEntities : true,
 }

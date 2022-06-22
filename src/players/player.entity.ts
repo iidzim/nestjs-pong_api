@@ -1,7 +1,5 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { UserStatus } from "./player_status.enum";
-import * as bcrypt from 'bcrypt';
-import { Param } from "@nestjs/common";
 // import { Game } from "../games/game.entity";
 // import { Relation } from "../relations/relation.entity";
 
@@ -9,8 +7,9 @@ import { Param } from "@nestjs/common";
 @Unique(['username'])
 export class Player extends BaseEntity {
 
-	@PrimaryGeneratedColumn()
-	id: number;
+	// @PrimaryGeneratedColumn()
+	@PrimaryColumn()
+	id: string;
 
 	@Column()//({ length: 50 })
 	username: string;
@@ -24,7 +23,7 @@ export class Player extends BaseEntity {
 	@Column({ default: UserStatus.ONLINE})
 	status: UserStatus;
 
-	@Column({ nullable: true })
+	@Column({ nullable: true, default: false })
 	two_fa: boolean;
 
 	// @OneToMany(type => Game, game => game.winner, { eager: true})
