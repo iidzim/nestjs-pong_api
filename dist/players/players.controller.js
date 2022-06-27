@@ -14,46 +14,83 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
+const player_entity_1 = require("./player.entity");
 const players_service_1 = require("./players.service");
 const get_player_filter_dto_1 = require("./dto-players/get-player-filter.dto");
+const relations_service_1 = require("../relations/relations.service");
+const get_player_decorator_1 = require("./get-player.decorator");
+const relation_status_enum_1 = require("../relations/relation_status.enum");
 let UsersController = class UsersController {
-    constructor(usersService) {
+    constructor(usersService, relationService) {
         this.usersService = usersService;
+        this.relationService = relationService;
     }
-    updateUsername(id, username) {
-        return this.usersService.updateUsername(id, username);
+    getProfile(player) {
+        const playerData = this.usersService.getUserById(player.id);
+        const friends = this.relationService.getRelationByUser(player.id, relation_status_enum_1.RelationStatus.FRIEND);
+        const data = {
+            "profile": playerData,
+            "friends": friends,
+        };
+        return data;
     }
-    updateAvatar(id, avatar) {
-        return this.usersService.updateAvatar(id, avatar);
+    getFriendProfile(id) {
+        const playerData = this.usersService.getUserById(id);
+        const friends = this.relationService.getRelationByUser(id, relation_status_enum_1.RelationStatus.FRIEND);
+        const data = {
+            "profile": playerData,
+            "friends": friends,
+        };
+        return data;
     }
-    updateTwoFa(id) {
-        return this.usersService.updateTwoFa(id);
+    updateUsername(player, username) {
+        return this.usersService.updateUsername(player.id, username);
+    }
+    updateAvatar(player, avatar) {
+        return this.usersService.updateAvatar(player.id, avatar);
+    }
+    updateTwoFa(player) {
+        return this.usersService.updateTwoFa(player.id);
     }
     getUsers(FilterDto) {
         return this.usersService.getUsers(FilterDto);
     }
 };
 __decorate([
-    (0, common_1.Patch)('/settings/username/:id'),
+    (0, common_1.Get)('/profile'),
+    __param(0, (0, get_player_decorator_1.GetPlayer)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [player_entity_1.Player]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "getProfile", null);
+__decorate([
+    (0, common_1.Get)('/profile/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "getFriendProfile", null);
+__decorate([
+    (0, common_1.Patch)('/settings/username/:id'),
+    __param(0, (0, get_player_decorator_1.GetPlayer)()),
     __param(1, (0, common_1.Body)('username')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String]),
+    __metadata("design:paramtypes", [player_entity_1.Player, String]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateUsername", null);
 __decorate([
     (0, common_1.Patch)('/settings/avatar/:id'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(0, (0, get_player_decorator_1.GetPlayer)()),
     __param(1, (0, common_1.Body)('avatar')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String]),
+    __metadata("design:paramtypes", [player_entity_1.Player, String]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateAvatar", null);
 __decorate([
-    (0, common_1.Patch)('/settings/avatar/:id'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, common_1.Patch)('/settings/2fa/:id'),
+    __param(0, (0, get_player_decorator_1.GetPlayer)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [player_entity_1.Player]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateTwoFa", null);
 __decorate([
@@ -65,7 +102,8 @@ __decorate([
 ], UsersController.prototype, "getUsers", null);
 UsersController = __decorate([
     (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [players_service_1.UsersService])
+    __metadata("design:paramtypes", [players_service_1.UsersService,
+        relations_service_1.RelationsService])
 ], UsersController);
 exports.UsersController = UsersController;
 //# sourceMappingURL=players.controller.js.map

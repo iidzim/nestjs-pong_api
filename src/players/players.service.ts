@@ -85,14 +85,7 @@ export class UsersService {
 		return updated;
 	}
 
-	// async deleteUser(id: number): Promise<void> {
-	// 	const del = await this.userRepository.delete(id);
-	// 	if (!del.affected){
-	// 		throw new NotFoundException(`User with ID "${id}" not found`)
-	// 	}
-	// }
-
-	async findOrCreate(id: string, login: string): Promise<Player> {
+	async findOrCreate(id: number, login: string): Promise<Player> {
 		console.log("find or create > number of arguments passed: ", arguments.length);
 		console.log(id, login);
 		const found = await this.userRepository.findOne({ where: { id } });
@@ -115,5 +108,4 @@ export class UsersService {
 		}
 		return newUser;
 	}
-
 }

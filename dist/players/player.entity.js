@@ -12,11 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Player = void 0;
 const typeorm_1 = require("typeorm");
 const player_status_enum_1 = require("./player_status.enum");
+const relation_entity_1 = require("../relations/relation.entity");
 let Player = class Player extends typeorm_1.BaseEntity {
 };
 __decorate([
     (0, typeorm_1.PrimaryColumn)(),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], Player.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -38,6 +39,14 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true, default: false }),
     __metadata("design:type", Boolean)
 ], Player.prototype, "two_fa", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(type => relation_entity_1.Relation, relation => relation.receiver, { eager: true }),
+    __metadata("design:type", Array)
+], Player.prototype, "receivers", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(type => relation_entity_1.Relation, relation => relation.sender, { eager: true }),
+    __metadata("design:type", Array)
+], Player.prototype, "senders", void 0);
 Player = __decorate([
     (0, typeorm_1.Entity)('player'),
     (0, typeorm_1.Unique)(['username'])

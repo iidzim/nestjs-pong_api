@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlayerRepository } from '../players/player.repository';
@@ -11,6 +11,13 @@ import { AuthService } from './auth.service';
 
 @Module({
     imports: [
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        JwtModule.register({
+            secret: 'pingpong',
+            signOptions: {
+                expiresIn: 3600,
+            },
+        }),
         PlayerModule,
         TypeOrmModule.forFeature([PlayerRepository]),
     ],
@@ -18,7 +25,6 @@ import { AuthService } from './auth.service';
     providers: [
         AuthService,
         UsersService,
-        // JwtService,
         // AuthStrategy,
     ],
 })

@@ -13,6 +13,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_config_1 = require("./config/typeorm.config");
 const auth_module_1 = require("./auth/auth.module");
 const players_module_1 = require("./players/players.module");
+const relations_module_1 = require("./relations/relations.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -22,6 +23,7 @@ AppModule = __decorate([
             typeorm_1.TypeOrmModule.forRoot(typeorm_config_1.typeOrmConfig),
             auth_module_1.AuthModule,
             players_module_1.PlayerModule,
+            relations_module_1.RelationModule,
         ],
         controllers: [],
         providers: [],

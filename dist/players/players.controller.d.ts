@@ -1,11 +1,21 @@
 import { Player } from "./player.entity";
 import { UsersService } from "./players.service";
 import { GetPlayersFilterDto } from "./dto-players/get-player-filter.dto";
+import { RelationsService } from "../relations/relations.service";
 export declare class UsersController {
     private readonly usersService;
-    constructor(usersService: UsersService);
-    updateUsername(id: number, username: string): Promise<Player>;
-    updateAvatar(id: number, avatar: string): Promise<Player>;
-    updateTwoFa(id: number): Promise<Player>;
+    private readonly relationService;
+    constructor(usersService: UsersService, relationService: RelationsService);
+    getProfile(player: Player): {
+        profile: Promise<Player>;
+        friends: Promise<import("../relations/relation.entity").Relation[]>;
+    };
+    getFriendProfile(id: number): {
+        profile: Promise<Player>;
+        friends: Promise<import("../relations/relation.entity").Relation[]>;
+    };
+    updateUsername(player: Player, username: string): Promise<Player>;
+    updateAvatar(player: Player, avatar: string): Promise<Player>;
+    updateTwoFa(player: Player): Promise<Player>;
     getUsers(FilterDto: GetPlayersFilterDto): Promise<Player[]>;
 }

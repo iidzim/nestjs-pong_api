@@ -17,27 +17,24 @@ const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const get_player_decorator_1 = require("../players/get-player.decorator");
 const player_entity_1 = require("../players/player.entity");
-const create_relation_dto_1 = require("./dto-relation/create-relation.dto");
 const get_relation_filter_dto_1 = require("./dto-relation/get-relation-filter.dto");
 const relations_service_1 = require("./relations.service");
+const relation_status_enum_1 = require("./relation_status.enum");
 let RelationsController = class RelationsController {
     constructor(relationService) {
         this.relationService = relationService;
     }
     getRelations(FilterDto) {
-        return this.relationService.getRelation(FilterDto);
+        return this.relationService.getRelations(FilterDto);
     }
-    getRelationById(id) {
-        return this.relationService.getRelationById(id);
+    getRelationByUser(player) {
+        return this.relationService.getRelationByUser(player.id, relation_status_enum_1.RelationStatus.FRIEND);
     }
-    addFriend(createRelationDto, sender) {
-        return this.relationService.addFriend(createRelationDto, sender);
+    addFriend(recv_id, sender) {
+        return this.relationService.addFriend(recv_id, sender);
     }
-    blockPlayer(createRelationDto, sender) {
-        return this.relationService.blockPlayer(createRelationDto, sender);
-    }
-    deleteRelation(id) {
-        return this.relationService.deleteRelation(id);
+    blockPlayer(recv_id, sender) {
+        return this.relationService.blockPlayer(recv_id, sender);
     }
 };
 __decorate([
@@ -45,42 +42,33 @@ __decorate([
     __param(0, (0, common_1.Query)(common_1.ValidationPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [get_relation_filter_dto_1.GetRelationFilterDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], RelationsController.prototype, "getRelations", null);
 __decorate([
-    (0, common_1.Get)('/:id'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    (0, common_1.Get)('/:user'),
+    __param(0, (0, get_player_decorator_1.GetPlayer)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [player_entity_1.Player]),
     __metadata("design:returntype", Promise)
-], RelationsController.prototype, "getRelationById", null);
+], RelationsController.prototype, "getRelationByUser", null);
 __decorate([
     (0, common_1.Post)('add/:id'),
     (0, common_1.UsePipes)(common_1.ValidationPipe),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, get_player_decorator_1.GetPlayer)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_relation_dto_1.CreateRelationDto,
-        player_entity_1.Player]),
+    __metadata("design:paramtypes", [Number, player_entity_1.Player]),
     __metadata("design:returntype", Promise)
 ], RelationsController.prototype, "addFriend", null);
 __decorate([
     (0, common_1.Post)('block/:id'),
     (0, common_1.UsePipes)(common_1.ValidationPipe),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, get_player_decorator_1.GetPlayer)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_relation_dto_1.CreateRelationDto,
-        player_entity_1.Player]),
+    __metadata("design:paramtypes", [Number, player_entity_1.Player]),
     __metadata("design:returntype", Promise)
 ], RelationsController.prototype, "blockPlayer", null);
-__decorate([
-    (0, common_1.Delete)('/:id'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], RelationsController.prototype, "deleteRelation", null);
 RelationsController = __decorate([
     (0, common_1.Controller)('link'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),

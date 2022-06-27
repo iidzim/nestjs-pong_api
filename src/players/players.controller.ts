@@ -1,14 +1,22 @@
-import { Controller, Post, Get, Body, Param, Patch, Delete, ParseIntPipe, Query, ValidationPipe, UseGuards, Req } from "@nestjs/common";
+import { Controller, Post, Get, Body, Param, Patch, Delete, ParseIntPipe, Query, ValidationPipe, UseGuards, Req, Inject, forwardRef } from "@nestjs/common";
 import { Player } from "./player.entity";
 import { UsersService } from "./players.service";
 import { CreateUserDto } from "./dto-players/create-player.dto";
 import { GetPlayersFilterDto } from "./dto-players/get-player-filter.dto";
-// import { AuthGuard } from "@nestjs/passport";
+import { RelationsService } from "../relations/relations.service";
+import { GetPlayer } from "./get-player.decorator";
+import { AuthGuard } from "@nestjs/passport";
+import { RelationStatus } from "../relations/relation_status.enum";
 // import { GetPlayer } from "./get-player.decorator";
 
 @Controller()
 export class UsersController {
-	constructor(private readonly usersService: UsersService){}
+	constructor(
+		// @Inject(forwardRef( () => RelationsService))
+		private readonly usersService: UsersService,
+		private readonly relationService: RelationsService,
+		// private readonly gameService: GameService,
+	){}
 
 	// @Post('/signup')
 	// signUp(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<void> {
@@ -25,44 +33,59 @@ export class UsersController {
 	// 	// return this.usersService.getUserById(id);
 	// }
 
-	// @Get('/profile')
-	// getUserById(@Param('id', ParseIntPipe) id: number): Promise<any> {
-	// 	const playerData = this.usersService.getUserById(id);
-	// 	const match = {}
+	@Get('/profile')
+	getProfile(
+		// @Param('id', ParseIntPipe) id: number,
+		@GetPlayer() player: Player,
+	){
+		const playerData = this.usersService.getUserById(player.id);
+		const friends = this.relationService.getRelationByUser(player.id, RelationStatus.FRIEND);
+		// const matchHistory = this.gameService.getMatchByUser(player);
+		const data = {
+			"profile": playerData,
+			"friends": friends,
+			// "matchHistory": matchHistory,
+		};
+		return data;
+	}
 
-	// 	const data = {
-	// 		"profile": playerData,
-	// 	};
-	// 	return data;
-	// }
-
-	// @Delete('/:id')
-	// deleteUser(@Param('id', ParseIntPipe) id: number): Promise<void> {
-	// 	return this.usersService.deleteUser(id);
-	// }
+	@Get('/profile/:id')
+	getFriendProfile(
+		@Param('id', ParseIntPipe) id: number,
+	){
+		const playerData = this.usersService.getUserById(id);
+		const friends = this.relationService.getRelationByUser(id, RelationStatus.FRIEND);
+		// const matchHistory = this.gameService.getMatchByUser(player);
+		const data = {
+			"profile": playerData,
+			"friends": friends,
+			// "matchHistory": matchHistory,
+		};
+		return data;
+	}
 
 	@Patch('/settings/username/:id')
 	updateUsername(
-		@Param('id', ParseIntPipe) id: number,
+		@GetPlayer() player: Player,
 		@Body('username', ) username: string,
-		// @Body() createUserDto: CreateUserDto,
 	){
-		return this.usersService.updateUsername(id, username);
+		return this.usersService.updateUsername(player.id, username);
 	}
 
 	@Patch('/settings/avatar/:id')
 	updateAvatar(
-		@Param('id', ParseIntPipe) id: number,
+		@GetPlayer() player: Player,
 		@Body('avatar', ) avatar: string,
 	){
-		return this.usersService.updateAvatar(id, avatar);
+		return this.usersService.updateAvatar(player.id, avatar);
 	}
 
-	@Patch('/settings/avatar/:id')
+	@Patch('/settings/2fa/:id')
 	updateTwoFa(
-		@Param('id', ParseIntPipe) id: number,
+		// @Param('id', ParseIntPipe) id: number,
+		@GetPlayer() player: Player,
 	){
-		return this.usersService.updateTwoFa(id);
+		return this.usersService.updateTwoFa(player.id);
 	}
 
 	@Get()

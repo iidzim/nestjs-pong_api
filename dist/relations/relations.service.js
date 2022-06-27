@@ -20,27 +20,23 @@ let RelationsService = class RelationsService {
     constructor(relationRepository) {
         this.relationRepository = relationRepository;
     }
-    async addFriend(CreateRelationDto, sender) {
-        return this.relationRepository.addFriend(CreateRelationDto, sender);
-    }
-    async blockPlayer(CreateRelationDto, sender) {
-        return this.relationRepository.blockPlayer(CreateRelationDto, sender);
-    }
-    async getRelationById(id) {
-        const found = await this.relationRepository.findOne(id);
-        if (!found) {
-            throw new common_1.NotFoundException(`Relation with ID "${id}" not found`);
-        }
-        return found;
-    }
-    async getRelation(FilterDto) {
+    async getRelations(FilterDto) {
         return this.relationRepository.getRelations(FilterDto);
     }
-    async deleteRelation(id) {
-        const del = await this.relationRepository.delete(id);
-        if (!del.affected) {
-            throw new common_1.NotFoundException(`Relation with ID "${id}" not found`);
-        }
+    async getRelationByUser(player_id, relation_status) {
+        return this.relationRepository.getRelationByUser(player_id, relation_status);
+    }
+    async addFriend(recv_id, sender) {
+        return this.relationRepository.addFriend(recv_id, sender);
+    }
+    async blockPlayer(recv_id, sender) {
+        return this.relationRepository.blockPlayer(recv_id, sender);
+    }
+    async unblock(id) {
+        const block = await this.relationRepository.delete(id);
+    }
+    async removeFriend(id) {
+        const friend = await this.relationRepository.delete(id);
     }
 };
 RelationsService = __decorate([

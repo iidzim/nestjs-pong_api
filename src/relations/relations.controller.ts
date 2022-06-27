@@ -6,44 +6,51 @@ import { CreateRelationDto } from "./dto-relation/create-relation.dto";
 import { GetRelationFilterDto } from "./dto-relation/get-relation-filter.dto";
 import { Relation } from "./relation.entity";
 import { RelationsService } from "./relations.service";
+import { RelationStatus } from "./relation_status.enum";
 
 @Controller('link')
 @UseGuards(AuthGuard())
 export class RelationsController {
-	constructor(private readonly relationService: RelationsService){}
+	constructor(private readonly relationService: RelationsService) {}
 
 	@Get()
-	getRelations(@Query(ValidationPipe) FilterDto: GetRelationFilterDto) {
-		return this.relationService.getRelation(FilterDto);
+	getRelations(@Query(ValidationPipe) FilterDto: GetRelationFilterDto): Promise<Relation[]> {
+		return this.relationService.getRelations(FilterDto);
 	}
 
-	@Get('/:id')
-	getRelationById(@Param('id', ParseIntPipe) id: number): Promise<Relation> {
-		return this.relationService.getRelationById(id);
+	// @Get('/:id')
+	// getRelationById(@Param('id', ParseIntPipe) id: number): Promise<Relation> {
+	// 	return this.relationService.getRelationById(id);
+	// }
+
+	@Get('/:user')
+	getRelationByUser(@GetPlayer() player: Player): Promise<Relation[]> {
+		return this.relationService.getRelationByUser(player.id, RelationStatus.FRIEND); //& get all friends
 	}
 
 	@Post('add/:id')
 	@UsePipes(ValidationPipe)
 	addFriend(
-		@Body() createRelationDto: CreateRelationDto,
+		// @Body() createRelationDto: CreateRelationDto,
+		@Param('id', ParseIntPipe) recv_id: number,
 		@GetPlayer() sender: Player,
 	): Promise<Relation> {
-		return this.relationService.addFriend(createRelationDto, sender);
+		// return this.relationService.addFriend(createRelationDto, sender);
+		return this.relationService.addFriend(recv_id, sender);
 	}
 
 	@Post('block/:id')
 	@UsePipes(ValidationPipe)
 	blockPlayer(
-		@Body() createRelationDto: CreateRelationDto,
+		@Param('id', ParseIntPipe) recv_id: number,
 		@GetPlayer() sender: Player,
 	): Promise<Relation> {
-		return this.relationService.blockPlayer(createRelationDto, sender);
+		return this.relationService.blockPlayer(recv_id, sender);
 	}
 
-
-	@Delete('/:id')
-	deleteRelation(@Param('id', ParseIntPipe) id: number): Promise<void> {
-		return this.relationService.deleteRelation(id);
-	}
+	// @Delete('unblock/:id')
+	// unblock(@Param('id', ParseIntPipe) id: number): Promise<void> {
+	// 	return this.relationService.unblock(id);
+	// }
 
 }

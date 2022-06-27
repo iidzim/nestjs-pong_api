@@ -12,5 +12,5 @@ export declare class UsersService {
     updateLevel(id: number): Promise<Player>;
     StatusPlaying(id: number): Promise<Player>;
     StatusOffline(id: number): Promise<Player>;
-    findOrCreate(id: string, login: string): Promise<Player>;
+    findOrCreate(id: number, login: string): Promise<Player>;
 }
