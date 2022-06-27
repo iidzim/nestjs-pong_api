@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../players/players.service';
+import { UserStatus } from '../players/player_status.enum';
 // import { AuthStrategy } from './auth.strategy';
 require ('dotenv').config({ path: `.env` });
 
@@ -15,7 +16,7 @@ passport.use(new FortyTwoStrategy({
 	async function(accessToken: string, refreshToken: string, profile: any, cb: any) {
 		console.log("function > number of arguments passed: ", arguments.length);
 		console.log(profile);
-		// try	{
+		try	{
 			const user = {
 				id: profile._json.id,
 				login: profile._json.login,
@@ -28,10 +29,10 @@ passport.use(new FortyTwoStrategy({
 			console.log('player > ' + player);
 			cb(null, user);
 
-		// } catch (err) {
-		// 	console.log('error = ' + err);
-		//  	return cb(null, err);
-		// }
+		} catch (err) {
+			console.log('error = ' + err);
+		 	return cb(null, err);
+		}
 	}
 ));
 
@@ -44,7 +45,7 @@ export class AuthService {
 
 	login(): any {
 		console.log('login');
-		passport.authenticate('42', {successRedirect: `/`,failureRedirect: `/auth/login`});
+		passport.authenticate('42', {successRedirect: `/home`,failureRedirect: `/auth/login`});
 		// this.authStrategy.passport.authenticate('42', {successRedirect: `/`,failureRedirect: `/failure`});
 	}
 
@@ -60,10 +61,10 @@ export class AuthService {
 	// 	// }
 	// }
 
-	logout(): any {
+	logout(id: number): any {
 		console.log('logout');
 		// this.authStrategy.passport.logout();
-		//- switch StatusOffline(id);
+		this.playerService.updateStatus(id, UserStatus.OFFLINE);
 		passport.logout();
 		//- redirect to home 'https://127.0.0.1:3000/auth/login'
 	}

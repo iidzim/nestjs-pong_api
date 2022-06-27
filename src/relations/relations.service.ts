@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Player } from "../players/player.entity";
+import { UserStatus } from "../players/player_status.enum";
 import { CreateRelationDto } from "./dto-relation/create-relation.dto";
 import { GetRelationFilterDto } from "./dto-relation/get-relation-filter.dto";
 import { Relation } from "./relation.entity";
@@ -39,16 +40,18 @@ export class RelationsService {
 	}
 
 	async unblock(id: number): Promise<void> {
-		const block = await this.relationRepository.delete(id);
-		// if (!block.affected){
-		// 	throw new NotFoundException(`Relation with ID "${id}" not found`)
-		// }
+		const rel = await this.relationRepository.getOneRelation(id, RelationStatus.BLOCKED);
+		const block = await this.relationRepository.delete(rel.id);
+		if (!block.affected){
+			throw new NotFoundException(`Relation with ID "${id}" not found`)
+		}
 	}
 
 	async removeFriend(id: number): Promise<void> {
-		const friend = await this.relationRepository.delete(id);
-		// if (!friend.affected){
-		// 	throw new NotFoundException(`Relation with ID "${id}" not found`)
-		// }
+		const rel = await this.relationRepository.getOneRelation(id, RelationStatus.FRIEND);
+		const friend = await this.relationRepository.delete(rel.id);
+		if (!friend.affected){
+			throw new NotFoundException(`Relation with ID "${id}" not found`)
+		}
 	}
 }

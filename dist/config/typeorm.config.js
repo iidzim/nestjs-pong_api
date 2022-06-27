@@ -14,7 +14,7 @@ exports.typeOrmConfig = {
         player_entity_1.Player,
         relation_entity_1.Relation
     ],
-    synchronize: false,
+    synchronize: true,
     logging: false,
     autoLoadEntities: true,
 };

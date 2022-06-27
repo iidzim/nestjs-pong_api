@@ -2,6 +2,8 @@ import { Controller, Get, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 import { AuthGuard } from '@nestjs/passport';
+import { GetPlayer } from '../players/get-player.decorator';
+import { Player } from '../players/player.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -15,7 +17,9 @@ export class AuthController {
 
 	@Get('logout')
 	@UseGuards(AuthGuard('42'))
-	logout(): any{
-	    return this.authService.logout();
+	logout(
+		@GetPlayer() player: Player,
+	): any{
+	    return this.authService.logout(player.id);
 	}
 }

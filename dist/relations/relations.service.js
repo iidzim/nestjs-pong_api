@@ -16,6 +16,7 @@ exports.RelationsService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const relation_repository_1 = require("./relation.repository");
+const relation_status_enum_1 = require("./relation_status.enum");
 let RelationsService = class RelationsService {
     constructor(relationRepository) {
         this.relationRepository = relationRepository;
@@ -33,10 +34,18 @@ let RelationsService = class RelationsService {
         return this.relationRepository.blockPlayer(recv_id, sender);
     }
     async unblock(id) {
-        const block = await this.relationRepository.delete(id);
+        const rel = await this.relationRepository.getOneRelation(id, relation_status_enum_1.RelationStatus.BLOCKED);
+        const block = await this.relationRepository.delete(rel.id);
+        if (!block.affected) {
+            throw new common_1.NotFoundException(`Relation with ID "${id}" not found`);
+        }
     }
     async removeFriend(id) {
-        const friend = await this.relationRepository.delete(id);
+        const rel = await this.relationRepository.getOneRelation(id, relation_status_enum_1.RelationStatus.FRIEND);
+        const friend = await this.relationRepository.delete(rel.id);
+        if (!friend.affected) {
+            throw new common_1.NotFoundException(`Relation with ID "${id}" not found`);
+        }
     }
 };
 RelationsService = __decorate([

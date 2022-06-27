@@ -14,7 +14,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
         Player,
         Relation
     ],
-    synchronize: false,
+    synchronize: true,
     logging: false,
     autoLoadEntities : true,
 }

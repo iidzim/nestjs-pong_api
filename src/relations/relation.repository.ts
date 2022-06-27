@@ -31,21 +31,21 @@ export class RelationRepository extends Repository<Relation> {
 		const relations = await this.createQueryBuilder('relation')
 			.leftJoinAndSelect('relation.receiver', 'receivers')
 			.andWhere('receiver.id = :id', { id: player_id })
-			.andWhere('sender.id = :id', { id: player_id })
+			.andWhere('sender.id = :id', { id: player_id }) //? or
 			.andWhere('status = :relation_status', { relation_status: relation_status})
 			.getMany();
 		return relations;
 	}
 
-	// async addFriend(createMacthDto: CreateRelationDto, sender: Player): Promise<Relation> {
-	// 	const relation = new Relation();
-	// 	// const { receiver } = CreateRelationDto;
-	// 	// relation.receiver = receiver;
-	// 	relation.sender = sender;
-	// 	relation.status = RelationStatus.FRIEND;
-	// 	await relation.save();
-	// 	return relation;
-	// }
+	async getOneRelation(player_id: number, relation_status: RelationStatus): Promise<Relation> {
+		const relations = await this.createQueryBuilder('relation')
+			.leftJoinAndSelect('relation.receiver', 'receivers')
+			.andWhere('receiver.id = :id', { id: player_id })
+			.andWhere('sender.id = :id', { id: player_id })
+			.andWhere('status = :relation_status', { relation_status: relation_status})
+			.getOne();
+		return relations;
+	}
 
 	async addFriend(recv_id: number, sender: Player): Promise<Relation> {
 		const relation = new Relation();
@@ -64,4 +64,5 @@ export class RelationRepository extends Repository<Relation> {
 		await relation.save();
 		return relation;
 	}
+
 }

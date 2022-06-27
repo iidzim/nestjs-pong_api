@@ -33,6 +33,7 @@ export class UsersController {
 	// 	// return this.usersService.getUserById(id);
 	// }
 
+	//- get logged user profile
 	@Get('/profile')
 	getProfile(
 		// @Param('id', ParseIntPipe) id: number,
@@ -49,6 +50,7 @@ export class UsersController {
 		return data;
 	}
 
+	//- get friend profile
 	@Get('/profile/:id')
 	getFriendProfile(
 		@Param('id', ParseIntPipe) id: number,
@@ -64,6 +66,7 @@ export class UsersController {
 		return data;
 	}
 
+	//- update username
 	@Patch('/settings/username/:id')
 	updateUsername(
 		@GetPlayer() player: Player,
@@ -72,6 +75,7 @@ export class UsersController {
 		return this.usersService.updateUsername(player.id, username);
 	}
 
+	//- update avatar
 	@Patch('/settings/avatar/:id')
 	updateAvatar(
 		@GetPlayer() player: Player,
@@ -80,6 +84,7 @@ export class UsersController {
 		return this.usersService.updateAvatar(player.id, avatar);
 	}
 
+	//- enaable two factor authentication
 	@Patch('/settings/2fa/:id')
 	updateTwoFa(
 		// @Param('id', ParseIntPipe) id: number,
@@ -88,6 +93,7 @@ export class UsersController {
 		return this.usersService.updateTwoFa(player.id);
 	}
 
+	// get all users - remove later...
 	@Get()
 	getUsers(@Query(ValidationPipe) FilterDto: GetPlayersFilterDto) {
 		return this.usersService.getUsers(FilterDto);

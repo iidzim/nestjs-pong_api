@@ -58,15 +58,9 @@ let UsersService = class UsersService {
         await updated.save();
         return updated;
     }
-    async StatusPlaying(id) {
+    async updateStatus(id, status) {
         const updated = await this.getUserById(id);
-        updated.status = player_status_enum_1.UserStatus.PLAYING;
-        await updated.save();
-        return updated;
-    }
-    async StatusOffline(id) {
-        const updated = await this.getUserById(id);
-        updated.status = player_status_enum_1.UserStatus.OFFLINE;
+        updated.status = status;
         await updated.save();
         return updated;
     }
@@ -76,6 +70,8 @@ let UsersService = class UsersService {
         const found = await this.userRepository.findOne({ where: { id } });
         if (found) {
             console.log('found !!');
+            found.status = player_status_enum_1.UserStatus.ONLINE;
+            await found.save();
             return found;
         }
         console.log('not found !!');

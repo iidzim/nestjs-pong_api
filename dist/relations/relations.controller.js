@@ -36,6 +36,12 @@ let RelationsController = class RelationsController {
     blockPlayer(recv_id, sender) {
         return this.relationService.blockPlayer(recv_id, sender);
     }
+    unblock(sender) {
+        return this.relationService.unblock(sender.id);
+    }
+    removeFriend(sender) {
+        return this.relationService.unblock(sender.id);
+    }
 };
 __decorate([
     (0, common_1.Get)(),
@@ -69,6 +75,20 @@ __decorate([
     __metadata("design:paramtypes", [Number, player_entity_1.Player]),
     __metadata("design:returntype", Promise)
 ], RelationsController.prototype, "blockPlayer", null);
+__decorate([
+    (0, common_1.Delete)('unblock'),
+    __param(0, (0, get_player_decorator_1.GetPlayer)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [player_entity_1.Player]),
+    __metadata("design:returntype", Promise)
+], RelationsController.prototype, "unblock", null);
+__decorate([
+    (0, common_1.Delete)('unfollow'),
+    __param(0, (0, get_player_decorator_1.GetPlayer)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [player_entity_1.Player]),
+    __metadata("design:returntype", Promise)
+], RelationsController.prototype, "removeFriend", null);
 RelationsController = __decorate([
     (0, common_1.Controller)('link'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),

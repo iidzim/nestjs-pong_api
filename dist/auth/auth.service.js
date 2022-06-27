@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const players_service_1 = require("../players/players.service");
+const player_status_enum_1 = require("../players/player_status.enum");
 require('dotenv').config({ path: `.env` });
 const passport = require('passport');
 const FortyTwoStrategy = require('passport-42').Strategy;
@@ -22,17 +23,23 @@ passport.use(new FortyTwoStrategy({
 }, async function (accessToken, refreshToken, profile, cb) {
     console.log("function > number of arguments passed: ", arguments.length);
     console.log(profile);
-    const user = {
-        id: profile._json.id,
-        login: profile._json.login,
-        accessToken: accessToken,
-    };
-    console.log('user id > ' + user.id);
-    console.log('user login > ' + user.login);
-    console.log('accessToken > ' + accessToken);
-    const player = await this.UsersService.findOrCreate(user.id, user.login);
-    console.log('player > ' + player);
-    cb(null, user);
+    try {
+        const user = {
+            id: profile._json.id,
+            login: profile._json.login,
+            accessToken: accessToken,
+        };
+        console.log('user id > ' + user.id);
+        console.log('user login > ' + user.login);
+        console.log('accessToken > ' + accessToken);
+        const player = await this.UsersService.findOrCreate(user.id, user.login);
+        console.log('player > ' + player);
+        cb(null, user);
+    }
+    catch (err) {
+        console.log('error = ' + err);
+        return cb(null, err);
+    }
 }));
 let AuthService = class AuthService {
     constructor(playerService) {
@@ -40,10 +47,11 @@ let AuthService = class AuthService {
     }
     login() {
         console.log('login');
-        passport.authenticate('42', { successRedirect: `/`, failureRedirect: `/auth/login` });
+        passport.authenticate('42', { successRedirect: `/home`, failureRedirect: `/auth/login` });
     }
-    logout() {
+    logout(id) {
         console.log('logout');
+        this.playerService.updateStatus(id, player_status_enum_1.UserStatus.OFFLINE);
         passport.logout();
     }
 };

@@ -40,6 +40,15 @@ let RelationRepository = class RelationRepository extends typeorm_1.Repository {
             .getMany();
         return relations;
     }
+    async getOneRelation(player_id, relation_status) {
+        const relations = await this.createQueryBuilder('relation')
+            .leftJoinAndSelect('relation.receiver', 'receivers')
+            .andWhere('receiver.id = :id', { id: player_id })
+            .andWhere('sender.id = :id', { id: player_id })
+            .andWhere('status = :relation_status', { relation_status: relation_status })
+            .getOne();
+        return relations;
+    }
     async addFriend(recv_id, sender) {
         const relation = new relation_entity_1.Relation();
         relation.receiver = await this.userService.getUserById(recv_id);

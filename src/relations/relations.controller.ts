@@ -48,9 +48,14 @@ export class RelationsController {
 		return this.relationService.blockPlayer(recv_id, sender);
 	}
 
-	// @Delete('unblock/:id')
-	// unblock(@Param('id', ParseIntPipe) id: number): Promise<void> {
-	// 	return this.relationService.unblock(id);
-	// }
+	@Delete('unblock')
+	unblock(@GetPlayer() sender: Player): Promise<void> {
+		return this.relationService.unblock(sender.id);
+	}
+
+	@Delete('unfollow')
+	removeFriend(@GetPlayer() sender: Player): Promise<void> {
+		return this.relationService.unblock(sender.id);
+	}
 
 }

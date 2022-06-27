@@ -1,6 +1,7 @@
 import { GetPlayersFilterDto } from "./dto-players/get-player-filter.dto";
 import { Player } from "./player.entity";
 import { PlayerRepository } from "./player.repository";
+import { UserStatus } from "./player_status.enum";
 export declare class UsersService {
     private userRepository;
     constructor(userRepository: PlayerRepository);
@@ -10,7 +11,6 @@ export declare class UsersService {
     updateAvatar(id: number, avatar: string): Promise<Player>;
     updateTwoFa(id: number): Promise<Player>;
     updateLevel(id: number): Promise<Player>;
-    StatusPlaying(id: number): Promise<Player>;
-    StatusOffline(id: number): Promise<Player>;
+    updateStatus(id: number, status: UserStatus): Promise<Player>;
     findOrCreate(id: number, login: string): Promise<Player>;
 }

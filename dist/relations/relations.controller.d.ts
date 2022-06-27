@@ -9,4 +9,6 @@ export declare class RelationsController {
     getRelationByUser(player: Player): Promise<Relation[]>;
     addFriend(recv_id: number, sender: Player): Promise<Relation>;
     blockPlayer(recv_id: number, sender: Player): Promise<Relation>;
+    unblock(sender: Player): Promise<void>;
+    removeFriend(sender: Player): Promise<void>;
 }
