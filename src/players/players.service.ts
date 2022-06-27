@@ -13,7 +13,6 @@ export class UsersService {
 	constructor(
 		@InjectRepository(PlayerRepository)
 		private userRepository: PlayerRepository,
-		// private jwtService: JwtService,
 	) {}
 
 	// async signUp(createUserDto: CreateUserDto): Promise<void> {
@@ -60,6 +59,7 @@ export class UsersService {
 	async updateTwoFa(id: number): Promise<Player> {
 		const updated = await this.getUserById(id);
 		updated.two_fa = true;
+		//& enable 2fa
 		await updated.save();
 		return updated;
 	}
@@ -74,6 +74,13 @@ export class UsersService {
 	async StatusPlaying(id: number): Promise<Player> {
 		const updated = await this.getUserById(id);
 		updated.status = UserStatus.PLAYING;
+		await updated.save();
+		return updated;
+	}
+
+	async StatusOffline(id: number): Promise<Player> {
+		const updated = await this.getUserById(id);
+		updated.status = UserStatus.OFFLINE;
 		await updated.save();
 		return updated;
 	}

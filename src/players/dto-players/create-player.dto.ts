@@ -12,15 +12,15 @@ export class CreateUserDto {
 	@MaxLength(100)
 	avatar: string;
 
-	@IsNotEmpty()
-	@IsString()
-	@MinLength(8)
-	@MaxLength(20)
-	@Matches(
-		/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
-		{ message: 'password too weak' },
-	)
-	password: string;
+	// @IsNotEmpty()
+	// @IsString()
+	// @MinLength(8)
+	// @MaxLength(20)
+	// @Matches(
+	// 	/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
+	// 	{ message: 'password too weak' },
+	// )
+	// password: string;
 }
 
 // Passwords will contain at least 1 upper case letter

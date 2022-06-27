@@ -61,7 +61,6 @@ export class UsersController {
 	@Patch('/settings/avatar/:id')
 	updateTwoFa(
 		@Param('id', ParseIntPipe) id: number,
-		// @Body('avatar', ) avatar: string,
 	){
 		return this.usersService.updateTwoFa(id);
 	}

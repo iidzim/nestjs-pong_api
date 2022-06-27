@@ -12,20 +12,11 @@ const players_controller_1 = require("./players.controller");
 const players_service_1 = require("./players.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const player_repository_1 = require("./player.repository");
-const jwt_1 = require("@nestjs/jwt");
-const passport_1 = require("@nestjs/passport");
 let PlayerModule = class PlayerModule {
 };
 PlayerModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
-            jwt_1.JwtModule.register({
-                secret: 'pingpong',
-                signOptions: {
-                    expiresIn: 3600,
-                },
-            }),
             typeorm_1.TypeOrmModule.forFeature([player_repository_1.PlayerRepository]),
         ],
         controllers: [players_controller_1.UsersController],

@@ -18,14 +18,14 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
     login() {
-        return this.authService.callback();
+        return this.authService.login();
     }
     logout() {
         return this.authService.logout();
     }
 };
 __decorate([
-    (0, common_1.Get)('callback'),
+    (0, common_1.Get)('login'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),

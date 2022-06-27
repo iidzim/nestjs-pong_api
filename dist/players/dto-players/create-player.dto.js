@@ -25,13 +25,5 @@ __decorate([
     (0, class_validator_1.MaxLength)(100),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "avatar", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(8),
-    (0, class_validator_1.MaxLength)(20),
-    (0, class_validator_1.Matches)(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, { message: 'password too weak' }),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "password", void 0);
 exports.CreateUserDto = CreateUserDto;
 //# sourceMappingURL=create-player.dto.js.map

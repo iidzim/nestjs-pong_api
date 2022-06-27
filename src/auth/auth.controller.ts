@@ -7,10 +7,10 @@ import { AuthGuard } from '@nestjs/passport';
 export class AuthController {
 	constructor(private readonly authService: AuthService){}
 
-	@Get('callback')
+	@Get('login')
 	@UseGuards(AuthGuard('42'))
 	login(): Promise<any> {
-	    return this.authService.callback();
+	    return this.authService.login();
 	}
 
 	@Get('logout')
@@ -18,17 +18,4 @@ export class AuthController {
 	logout(): any{
 	    return this.authService.logout();
 	}
-
-	// @Get('')
-	// // @Get('auth/callback')
-	// @UseGuards(AuthGuard('42'))
-	// async login(): Promise<any> {
-	// 	console.log('HERE');
-	//     return this.authService.login();
-	// }
-	// @Get('auth/callback')
-	// @UseGuards(AuthGuard('42'))
-	// Auth42Redirect(): any {
-	//     return this.authService.callback();
-	// }
 }

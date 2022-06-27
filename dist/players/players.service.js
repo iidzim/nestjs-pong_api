@@ -64,6 +64,12 @@ let UsersService = class UsersService {
         await updated.save();
         return updated;
     }
+    async StatusOffline(id) {
+        const updated = await this.getUserById(id);
+        updated.status = player_status_enum_1.UserStatus.OFFLINE;
+        await updated.save();
+        return updated;
+    }
     async findOrCreate(id, login) {
         console.log("find or create > number of arguments passed: ", arguments.length);
         console.log(id, login);

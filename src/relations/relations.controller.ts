@@ -22,19 +22,24 @@ export class RelationsController {
 		return this.relationService.getRelationById(id);
 	}
 
-	@Post()
+	@Post('add/:id')
 	@UsePipes(ValidationPipe)
-	addRelation(@Body() createRelationDto: CreateRelationDto): Promise<Relation> {
-		return this.relationService.createRelation(createRelationDto);
+	addFriend(
+		@Body() createRelationDto: CreateRelationDto,
+		@GetPlayer() sender: Player,
+	): Promise<Relation> {
+		return this.relationService.addFriend(createRelationDto, sender);
 	}
-	// @Post()
-	// @UsePipes(ValidationPipe)
-	// addRelation(
-	// 	@Body() createRelationDto: CreateRelationDto,
-	// 	@GetPlayer() player: Player,
-	// ): Promise<Relation> {
-	// 	return this.relationService.createRelation(createRelationDto, player);
-	// }
+
+	@Post('block/:id')
+	@UsePipes(ValidationPipe)
+	blockPlayer(
+		@Body() createRelationDto: CreateRelationDto,
+		@GetPlayer() sender: Player,
+	): Promise<Relation> {
+		return this.relationService.blockPlayer(createRelationDto, sender);
+	}
+
 
 	@Delete('/:id')
 	deleteRelation(@Param('id', ParseIntPipe) id: number): Promise<void> {

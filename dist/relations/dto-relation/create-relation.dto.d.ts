@@ -1,4 +1,4 @@
-import { RelationStatus } from "../relation_status.enum";
+import { Player } from "../../players/player.entity";
 export declare class CreateRelationDto {
-    status: RelationStatus;
+    receiver: Player;
 }

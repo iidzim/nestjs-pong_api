@@ -21,11 +21,22 @@ export class RelationRepository extends Repository<Relation> {
 		return relations;
 	}
 
-	async createRelation(createMacthDto: CreateRelationDto): Promise<Relation> {
-		// const { status } = CreateRelationDto;
+	async addFriend(createMacthDto: CreateRelationDto, sender: Player): Promise<Relation> {
 		const relation = new Relation();
-		// relation.status = status;
-		relation.status = RelationStatus.NONE;
+		// const { receiver } = CreateRelationDto;
+		// relation.receiver = receiver;
+		relation.sender = sender;
+		relation.status = RelationStatus.FRIEND;
+		await relation.save();
+		return relation;
+	}
+
+	async blockPlayer(createMacthDto: CreateRelationDto, sender: Player): Promise<Relation> {
+		const relation = new Relation();
+		// const { receiver } = CreateRelationDto;
+		// relation.receiver = receiver;
+		relation.sender = sender;
+		relation.status = RelationStatus.BLOCKED;
 		await relation.save();
 		return relation;
 	}

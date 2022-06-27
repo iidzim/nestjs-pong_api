@@ -23,9 +23,17 @@ let RelationRepository = class RelationRepository extends typeorm_1.Repository {
         const relations = await query.getMany();
         return relations;
     }
-    async createRelation(createMacthDto) {
+    async addFriend(createMacthDto, sender) {
         const relation = new relation_entity_1.Relation();
-        relation.status = relation_status_enum_1.RelationStatus.NONE;
+        relation.sender = sender;
+        relation.status = relation_status_enum_1.RelationStatus.FRIEND;
+        await relation.save();
+        return relation;
+    }
+    async blockPlayer(createMacthDto, sender) {
+        const relation = new relation_entity_1.Relation();
+        relation.sender = sender;
+        relation.status = relation_status_enum_1.RelationStatus.BLOCKED;
         await relation.save();
         return relation;
     }

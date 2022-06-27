@@ -31,7 +31,7 @@ export class PlayerRepository extends Repository<Player> {
 	}
 
 	async signUp(createUserDto: CreateUserDto): Promise<void> {
-		const { username, avatar, password } = createUserDto;
+		const { username, avatar } = createUserDto;
 		const user = new Player();
 		user.username = username;
 		if (avatar) {
@@ -52,16 +52,9 @@ export class PlayerRepository extends Repository<Player> {
 			if (error.code === '23505') {
 				throw new ConflictException('Username already exists');
 			} else {
-				console.log('HERE!');
 				throw new InternalServerErrorException();
 			}
 		}
-		console.log('HERE !!');
-	}
-
-	async findOrCreate() {
-
-		
 	}
 
 	// async validateUserPassword(createUserDto: CreateUserDto): Promise<string> {
@@ -74,7 +67,7 @@ export class PlayerRepository extends Repository<Player> {
 	// 	}
 	// }
 
-	private async hashPassword(password: string, salt: string): Promise<string> {
-		return bcrypt.hash(password, salt);
-	}
+	// private async hashPassword(password: string, salt: string): Promise<string> {
+	// 	return bcrypt.hash(password, salt);
+	// }
 }	

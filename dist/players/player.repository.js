@@ -9,7 +9,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PlayerRepository = void 0;
 const avatars_1 = require("@dicebear/avatars");
 const style = require("@dicebear/croodles");
-const bcrypt = require("bcrypt");
 const player_entity_1 = require("./player.entity");
 const player_status_enum_1 = require("./player_status.enum");
 const typeorm_1 = require("typeorm");
@@ -34,7 +33,7 @@ let PlayerRepository = class PlayerRepository extends typeorm_1.Repository {
         return users;
     }
     async signUp(createUserDto) {
-        const { username, avatar, password } = createUserDto;
+        const { username, avatar } = createUserDto;
         const user = new player_entity_1.Player();
         user.username = username;
         if (avatar) {
@@ -56,16 +55,9 @@ let PlayerRepository = class PlayerRepository extends typeorm_1.Repository {
                 throw new common_1.ConflictException('Username already exists');
             }
             else {
-                console.log('HERE!');
                 throw new common_1.InternalServerErrorException();
             }
         }
-        console.log('HERE !!');
-    }
-    async findOrCreate() {
-    }
-    async hashPassword(password, salt) {
-        return bcrypt.hash(password, salt);
     }
 };
 PlayerRepository = __decorate([

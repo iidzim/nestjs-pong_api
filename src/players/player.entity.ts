@@ -7,11 +7,10 @@ import { UserStatus } from "./player_status.enum";
 @Unique(['username'])
 export class Player extends BaseEntity {
 
-	// @PrimaryGeneratedColumn()
 	@PrimaryColumn()
 	id: string;
 
-	@Column()//({ length: 50 })
+	@Column()
 	username: string;
 
 	@Column()
@@ -26,32 +25,16 @@ export class Player extends BaseEntity {
 	@Column({ nullable: true, default: false })
 	two_fa: boolean;
 
-	// @OneToMany(type => Game, game => game.winner, { eager: true})
-	// wins: Game[];
-
-	// @OneToMany(type => Game, game => game.loser, { eager: true})
-	// losses: Game[];
-	
 	// @OneToMany(type => Relation, relation => relation.receiver, { eager: true})
 	// receivers: Relation[];
 	
 	// @OneToMany(type => Relation, relation => relation.sender, { eager: true})
 	// senders: Relation[];
 
+	// @OneToMany(type => Game, game => game.winner, { eager: true})
+	// wins: Game[];
 
-
-
-	// @Column()
-	// password: string;
-
-	// @Column()//({ nullable: true })
-	// salt: string;
-
-	// async validatePassword(password: string): Promise<Boolean> {
-	// 	const hash = await bcrypt.hash(password, this.salt);
-	// 	return hash === this.password;
-	// }
+	// @OneToMany(type => Game, game => game.loser, { eager: true})
+	// losses: Game[];
 
 }
-
-//? remove nullable option

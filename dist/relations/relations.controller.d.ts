@@ -1,3 +1,4 @@
+import { Player } from "../players/player.entity";
 import { CreateRelationDto } from "./dto-relation/create-relation.dto";
 import { GetRelationFilterDto } from "./dto-relation/get-relation-filter.dto";
 import { Relation } from "./relation.entity";
@@ -7,6 +8,7 @@ export declare class RelationsController {
     constructor(relationService: RelationsService);
     getRelations(FilterDto: GetRelationFilterDto): Promise<Relation[]>;
     getRelationById(id: number): Promise<Relation>;
-    addRelation(createRelationDto: CreateRelationDto): Promise<Relation>;
+    addFriend(createRelationDto: CreateRelationDto, sender: Player): Promise<Relation>;
+    blockPlayer(createRelationDto: CreateRelationDto, sender: Player): Promise<Relation>;
     deleteRelation(id: number): Promise<void>;
 }
