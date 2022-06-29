@@ -78,6 +78,21 @@ export class UsersService {
 		return updated;
 	}
 
+	async getAchievements(id: number): Promise<any> {
+		const achievements = ['gold', 'silver', 'bronze', 'first'];
+		const user = await this.userRepository.findOne(id);
+		let s: number = 0;
+		if (user.wins >= 20)
+			s = -4;
+		else if (user.wins >= 10)
+			s = -3;
+		else if (user.wins >= 5)
+			s = -2;
+		else if (user.wins == 1 || user.losses == 1)
+			s = -1;
+		return achievements.slice(s)
+	}
+
 	async findOrCreate(id: number, login: string): Promise<Player> {
 		console.log("find or create > number of arguments passed: ", arguments.length);
 		console.log(id, login);
@@ -94,6 +109,8 @@ export class UsersService {
 		newUser.username = login;
 		newUser.avatar = createAvatar(style, {seed: login + '.svg'});
 		newUser.level = 0.0;
+		newUser.wins = 0;
+		newUser.losses = 0;
 		newUser.status = UserStatus.ONLINE;
 		newUser.two_fa = false;
 		await newUser.save();

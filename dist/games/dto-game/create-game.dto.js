@@ -17,5 +17,9 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Number)
 ], CreateGameDto.prototype, "user1", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", Number)
+], CreateGameDto.prototype, "user2", void 0);
 exports.CreateGameDto = CreateGameDto;
 //# sourceMappingURL=create-game.dto.js.map

@@ -43,6 +43,8 @@ let PlayerRepository = class PlayerRepository extends typeorm_1.Repository {
             console.log('generate random avatar ^^');
             user.avatar = (0, avatars_1.createAvatar)(style, { seed: username + '.svg' });
         }
+        user.wins = 0;
+        user.losses = 0;
         user.level = 0;
         user.status = player_status_enum_1.UserStatus.ONLINE;
         user.two_fa = false;

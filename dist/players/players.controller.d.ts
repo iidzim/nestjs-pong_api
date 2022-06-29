@@ -9,10 +9,12 @@ export declare class UsersController {
     getProfile(player: Player): {
         profile: Promise<Player>;
         friends: Promise<import("../relations/relation.entity").Relation[]>;
+        achievements: Promise<any>;
     };
     getFriendProfile(id: number): {
         profile: Promise<Player>;
         friends: Promise<import("../relations/relation.entity").Relation[]>;
+        achievements: Promise<any>;
     };
     updateUsername(player: Player, username: string): Promise<Player>;
     updateAvatar(player: Player, avatar: string): Promise<Player>;

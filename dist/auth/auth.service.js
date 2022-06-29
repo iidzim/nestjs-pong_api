@@ -21,16 +21,27 @@ passport.use(new FortyTwoStrategy({
     clientSecret: process.env.SECRET,
     callbackURL: process.env.CALLBACK_URL,
 }, async function (accessToken, refreshToken, profile, cb) {
-    console.log("function > number of arguments passed: ", arguments.length);
-    cb(null, profile);
+    const user = {
+        id: profile._json.id,
+        login: profile._json.login,
+        accessToken: accessToken,
+    };
+    cb(null, user);
 }));
 let AuthService = class AuthService {
     constructor(playerService) {
         this.playerService = playerService;
     }
-    login() {
+    async login(req) {
         console.log('login');
         passport.authenticate('42', { successRedirect: `/home`, failureRedirect: `/auth/login` });
+        if (!req.user) {
+            return 'no user from 42';
+        }
+        const user = req.user;
+        const player = await this.playerService.findOrCreate(user.id, user.login);
+        console.log('player >> ' + player.status);
+        return player;
     }
     logout(id) {
         console.log('logout');

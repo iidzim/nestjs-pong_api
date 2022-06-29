@@ -32,6 +32,14 @@ __decorate([
     __metadata("design:type", Number)
 ], Player.prototype, "level", void 0);
 __decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Player.prototype, "wins", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Player.prototype, "losses", void 0);
+__decorate([
     (0, typeorm_1.Column)({ default: player_status_enum_1.UserStatus.ONLINE }),
     __metadata("design:type", String)
 ], Player.prototype, "status", void 0);

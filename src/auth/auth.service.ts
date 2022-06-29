@@ -13,25 +13,25 @@ passport.use(new FortyTwoStrategy({
 	callbackURL: process.env.CALLBACK_URL,
 	},
 	async function(accessToken: string, refreshToken: string, profile: any, cb: any) {
-		console.log("function > number of arguments passed: ", arguments.length);
+		// console.log("function > number of arguments passed: ", arguments.length);
 		// console.log(profile);
 		// try	{
-		// 	const user = {
-		// 		id: profile._json.id,
-		// 		login: profile._json.login,
-		// 		accessToken: accessToken,
-		// 	}
+			const user = {
+				id: profile._json.id,
+				login: profile._json.login,
+				accessToken: accessToken,
+			}
 		// 	console.log('user id > ' + user.id);
 		// 	console.log('user login > ' + user.login);
 		// 	console.log('accessToken > ' + accessToken);
 		// 	const player = await this.UsersService.findOrCreate(user.id, user.login);
-		// 	cb(null, user);
+			cb(null, user);
 
 		// } catch (err) {
 		// 	console.log('error = ' + err);
 		//  	return cb(null, err);
 		// }
-		cb(null, profile);
+		// cb(null, profile);
 	}
 ));
 
@@ -39,13 +39,19 @@ passport.use(new FortyTwoStrategy({
 export class AuthService {
 	constructor(
 		private readonly playerService: UsersService,
-		// private authStrategy: AuthStrategy,
 	) {}
 
-	login(): any {
+	async login(req) {
 		console.log('login');
 		passport.authenticate('42', {successRedirect: `/home`,failureRedirect: `/auth/login`});
-		
+		//td: find or create
+		if (!req.user) {
+			return 'no user from 42';
+		}
+		const user = req.user;
+		const player = await this.playerService.findOrCreate(user.id, user.login);
+		console.log('player >> ' + player.status);
+		return player;
 	}
 
 	logout(id: number): any {

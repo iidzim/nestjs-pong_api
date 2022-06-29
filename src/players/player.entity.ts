@@ -19,6 +19,12 @@ export class Player extends BaseEntity {
 	@Column()
 	level: number;
 
+	@Column()
+	wins: number;
+
+	@Column()
+	losses: number;
+
 	@Column({ default: UserStatus.ONLINE})
 	status: UserStatus;
 

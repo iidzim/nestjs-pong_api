@@ -7,7 +7,6 @@ import { PlayerModule } from '../players/players.module';
 import { UsersService } from '../players/players.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-// import { AuthStrategy } from './auth.strategy';
 
 @Module({
     imports: [
@@ -25,7 +24,6 @@ import { AuthService } from './auth.service';
     providers: [
         AuthService,
         UsersService,
-        // AuthStrategy,
     ],
 })
 export class AuthModule {}

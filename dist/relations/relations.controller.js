@@ -17,15 +17,11 @@ const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const get_player_decorator_1 = require("../players/get-player.decorator");
 const player_entity_1 = require("../players/player.entity");
-const get_relation_filter_dto_1 = require("./dto-relation/get-relation-filter.dto");
 const relations_service_1 = require("./relations.service");
 const relation_status_enum_1 = require("./relation_status.enum");
 let RelationsController = class RelationsController {
     constructor(relationService) {
         this.relationService = relationService;
-    }
-    getRelations(FilterDto) {
-        return this.relationService.getRelations(FilterDto);
     }
     getRelationByUser(player) {
         return this.relationService.getRelationByUser(player.id, relation_status_enum_1.RelationStatus.FRIEND);
@@ -40,16 +36,9 @@ let RelationsController = class RelationsController {
         return this.relationService.unblock(sender.id);
     }
     removeFriend(sender) {
-        return this.relationService.unblock(sender.id);
+        return this.relationService.removeFriend(sender.id);
     }
 };
-__decorate([
-    (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)(common_1.ValidationPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [get_relation_filter_dto_1.GetRelationFilterDto]),
-    __metadata("design:returntype", Promise)
-], RelationsController.prototype, "getRelations", null);
 __decorate([
     (0, common_1.Get)('/:user'),
     __param(0, (0, get_player_decorator_1.GetPlayer)()),

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, Patch, Delete, ParseIntPipe, Query, ValidationPipe, UseGuards, Req, Inject, forwardRef } from "@nestjs/common";
+import { Controller, Post, Get, Body, Param, Patch, Delete, ParseIntPipe, Query, ValidationPipe, UseGuards, Req, Inject, forwardRef, Redirect } from "@nestjs/common";
 import { Player } from "./player.entity";
 import { UsersService } from "./players.service";
 import { CreateUserDto } from "./dto-players/create-player.dto";
@@ -10,6 +10,7 @@ import { RelationStatus } from "../relations/relation_status.enum";
 // import { GetPlayer } from "./get-player.decorator";
 
 @Controller()
+@UseGuards(AuthGuard())
 export class UsersController {
 	constructor(
 		// @Inject(forwardRef( () => RelationsService))
@@ -32,19 +33,23 @@ export class UsersController {
 	// getProfile(@Param('id', ParseIntPipe) id: number): Promise<any> {
 	// 	// return this.usersService.getUserById(id);
 	// }
+	@Get()
+	@Redirect('https://api.intra.42.fr/oauth/authorize?client_id=586c1c8fde913cc2d625042e39cd449c79a3c386dce871f6e55caa110796bc56&redirect_uri=http%3A%2F%2F127.0.0.1%3A3000%2Fauth%2Flogin&response_type=code', 301)
+	//& test
 
 	//- get logged user profile
 	@Get('/profile')
 	getProfile(
-		// @Param('id', ParseIntPipe) id: number,
 		@GetPlayer() player: Player,
 	){
 		const playerData = this.usersService.getUserById(player.id);
 		const friends = this.relationService.getRelationByUser(player.id, RelationStatus.FRIEND);
-		// const matchHistory = this.gameService.getMatchByUser(player);
+		const achievements = this.usersService.getAchievements(player.id);
+		// const matchHistory = this.gameService.getMatchByUser(player.id);
 		const data = {
 			"profile": playerData,
 			"friends": friends,
+			"achievements": achievements,
 			// "matchHistory": matchHistory,
 		};
 		return data;
@@ -56,11 +61,13 @@ export class UsersController {
 		@Param('id', ParseIntPipe) id: number,
 	){
 		const playerData = this.usersService.getUserById(id);
-		const friends = this.relationService.getRelationByUser(id, RelationStatus.FRIEND);
-		// const matchHistory = this.gameService.getMatchByUser(player);
+		const friends = this.relationService.getRelationByUser(id, RelationStatus.FRIEND); //+ loop over relations array, get friends id
+		const achievements = this.usersService.getAchievements(id);
+		// const matchHistory = this.gameService.getMatchByUser(id);
 		const data = {
 			"profile": playerData,
 			"friends": friends,
+			"achievements": achievements,
 			// "matchHistory": matchHistory,
 		};
 		return data;
@@ -70,7 +77,7 @@ export class UsersController {
 	@Patch('/settings/username/:id')
 	updateUsername(
 		@GetPlayer() player: Player,
-		@Body('username', ) username: string,
+		@Body('username') username: string,
 	){
 		return this.usersService.updateUsername(player.id, username);
 	}
@@ -79,7 +86,7 @@ export class UsersController {
 	@Patch('/settings/avatar/:id')
 	updateAvatar(
 		@GetPlayer() player: Player,
-		@Body('avatar', ) avatar: string,
+		@Body('avatar') avatar: string,
 	){
 		return this.usersService.updateAvatar(player.id, avatar);
 	}
@@ -94,7 +101,7 @@ export class UsersController {
 	}
 
 	// get all users - remove later...
-	@Get()
+	@Get('/users')
 	getUsers(@Query(ValidationPipe) FilterDto: GetPlayersFilterDto) {
 		return this.usersService.getUsers(FilterDto);
 	}

@@ -12,5 +12,6 @@ export declare class UsersService {
     updateTwoFa(id: number): Promise<Player>;
     updateLevel(id: number): Promise<Player>;
     updateStatus(id: number, status: UserStatus): Promise<Player>;
+    getAchievements(id: number): Promise<any>;
     findOrCreate(id: number, login: string): Promise<Player>;
 }

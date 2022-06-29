@@ -6,6 +6,8 @@ export declare class Player extends BaseEntity {
     username: string;
     avatar: string;
     level: number;
+    wins: number;
+    losses: number;
     status: UserStatus;
     two_fa: boolean;
     receivers: Relation[];

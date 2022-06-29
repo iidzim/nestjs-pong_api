@@ -13,15 +13,18 @@ import { RelationStatus } from "./relation_status.enum";
 export class RelationsController {
 	constructor(private readonly relationService: RelationsService) {}
 
-	@Get()
-	getRelations(@Query(ValidationPipe) FilterDto: GetRelationFilterDto): Promise<Relation[]> {
-		return this.relationService.getRelations(FilterDto);
-	}
+	// @Get()
+	// getRelations(@Query(ValidationPipe) FilterDto: GetRelationFilterDto): Promise<Relation[]> {
+	// 	return this.relationService.getRelations(FilterDto);
+	// }
 
 	// @Get('/:id')
 	// getRelationById(@Param('id', ParseIntPipe) id: number): Promise<Relation> {
 	// 	return this.relationService.getRelationById(id);
 	// }
+
+	// @Get()
+
 
 	@Get('/:user')
 	getRelationByUser(@GetPlayer() player: Player): Promise<Relation[]> {
@@ -55,7 +58,7 @@ export class RelationsController {
 
 	@Delete('unfollow')
 	removeFriend(@GetPlayer() sender: Player): Promise<void> {
-		return this.relationService.unblock(sender.id);
+		return this.relationService.removeFriend(sender.id);
 	}
 
 }

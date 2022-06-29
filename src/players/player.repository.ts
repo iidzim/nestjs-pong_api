@@ -42,6 +42,8 @@ export class PlayerRepository extends Repository<Player> {
 		}
 		// user.salt = await bcrypt.genSalt();
 		// user.password = await this.hashPassword(password, user.salt);
+		user.wins = 0;
+		user.losses = 0;
 		user.level = 0;
 		user.status = UserStatus.ONLINE;
 		user.two_fa = false;
