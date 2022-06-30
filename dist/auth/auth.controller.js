@@ -16,14 +16,27 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const passport_1 = require("@nestjs/passport");
+const get_player_decorator_1 = require("../players/get-player.decorator");
+const player_entity_1 = require("../players/player.entity");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
+    }
+    logout(player) {
+        return this.authService.logout(player.id);
     }
     async FortyTwoAuth(req) {
         return this.authService.login(req);
     }
 };
+__decorate([
+    (0, common_1.Get)('/logout'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42')),
+    __param(0, (0, get_player_decorator_1.GetPlayer)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [player_entity_1.Player]),
+    __metadata("design:returntype", Object)
+], AuthController.prototype, "logout", null);
 __decorate([
     (0, common_1.Get)('login'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42')),

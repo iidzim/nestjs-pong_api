@@ -17,8 +17,8 @@ import { AuthService } from './auth.service';
                 expiresIn: 3600,
             },
         }),
-        PlayerModule,
         TypeOrmModule.forFeature([PlayerRepository]),
+        PlayerModule,
     ],
     controllers: [AuthController],
     providers: [

@@ -15,13 +15,13 @@ export class AuthController {
 	//     return this.authService.login();
 	// }
 
-	// @Get('/logout')
-	// @UseGuards(AuthGuard('42'))
-	// logout(
-	// 	@GetPlayer() player: Player,
-	// ): any{
-	//     return this.authService.logout(player.id);
-	// }
+	@Get('/logout')
+	@UseGuards(AuthGuard('42'))
+	logout(
+		@GetPlayer() player: Player,
+	): any{
+	    return this.authService.logout(player.id);
+	}
 
 	@Get('login')
 	@UseGuards(AuthGuard('42'))

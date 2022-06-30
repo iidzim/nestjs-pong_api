@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from "./jwt-payload.interface";
+import { Player } from '../players/player.entity';
 import { UsersService } from '../players/players.service';
 import { UserStatus } from '../players/player_status.enum';
 require ('dotenv').config({ path: `.env` });
@@ -20,10 +23,13 @@ passport.use(new FortyTwoStrategy({
 				id: profile._json.id,
 				login: profile._json.login,
 				accessToken: accessToken,
+				refreshToken: refreshToken,
+				
 			}
-		// 	console.log('user id > ' + user.id);
-		// 	console.log('user login > ' + user.login);
-		// 	console.log('accessToken > ' + accessToken);
+			console.log('user id > ' + user.id);
+			console.log('user login > ' + user.login);
+			console.log('accessToken > ' + accessToken);
+			console.log('refreshToken > ' + refreshToken);
 		// 	const player = await this.UsersService.findOrCreate(user.id, user.login);
 			cb(null, user);
 
@@ -39,6 +45,7 @@ passport.use(new FortyTwoStrategy({
 export class AuthService {
 	constructor(
 		private readonly playerService: UsersService,
+		private jwtService: JwtService,
 	) {}
 
 	async login(req) {
@@ -50,8 +57,13 @@ export class AuthService {
 		}
 		const user = req.user;
 		const player = await this.playerService.findOrCreate(user.id, user.login);
-		console.log('player >> ' + player.status);
-		return player;
+		console.log('********');
+		for (const [i, j] of Object.entries(player)) {
+			console.log(i, j);
+		}
+		// const payload: JwtPayload = { id, username };
+
+		// return player;
 	}
 
 	logout(id: number): any {

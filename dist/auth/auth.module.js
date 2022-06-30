@@ -28,8 +28,8 @@ AuthModule = __decorate([
                     expiresIn: 3600,
                 },
             }),
-            players_module_1.PlayerModule,
             typeorm_1.TypeOrmModule.forFeature([player_repository_1.PlayerRepository]),
+            players_module_1.PlayerModule,
         ],
         controllers: [auth_controller_1.AuthController],
         providers: [

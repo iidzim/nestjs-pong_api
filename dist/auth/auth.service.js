@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_1 = require("@nestjs/jwt");
 const players_service_1 = require("../players/players.service");
 const player_status_enum_1 = require("../players/player_status.enum");
 require('dotenv').config({ path: `.env` });
@@ -25,12 +26,18 @@ passport.use(new FortyTwoStrategy({
         id: profile._json.id,
         login: profile._json.login,
         accessToken: accessToken,
+        refreshToken: refreshToken,
     };
+    console.log('user id > ' + user.id);
+    console.log('user login > ' + user.login);
+    console.log('accessToken > ' + accessToken);
+    console.log('refreshToken > ' + refreshToken);
     cb(null, user);
 }));
 let AuthService = class AuthService {
-    constructor(playerService) {
+    constructor(playerService, jwtService) {
         this.playerService = playerService;
+        this.jwtService = jwtService;
     }
     async login(req) {
         console.log('login');
@@ -40,8 +47,10 @@ let AuthService = class AuthService {
         }
         const user = req.user;
         const player = await this.playerService.findOrCreate(user.id, user.login);
-        console.log('player >> ' + player.status);
-        return player;
+        console.log('********');
+        for (const [i, j] of Object.entries(player)) {
+            console.log(i, j);
+        }
     }
     logout(id) {
         console.log('logout');
@@ -51,7 +60,8 @@ let AuthService = class AuthService {
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [players_service_1.UsersService])
+    __metadata("design:paramtypes", [players_service_1.UsersService,
+        jwt_1.JwtService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map
