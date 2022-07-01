@@ -3,6 +3,7 @@ import { Player } from '../players/player.entity';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
-    logout(player: Player): any;
-    FortyTwoAuth(req: any): Promise<string>;
+    FortyTwoAuth(req: Request, res: Response): Promise<any>;
+    FortyTwoAuthRedirect(req: Request, res: Response): Promise<void>;
+    logout(player: Player, req: Request, res: Response): any;
 }

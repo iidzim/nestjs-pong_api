@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
@@ -28,10 +31,6 @@ passport.use(new FortyTwoStrategy({
         accessToken: accessToken,
         refreshToken: refreshToken,
     };
-    console.log('user id > ' + user.id);
-    console.log('user login > ' + user.login);
-    console.log('accessToken > ' + accessToken);
-    console.log('refreshToken > ' + refreshToken);
     cb(null, user);
 }));
 let AuthService = class AuthService {
@@ -39,25 +38,37 @@ let AuthService = class AuthService {
         this.playerService = playerService;
         this.jwtService = jwtService;
     }
-    async login(req) {
+    async login(req, res) {
         console.log('login');
-        passport.authenticate('42', { successRedirect: `/home`, failureRedirect: `/auth/login` });
+        passport.authenticate('42');
         if (!req.user) {
             return 'no user from 42';
         }
         const user = req.user;
         const player = await this.playerService.findOrCreate(user.id, user.login);
-        console.log('********');
-        for (const [i, j] of Object.entries(player)) {
-            console.log(i, j);
-        }
+        res.cookie('connect.sid', [user.accessToken, user.refreshToken]);
+        return res.redirect('/home/');
     }
-    logout(id) {
+    callback(req, res) {
+        passport.authenticate('42', { successRedirect: `/home`, failureRedirect: `/auth/login` }),
+            function (req, res) {
+                res.redirect('/home');
+            };
+    }
+    async logout(id, req, res) {
         console.log('logout');
-        this.playerService.updateStatus(id, player_status_enum_1.UserStatus.OFFLINE);
-        passport.logout();
+        await this.playerService.updateStatus(id, player_status_enum_1.UserStatus.OFFLINE);
+        req.logout();
+        return res.redirect('/auth/login');
     }
 };
+__decorate([
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Request, Response]),
+    __metadata("design:returntype", void 0)
+], AuthService.prototype, "callback", null);
 AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [players_service_1.UsersService,

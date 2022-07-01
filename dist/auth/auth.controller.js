@@ -22,29 +22,46 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    logout(player) {
-        return this.authService.logout(player.id);
+    async FortyTwoAuth(req, res) {
+        console.log("HERE");
+        return this.authService.login(req, res);
     }
-    async FortyTwoAuth(req) {
-        return this.authService.login(req);
+    async FortyTwoAuthRedirect(req, res) {
+        return this.authService.callback(req, res);
+    }
+    logout(player, req, res) {
+        return this.authService.logout(player.id, req, res);
     }
 };
+__decorate([
+    (0, common_1.Get)('/login'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42')),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Request, Response]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "FortyTwoAuth", null);
+__decorate([
+    (0, common_1.Get)('/callback'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42')),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Request, Response]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "FortyTwoAuthRedirect", null);
 __decorate([
     (0, common_1.Get)('/logout'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42')),
     __param(0, (0, get_player_decorator_1.GetPlayer)()),
+    __param(1, (0, common_1.Req)()),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [player_entity_1.Player]),
+    __metadata("design:paramtypes", [player_entity_1.Player,
+        Request, Response]),
     __metadata("design:returntype", Object)
 ], AuthController.prototype, "logout", null);
-__decorate([
-    (0, common_1.Get)('login'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42')),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "FortyTwoAuth", null);
 AuthController = __decorate([
     (0, common_1.Controller)('/auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
