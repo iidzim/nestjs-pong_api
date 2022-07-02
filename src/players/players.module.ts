@@ -7,6 +7,7 @@ import { RelationsService } from '../relations/relations.service';
 import { RelationModule } from '../relations/relations.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
     imports: [

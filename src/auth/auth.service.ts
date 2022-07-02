@@ -4,7 +4,9 @@ import { JwtPayload } from "./jwt-payload.interface";
 import { Player } from '../players/player.entity';
 import { UsersService } from '../players/players.service';
 import { UserStatus } from '../players/player_status.enum';
-require ('dotenv').config({ path: `.env` });
+// require ('dotenv').config({ path: `.env` });
+import * as dotenv from "dotenv";
+dotenv.config({ path: `.env` })
 
 const passport = require('passport');
 const FortyTwoStrategy = require('passport-42').Strategy;
@@ -16,14 +18,12 @@ passport.use(new FortyTwoStrategy({
 	callbackURL: process.env.CALLBACK_URL,
 	},
 	async function(accessToken: string, refreshToken: string, profile: any, cb: any) {
-		// console.log("function > number of arguments passed: ", arguments.length);
 		// console.log(profile);
 		const user = {
 			id: profile._json.id,
 			login: profile._json.login,
 			accessToken: accessToken,
 			refreshToken: refreshToken,
-			
 		}
 		// console.log('user id > ' + user.id);
 		// console.log('user login > ' + user.login);
@@ -48,6 +48,7 @@ export class AuthService {
 		}
 		const user = req.user;
 		const player = await this.playerService.findOrCreate(user.id, user.login);
+		console.log(player);
 		// for (const [i, j] of Object.entries(player)) {
 		// 	console.log(i, j);
 		// }

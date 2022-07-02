@@ -20,7 +20,6 @@ const get_player_filter_dto_1 = require("./dto-players/get-player-filter.dto");
 const relations_service_1 = require("../relations/relations.service");
 const get_player_decorator_1 = require("./get-player.decorator");
 const passport_1 = require("@nestjs/passport");
-const relation_status_enum_1 = require("../relations/relation_status.enum");
 let UsersController = class UsersController {
     constructor(usersService, relationService) {
         this.usersService = usersService;
@@ -28,22 +27,18 @@ let UsersController = class UsersController {
     }
     getProfile(player) {
         const playerData = this.usersService.getUserById(player.id);
-        const friends = this.relationService.getRelationByUser(player.id, relation_status_enum_1.RelationStatus.FRIEND);
         const achievements = this.usersService.getAchievements(player.id);
         const data = {
             "profile": playerData,
-            "friends": friends,
             "achievements": achievements,
         };
         return data;
     }
     getFriendProfile(id) {
         const playerData = this.usersService.getUserById(id);
-        const friends = this.relationService.getRelationByUser(id, relation_status_enum_1.RelationStatus.FRIEND);
         const achievements = this.usersService.getAchievements(id);
         const data = {
             "profile": playerData,
-            "friends": friends,
             "achievements": achievements,
         };
         return data;
@@ -63,7 +58,7 @@ let UsersController = class UsersController {
 };
 __decorate([
     (0, common_1.Get)(),
-    (0, common_1.Redirect)('https://api.intra.42.fr/oauth/authorize?client_id=586c1c8fde913cc2d625042e39cd449c79a3c386dce871f6e55caa110796bc56&redirect_uri=http%3A%2F%2F127.0.0.1%3A3000%2Fauth%2Flogin&response_type=code', 301),
+    (0, common_1.Redirect)('https://api.intra.42.fr/oauth/authorize?client_id=586c1c8fde913cc2d625042e39cd449c79a3c386dce871f6e55caa110796bc56&redirect_uri=http%3A%2F%2F127.0.0.1%3A3001%2Fauth%2Flogin&response_type=code', 301),
     (0, common_1.Get)('/profile'),
     __param(0, (0, get_player_decorator_1.GetPlayer)()),
     __metadata("design:type", Function),

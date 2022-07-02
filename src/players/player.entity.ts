@@ -2,6 +2,7 @@ import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedC
 import { UserStatus } from "./player_status.enum";
 // import { Game } from "../games/game.entity";
 import { Relation } from "../relations/relation.entity";
+import { Exclude } from "class-transformer";
 
 @Entity('player')
 @Unique(['username'])
@@ -36,6 +37,9 @@ export class Player extends BaseEntity {
 	
 	@OneToMany(type => Relation, relation => relation.sender, { eager: true})
 	senders: Relation[];
+
+	// @Exclude()
+	// refreshToken: string;
 
 	// @OneToMany(type => Game, game => game.winner, { eager: true})
 	// wins: Game[];

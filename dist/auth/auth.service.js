@@ -17,7 +17,8 @@ const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const players_service_1 = require("../players/players.service");
 const player_status_enum_1 = require("../players/player_status.enum");
-require('dotenv').config({ path: `.env` });
+const dotenv = require("dotenv");
+dotenv.config({ path: `.env` });
 const passport = require('passport');
 const FortyTwoStrategy = require('passport-42').Strategy;
 passport.use(new FortyTwoStrategy({
@@ -46,6 +47,7 @@ let AuthService = class AuthService {
         }
         const user = req.user;
         const player = await this.playerService.findOrCreate(user.id, user.login);
+        console.log(player);
         res.cookie('connect.sid', [user.accessToken, user.refreshToken]);
         return res.redirect('/home/');
     }

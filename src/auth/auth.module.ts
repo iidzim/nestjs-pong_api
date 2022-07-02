@@ -14,7 +14,7 @@ import { AuthService } from './auth.service';
         JwtModule.register({
             secret: 'pingpong',
             signOptions: {
-                expiresIn: 3600,
+                expiresIn: '1d',
             },
         }),
         TypeOrmModule.forFeature([PlayerRepository]),

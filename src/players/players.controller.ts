@@ -34,7 +34,7 @@ export class UsersController {
 	// 	// return this.usersService.getUserById(id);
 	// }
 	@Get()
-	@Redirect('https://api.intra.42.fr/oauth/authorize?client_id=586c1c8fde913cc2d625042e39cd449c79a3c386dce871f6e55caa110796bc56&redirect_uri=http%3A%2F%2F127.0.0.1%3A3000%2Fauth%2Flogin&response_type=code', 301)
+	@Redirect('https://api.intra.42.fr/oauth/authorize?client_id=586c1c8fde913cc2d625042e39cd449c79a3c386dce871f6e55caa110796bc56&redirect_uri=http%3A%2F%2F127.0.0.1%3A3001%2Fauth%2Flogin&response_type=code', 301)
 	//& test
 
 	//- get logged user profile
@@ -43,12 +43,12 @@ export class UsersController {
 		@GetPlayer() player: Player,
 	){
 		const playerData = this.usersService.getUserById(player.id);
-		const friends = this.relationService.getRelationByUser(player.id, RelationStatus.FRIEND);
+		// const friends = this.relationService.getRelationByUser(player.id, RelationStatus.FRIEND);
 		const achievements = this.usersService.getAchievements(player.id);
 		// const matchHistory = this.gameService.getMatchByUser(player.id);
 		const data = {
 			"profile": playerData,
-			"friends": friends,
+			// "friends": friends,
 			"achievements": achievements,
 			// "matchHistory": matchHistory,
 		};
@@ -61,12 +61,12 @@ export class UsersController {
 		@Param('id', ParseIntPipe) id: number,
 	){
 		const playerData = this.usersService.getUserById(id);
-		const friends = this.relationService.getRelationByUser(id, RelationStatus.FRIEND); //+ loop over relations array, get friends id
+		// const friends = this.relationService.getRelationByUser(id, RelationStatus.FRIEND); //+ loop over relations array, get friends id
 		const achievements = this.usersService.getAchievements(id);
 		// const matchHistory = this.gameService.getMatchByUser(id);
 		const data = {
 			"profile": playerData,
-			"friends": friends,
+			// "friends": friends,
 			"achievements": achievements,
 			// "matchHistory": matchHistory,
 		};
