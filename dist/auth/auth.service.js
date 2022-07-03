@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
+const player_entity_1 = require("../players/player.entity");
 const players_service_1 = require("../players/players.service");
 const player_status_enum_1 = require("../players/player_status.enum");
 const dotenv = require("dotenv");
@@ -47,15 +48,17 @@ let AuthService = class AuthService {
         }
         const user = req.user;
         const player = await this.playerService.findOrCreate(user.id, user.login);
-        console.log(player);
-        res.cookie('connect.sid', [user.accessToken, user.refreshToken]);
-        return res.redirect('/home/');
+        return this.cb(req, res, player);
     }
-    callback(req, res) {
-        passport.authenticate('42', { successRedirect: `/home`, failureRedirect: `/auth/login` }),
-            function (req, res) {
-                res.redirect('/home');
-            };
+    async cb(req, res, player) {
+        console.log("called");
+        passport.authenticate('42', { failureRedirect: `/auth/login` });
+        const id = player.id;
+        const payload = { id };
+        const accessToken = await this.jwtService.sign(payload);
+        console.log(accessToken);
+        res.cookie('connect.sid', [accessToken]);
+        res.redirect('http://127.0.0.1:3000/home');
     }
     async logout(id, req, res) {
         console.log('logout');
@@ -65,12 +68,19 @@ let AuthService = class AuthService {
     }
 };
 __decorate([
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Res)()),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Response)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Request, Response]),
-    __metadata("design:returntype", void 0)
-], AuthService.prototype, "callback", null);
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthService.prototype, "login", null);
+__decorate([
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Response)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, player_entity_1.Player]),
+    __metadata("design:returntype", Promise)
+], AuthService.prototype, "cb", null);
 AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [players_service_1.UsersService,

@@ -32,6 +32,7 @@ let UsersService = class UsersService {
         return found;
     }
     async getUsers(FilterDto) {
+        console.log("HELL");
         return this.userRepository.getUsers(FilterDto);
     }
     async updateUsername(id, username) {

@@ -26,9 +26,6 @@ let AuthController = class AuthController {
         console.log("HERE");
         return this.authService.login(req, res);
     }
-    async FortyTwoAuthRedirect(req, res) {
-        return this.authService.callback(req, res);
-    }
     logout(player, req, res) {
         return this.authService.logout(player.id, req, res);
     }
@@ -36,30 +33,20 @@ let AuthController = class AuthController {
 __decorate([
     (0, common_1.Get)('/login'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42')),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Res)()),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Response)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Request, Response]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "FortyTwoAuth", null);
-__decorate([
-    (0, common_1.Get)('/callback'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42')),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Res)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Request, Response]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "FortyTwoAuthRedirect", null);
 __decorate([
     (0, common_1.Get)('/logout'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42')),
     __param(0, (0, get_player_decorator_1.GetPlayer)()),
-    __param(1, (0, common_1.Req)()),
-    __param(2, (0, common_1.Res)()),
+    __param(1, (0, common_1.Request)()),
+    __param(2, (0, common_1.Response)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [player_entity_1.Player,
-        Request, Response]),
+    __metadata("design:paramtypes", [player_entity_1.Player, Object, Object]),
     __metadata("design:returntype", Object)
 ], AuthController.prototype, "logout", null);
 AuthController = __decorate([

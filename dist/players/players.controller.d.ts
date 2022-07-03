@@ -6,7 +6,8 @@ export declare class UsersController {
     private readonly usersService;
     private readonly relationService;
     constructor(usersService: UsersService, relationService: RelationsService);
-    getProfile(player: Player): {
+    getCookies(req: Request): void;
+    getProfile(req: Request, player: Player): {
         profile: Promise<Player>;
         achievements: Promise<any>;
     };

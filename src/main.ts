@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-// import * as cookieParser from 'cookie-parser';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(cookieParser());
+  app.enableCors({origin: ["http://10.12.2.2:3000/", "https://api.intra.42.fr/"], credentials: true});
   await app.listen(3001);
-  // app.use(cookieParser()); //? create cookie for authentication
 }
 bootstrap();

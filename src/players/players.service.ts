@@ -39,6 +39,7 @@ export class UsersService {
 	}
 
 	async getUsers(FilterDto: GetPlayersFilterDto):Promise<Player[]> {
+		console.log("HELL");
 		return this.userRepository.getUsers(FilterDto);
 	}
 

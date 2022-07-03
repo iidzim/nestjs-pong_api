@@ -19,13 +19,15 @@ const players_service_1 = require("./players.service");
 const get_player_filter_dto_1 = require("./dto-players/get-player-filter.dto");
 const relations_service_1 = require("../relations/relations.service");
 const get_player_decorator_1 = require("./get-player.decorator");
-const passport_1 = require("@nestjs/passport");
 let UsersController = class UsersController {
     constructor(usersService, relationService) {
         this.usersService = usersService;
         this.relationService = relationService;
     }
-    getProfile(player) {
+    getCookies(req) {
+        console.log(req.cookies);
+    }
+    getProfile(req, player) {
         const playerData = this.usersService.getUserById(player.id);
         const achievements = this.usersService.getAchievements(player.id);
         const data = {
@@ -53,16 +55,23 @@ let UsersController = class UsersController {
         return this.usersService.updateTwoFa(player.id);
     }
     getUsers(FilterDto) {
+        console.log("start ");
         return this.usersService.getUsers(FilterDto);
     }
 };
 __decorate([
-    (0, common_1.Get)(),
-    (0, common_1.Redirect)('https://api.intra.42.fr/oauth/authorize?client_id=586c1c8fde913cc2d625042e39cd449c79a3c386dce871f6e55caa110796bc56&redirect_uri=http%3A%2F%2F127.0.0.1%3A3001%2Fauth%2Flogin&response_type=code', 301),
-    (0, common_1.Get)('/profile'),
-    __param(0, (0, get_player_decorator_1.GetPlayer)()),
+    (0, common_1.Get)('cookies'),
+    __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [player_entity_1.Player]),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "getCookies", null);
+__decorate([
+    (0, common_1.Get)('/profile'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, get_player_decorator_1.GetPlayer)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, player_entity_1.Player]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "getProfile", null);
 __decorate([
@@ -104,7 +113,6 @@ __decorate([
 ], UsersController.prototype, "getUsers", null);
 UsersController = __decorate([
     (0, common_1.Controller)(),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     __metadata("design:paramtypes", [players_service_1.UsersService,
         relations_service_1.RelationsService])
 ], UsersController);

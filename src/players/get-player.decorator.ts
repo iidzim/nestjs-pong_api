@@ -1,7 +1,7 @@
-import { createParamDecorator } from "@nestjs/common";
+import { createParamDecorator, Req } from "@nestjs/common";
 import { Player } from "./player.entity";
+import { Request } from "express";
 
-export const GetPlayer = createParamDecorator((data, req): Player => {
-	console.log(req);
-    return req.user;
+export const GetPlayer = createParamDecorator((data, Req): any => {
+	console.log(Req);
 });

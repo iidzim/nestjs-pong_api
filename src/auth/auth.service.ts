@@ -1,11 +1,11 @@
-import { Injectable, Req, Res } from '@nestjs/common';
+import { Injectable, Request, Response } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from "./jwt-payload.interface";
+// import { JwtPayload } from "./jwt-payload.interface";
 import { Player } from '../players/player.entity';
 import { UsersService } from '../players/players.service';
 import { UserStatus } from '../players/player_status.enum';
-// require ('dotenv').config({ path: `.env` });
 import * as dotenv from "dotenv";
+import { JwtPayload } from './jwt-payload.interface';
 dotenv.config({ path: `.env` })
 
 const passport = require('passport');
@@ -25,10 +25,6 @@ passport.use(new FortyTwoStrategy({
 			accessToken: accessToken,
 			refreshToken: refreshToken,
 		}
-		// console.log('user id > ' + user.id);
-		// console.log('user login > ' + user.login);
-		// console.log('accessToken > ' + accessToken);
-		// console.log('refreshToken > ' + refreshToken);
 		cb(null, user);
 	}
 ));
@@ -40,7 +36,7 @@ export class AuthService {
 		private jwtService: JwtService,
 	) {}
 
-	async login(req, res) {
+	async login(@Request() req, @Response() res) {
 		console.log('login');
 		passport.authenticate('42');
 		if (!req.user) {
@@ -48,27 +44,23 @@ export class AuthService {
 		}
 		const user = req.user;
 		const player = await this.playerService.findOrCreate(user.id, user.login);
-		console.log(player);
+		// console.log(player);
 		// for (const [i, j] of Object.entries(player)) {
 		// 	console.log(i, j);
 		// }
-		// req.res.setHeader('Set-Cookie', [user.accessToken, user.refreshToken]);
-		res.cookie('connect.sid',[user.accessToken, user.refreshToken]);
-		// return player;
-		// return this.callback(req, res);
-		return res.redirect('/home/');
-
-		// const payload: JwtPayload = {user.id, user.login}
-		// const accessToken = await this.jwtService.sign(payload);
-		// return { accessToken };
+		return this.cb(req, res, player);
 	}
 
-	callback(@Req() req: Request, @Res() res: Response) {
-		passport.authenticate('42', {successRedirect: `/home`,failureRedirect: `/auth/login`}),
-  		function(req, res) {
-    		// Successful authentication, redirect home.
-    		res.redirect('/home');
-  		}
+	async cb(@Request() req, @Response() res, player: Player) {
+		console.log("called")
+		passport.authenticate('42', {failureRedirect: `/auth/login`})
+		const id = player.id;
+		const payload: JwtPayload = { id };
+		const accessToken = await this.jwtService.sign(payload);
+		console.log(accessToken);
+		res.cookie('connect.sid',[accessToken]);
+		res.redirect('http://127.0.0.1:3000/home');
+		// return player;
 	}
 
 	async logout(id: number, req, res): Promise<any> {
