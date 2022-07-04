@@ -15,8 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
-const avatars_1 = require("@dicebear/avatars");
-const style = require("@dicebear/croodles");
 const typeorm_1 = require("@nestjs/typeorm");
 const player_entity_1 = require("./player.entity");
 const player_repository_1 = require("./player.repository");
@@ -43,6 +41,7 @@ let UsersService = class UsersService {
         return updated;
     }
     async updateAvatar(id, avatar) {
+        console.log(avatar);
         const updated = await this.getUserById(id);
         updated.avatar = avatar;
         await updated.save();
@@ -96,7 +95,7 @@ let UsersService = class UsersService {
         const newUser = new player_entity_1.Player();
         newUser.id = id;
         newUser.username = login;
-        newUser.avatar = (0, avatars_1.createAvatar)(style, { seed: login + '.svg' });
+        newUser.avatar = "https://avatars.dicebear.com/api/croodles/" + login + ".svg";
         newUser.level = 0.0;
         newUser.wins = 0;
         newUser.losses = 0;

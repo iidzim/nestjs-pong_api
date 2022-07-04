@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, Patch, ParseIntPipe, Query, ValidationPipe, UseGuards, Req, Res } from "@nestjs/common";
+import { Controller, Post, Get, Body, Param, Patch, ParseIntPipe, Query, ValidationPipe, UseGuards, Req, Res, UseInterceptors, UploadedFile } from "@nestjs/common";
 import { Player } from "./player.entity";
 import { UsersService } from "./players.service";
 import { GetPlayersFilterDto } from "./dto-players/get-player-filter.dto";
@@ -9,11 +9,13 @@ import { Request } from "express";
 import { JwtModule, JwtService } from "@nestjs/jwt";
 import { ConnectableObservable } from "rxjs";
 import { JwtStrategy } from "../auth/jwt.strategy";
+import { FileInterceptor } from "@nestjs/platform-express";
+// import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 // import { request, Request } from "express";
 // import { GetPlayer } from "./get-player.decorator";
 
 @Controller()
-// @UseGuards(AuthGuard('jwt'))
+// @UseGuards(JwtAuthGuard)
 // @UseGuards(AuthGuard())
 export class UsersController {
 	constructor(
@@ -48,9 +50,8 @@ export class UsersController {
 	async getProfile(
 		@Req() req: Request,
 	) {
-		// console.log(req.cookies.connect_sid);
+		console.log(req.cookies);
 		// const userId = await this.jwtService.verify(req.cookies.connect_sid);
-
 
 		const user = await this.usersService.verifyToken(req.cookies.connect_sid);
 		const playerData = await this.usersService.getUserById(user.id);
@@ -85,7 +86,7 @@ export class UsersController {
 	}
 
 	//- update username
-	@Patch('/settings/username/:id')
+	@Patch('/settings/username')
 	async updateUsername(
 		@Req() req: Request,
 		@Body('username') username: string,
@@ -95,17 +96,20 @@ export class UsersController {
 	}
 
 	//- update avatar
-	@Patch('/settings/avatar/:id')
+	@Patch('/settings/avatar')
 	async updateAvatar(
 		@Req() req: Request,
 		@Body('avatar') avatar: string,
+		// @UploadedFile() file,
 	){
+		// console.log(file);
+		console.log(avatar + '......');
 		const user = await this.usersService.verifyToken(req.cookies.connect_sid);
 		return this.usersService.updateAvatar(user.id, avatar);
 	}
 
 	//- enaable two factor authentication
-	@Patch('/settings/2fa/:id')
+	@Patch('/settings/2fa')
 	async updateTwoFa(
 		@Req() req: Request,
 	){

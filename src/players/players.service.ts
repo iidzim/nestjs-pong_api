@@ -1,7 +1,5 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { createAvatar } from '@dicebear/avatars';
-import * as style from '@dicebear/croodles';
 import { InjectRepository } from "@nestjs/typeorm";
 import { GetPlayersFilterDto } from "./dto-players/get-player-filter.dto";
 import { Player } from "./player.entity";
@@ -51,6 +49,8 @@ export class UsersService {
 	}
 
 	async updateAvatar(id: number, avatar: string): Promise<Player> {
+
+		console.log(avatar);
 		const updated = await this.getUserById(id);
 		updated.avatar = avatar;
 		await updated.save();
@@ -110,7 +110,7 @@ export class UsersService {
 		const newUser = new Player();
 		newUser.id = id;
 		newUser.username = login;
-		newUser.avatar = createAvatar(style, {seed: login + '.svg'});
+		newUser.avatar = "https://avatars.dicebear.com/api/croodles/" + login + ".svg";
 		newUser.level = 0.0;
 		newUser.wins = 0;
 		newUser.losses = 0;

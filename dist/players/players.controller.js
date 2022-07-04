@@ -25,6 +25,7 @@ let UsersController = class UsersController {
         this.jwtService = jwtService;
     }
     async getProfile(req) {
+        console.log(req.cookies);
         const user = await this.usersService.verifyToken(req.cookies.connect_sid);
         const playerData = await this.usersService.getUserById(user.id);
         const achievements = await this.usersService.getAchievements(user.id);
@@ -48,6 +49,7 @@ let UsersController = class UsersController {
         return this.usersService.updateUsername(user.id, username);
     }
     async updateAvatar(req, avatar) {
+        console.log(avatar + '......');
         const user = await this.usersService.verifyToken(req.cookies.connect_sid);
         return this.usersService.updateAvatar(user.id, avatar);
     }
@@ -74,7 +76,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getFriendProfile", null);
 __decorate([
-    (0, common_1.Patch)('/settings/username/:id'),
+    (0, common_1.Patch)('/settings/username'),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)('username')),
     __metadata("design:type", Function),
@@ -82,7 +84,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "updateUsername", null);
 __decorate([
-    (0, common_1.Patch)('/settings/avatar/:id'),
+    (0, common_1.Patch)('/settings/avatar'),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)('avatar')),
     __metadata("design:type", Function),
@@ -90,7 +92,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "updateAvatar", null);
 __decorate([
-    (0, common_1.Patch)('/settings/2fa/:id'),
+    (0, common_1.Patch)('/settings/2fa'),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
