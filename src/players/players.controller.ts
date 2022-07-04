@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, Patch, ParseIntPipe, Query, ValidationPipe, UseGuards, Req, Res, UseInterceptors, UploadedFile } from "@nestjs/common";
+import { Controller, Post, Get, Body, Param, Patch, ParseIntPipe, Query, ValidationPipe, UseGuards, Req, Header } from "@nestjs/common";
 import { Player } from "./player.entity";
 import { UsersService } from "./players.service";
 import { GetPlayersFilterDto } from "./dto-players/get-player-filter.dto";
@@ -47,6 +47,8 @@ export class UsersController {
 
 	//- get logged user profile
 	@Get('/profile')
+	@Header('Access-Control-Allow-Origin', 'http://localhost:3000/%27')
+    @Header('Access-Control-Allow-Credentials', 'true')
 	async getProfile(
 		@Req() req: Request,
 	) {
@@ -69,6 +71,8 @@ export class UsersController {
 
 	//- get friend profile
 	@Get('/profile/:id')
+	@Header('Access-Control-Allow-Origin', 'http://localhost:3000/%27')
+    @Header('Access-Control-Allow-Credentials', 'true')
 	async getFriendProfile(
 		@Param('id', ParseIntPipe) id: number,
 	){
@@ -87,6 +91,8 @@ export class UsersController {
 
 	//- update username
 	@Patch('/settings/username')
+	@Header('Access-Control-Allow-Origin', 'http://localhost:3000/%27')
+    @Header('Access-Control-Allow-Credentials', 'true')
 	async updateUsername(
 		@Req() req: Request,
 		@Body('username') username: string,
@@ -97,19 +103,22 @@ export class UsersController {
 
 	//- update avatar
 	@Patch('/settings/avatar')
+	@Header('Access-Control-Allow-Origin', 'http://localhost:3000/%27')
+    @Header('Access-Control-Allow-Credentials', 'true')
 	async updateAvatar(
 		@Req() req: Request,
 		@Body('avatar') avatar: string,
-		// @UploadedFile() file,
+
 	){
 		// console.log(file);
-		console.log(avatar + '......');
 		const user = await this.usersService.verifyToken(req.cookies.connect_sid);
 		return this.usersService.updateAvatar(user.id, avatar);
 	}
 
 	//- enaable two factor authentication
 	@Patch('/settings/2fa')
+	@Header('Access-Control-Allow-Origin', 'http://localhost:3000/%27')
+    @Header('Access-Control-Allow-Credentials', 'true')
 	async updateTwoFa(
 		@Req() req: Request,
 	){
@@ -119,6 +128,8 @@ export class UsersController {
 
 	// get all users - remove later...
 	@Get('/users')
+	@Header('Access-Control-Allow-Origin', 'http://localhost:3000/%27')
+    @Header('Access-Control-Allow-Credentials', 'true')
 	getUsers(@Query(ValidationPipe) FilterDto: GetPlayersFilterDto) {
 		return this.usersService.getUsers(FilterDto);
 	}

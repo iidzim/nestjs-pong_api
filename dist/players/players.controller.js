@@ -49,7 +49,6 @@ let UsersController = class UsersController {
         return this.usersService.updateUsername(user.id, username);
     }
     async updateAvatar(req, avatar) {
-        console.log(avatar + '......');
         const user = await this.usersService.verifyToken(req.cookies.connect_sid);
         return this.usersService.updateAvatar(user.id, avatar);
     }
@@ -63,6 +62,8 @@ let UsersController = class UsersController {
 };
 __decorate([
     (0, common_1.Get)('/profile'),
+    (0, common_1.Header)('Access-Control-Allow-Origin', 'http://localhost:3000/%27'),
+    (0, common_1.Header)('Access-Control-Allow-Credentials', 'true'),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -70,6 +71,8 @@ __decorate([
 ], UsersController.prototype, "getProfile", null);
 __decorate([
     (0, common_1.Get)('/profile/:id'),
+    (0, common_1.Header)('Access-Control-Allow-Origin', 'http://localhost:3000/%27'),
+    (0, common_1.Header)('Access-Control-Allow-Credentials', 'true'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -77,6 +80,8 @@ __decorate([
 ], UsersController.prototype, "getFriendProfile", null);
 __decorate([
     (0, common_1.Patch)('/settings/username'),
+    (0, common_1.Header)('Access-Control-Allow-Origin', 'http://localhost:3000/%27'),
+    (0, common_1.Header)('Access-Control-Allow-Credentials', 'true'),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)('username')),
     __metadata("design:type", Function),
@@ -85,6 +90,8 @@ __decorate([
 ], UsersController.prototype, "updateUsername", null);
 __decorate([
     (0, common_1.Patch)('/settings/avatar'),
+    (0, common_1.Header)('Access-Control-Allow-Origin', 'http://localhost:3000/%27'),
+    (0, common_1.Header)('Access-Control-Allow-Credentials', 'true'),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)('avatar')),
     __metadata("design:type", Function),
@@ -93,6 +100,8 @@ __decorate([
 ], UsersController.prototype, "updateAvatar", null);
 __decorate([
     (0, common_1.Patch)('/settings/2fa'),
+    (0, common_1.Header)('Access-Control-Allow-Origin', 'http://localhost:3000/%27'),
+    (0, common_1.Header)('Access-Control-Allow-Credentials', 'true'),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -100,6 +109,8 @@ __decorate([
 ], UsersController.prototype, "updateTwoFa", null);
 __decorate([
     (0, common_1.Get)('/users'),
+    (0, common_1.Header)('Access-Control-Allow-Origin', 'http://localhost:3000/%27'),
+    (0, common_1.Header)('Access-Control-Allow-Credentials', 'true'),
     __param(0, (0, common_1.Query)(common_1.ValidationPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [get_player_filter_dto_1.GetPlayersFilterDto]),
