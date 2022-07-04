@@ -1,23 +1,26 @@
-import { Controller, Post, Get, Body, Param, Patch, Delete, ParseIntPipe, Query, ValidationPipe, UseGuards, Req, Inject, forwardRef, Redirect, Request } from "@nestjs/common";
+import { Controller, Post, Get, Body, Param, Patch, ParseIntPipe, Query, ValidationPipe, UseGuards, Req, Res } from "@nestjs/common";
 import { Player } from "./player.entity";
 import { UsersService } from "./players.service";
-import { CreateUserDto } from "./dto-players/create-player.dto";
 import { GetPlayersFilterDto } from "./dto-players/get-player-filter.dto";
 import { RelationsService } from "../relations/relations.service";
 import { GetPlayer } from "./get-player.decorator";
 import { AuthGuard } from "@nestjs/passport";
-import { RelationStatus } from "../relations/relation_status.enum";
-import { request, Request } from "express";
+import { Request } from "express";
+import { JwtModule, JwtService } from "@nestjs/jwt";
+import { ConnectableObservable } from "rxjs";
+import { JwtStrategy } from "../auth/jwt.strategy";
+// import { request, Request } from "express";
 // import { GetPlayer } from "./get-player.decorator";
 
 @Controller()
-// @UseGuards(LocalAuthGuard))
+// @UseGuards(AuthGuard('jwt'))
 // @UseGuards(AuthGuard())
 export class UsersController {
 	constructor(
 		// @Inject(forwardRef( () => RelationsService))
 		private readonly usersService: UsersService,
 		private readonly relationService: RelationsService,
+		private jwtService: JwtService,
 		// private readonly gameService: GameService,
 	){}
 
@@ -40,23 +43,20 @@ export class UsersController {
 	// @Redirect('https://api.intra.42.fr/oauth/authorize?client_id=586c1c8fde913cc2d625042e39cd449c79a3c386dce871f6e55caa110796bc56&redirect_uri=http%3A%2F%2F127.0.0.1%3A3001%2Fauth%2Flogin&response_type=code', 301)
 	// test() {}
 
-	@Get('cookies')
-	getCookies(@Request() req : Request) {
-		console.log(req.cookies);
-	}
 	//- get logged user profile
 	@Get('/profile')
-	getProfile(@Request() req : Request,
-		@GetPlayer() player: Player,
-	){
-		//***
-		// console.log('cookies ------ ' + req.cookies);
+	async getProfile(
+		@Req() req: Request,
+	) {
+		// console.log(req.cookies.connect_sid);
+		// const userId = await this.jwtService.verify(req.cookies.connect_sid);
 
-		// const id
-		const playerData = this.usersService.getUserById(player.id);
-		// const friends = this.relationService.getRelationByUser(id, RelationStatus.FRIEND);
-		const achievements = this.usersService.getAchievements(player.id);
-		// const matchHistory = this.gameService.getMatchByUser(id);
+
+		const user = await this.usersService.verifyToken(req.cookies.connect_sid);
+		const playerData = await this.usersService.getUserById(user.id);
+		// const friends = await this.relationService.getRelationByUser(id, RelationStatus.FRIEND);
+		const achievements = await this.usersService.getAchievements(user.id);
+		// const matchHistory = await this.gameService.getMatchByUser(id);
 		const data = {
 			"profile": playerData,
 			// "friends": friends,
@@ -68,13 +68,13 @@ export class UsersController {
 
 	//- get friend profile
 	@Get('/profile/:id')
-	getFriendProfile(
-		@Param('id', ParseIntPipe) id: number
+	async getFriendProfile(
+		@Param('id', ParseIntPipe) id: number,
 	){
-		const playerData = this.usersService.getUserById(id);
-		// const friends = this.relationService.getRelationByUser(id, RelationStatus.FRIEND); //+ loop over relations array, get friends id
-		const achievements = this.usersService.getAchievements(id);
-		// const matchHistory = this.gameService.getMatchByUser(id);
+		const playerData = await this.usersService.getUserById(id);
+		// const friends = await this.relationService.getRelationByUser(id, RelationStatus.FRIEND); //+ loop over relations array, get friends id
+		const achievements = await this.usersService.getAchievements(id);
+		// const matchHistory = await this.gameService.getMatchByUser(id);
 		const data = {
 			"profile": playerData,
 			// "friends": friends,
@@ -86,35 +86,36 @@ export class UsersController {
 
 	//- update username
 	@Patch('/settings/username/:id')
-	updateUsername(
-		@GetPlayer() player: Player,
+	async updateUsername(
+		@Req() req: Request,
 		@Body('username') username: string,
 	){
-		return this.usersService.updateUsername(player.id, username);
+		const user = await this.usersService.verifyToken(req.cookies.connect_sid);
+		return this.usersService.updateUsername(user.id, username);
 	}
 
 	//- update avatar
 	@Patch('/settings/avatar/:id')
-	updateAvatar(
-		@GetPlayer() player: Player,
+	async updateAvatar(
+		@Req() req: Request,
 		@Body('avatar') avatar: string,
 	){
-		return this.usersService.updateAvatar(player.id, avatar);
+		const user = await this.usersService.verifyToken(req.cookies.connect_sid);
+		return this.usersService.updateAvatar(user.id, avatar);
 	}
 
 	//- enaable two factor authentication
 	@Patch('/settings/2fa/:id')
-	updateTwoFa(
-		// @Param('id', ParseIntPipe) id: number,
-		@GetPlayer() player: Player,
+	async updateTwoFa(
+		@Req() req: Request,
 	){
-		return this.usersService.updateTwoFa(player.id);
+		const user = await this.usersService.verifyToken(req.cookies.connect_sid);
+		return this.usersService.updateTwoFa(user.id);
 	}
-       
+
 	// get all users - remove later...
 	@Get('/users')
 	getUsers(@Query(ValidationPipe) FilterDto: GetPlayersFilterDto) {
-		console.log("start ");
 		return this.usersService.getUsers(FilterDto);
 	}
 }

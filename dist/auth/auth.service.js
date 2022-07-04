@@ -54,11 +54,11 @@ let AuthService = class AuthService {
         console.log("called");
         passport.authenticate('42', { failureRedirect: `/auth/login` });
         const id = player.id;
-        const payload = { id };
+        const username = player.username;
+        const payload = { username, id };
         const accessToken = await this.jwtService.sign(payload);
-        console.log(accessToken);
-        res.cookie('connect.sid', [accessToken]);
-        res.redirect('http://127.0.0.1:3000/home');
+        res.cookie('connect_sid', [accessToken]);
+        res.redirect('http://localhost:3000/home');
     }
     async logout(id, req, res) {
         console.log('logout');

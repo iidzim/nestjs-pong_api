@@ -8,6 +8,7 @@ import { RelationModule } from '../relations/relations.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from '../auth/auth.module';
+import { JwtStrategy } from '../auth/jwt.strategy';
 
 @Module({
     imports: [
@@ -15,7 +16,7 @@ import { AuthModule } from '../auth/auth.module';
         JwtModule.register({
             secret: 'pingpong',
             signOptions: {
-                expiresIn: 3600,
+				expiresIn: '1d',
             },
         }),
         TypeOrmModule.forFeature([PlayerRepository]),
@@ -24,6 +25,7 @@ import { AuthModule } from '../auth/auth.module';
     controllers: [UsersController],
     providers: [
         UsersService,
+        JwtStrategy,
     ],
     exports: [UsersService],
 })

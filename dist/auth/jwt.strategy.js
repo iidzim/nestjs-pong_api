@@ -27,9 +27,8 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         this.playerRepository = playerRepository;
     }
     async validate(payload) {
-        console.log('hhh');
-        const { id } = payload;
-        const user = await this.playerRepository.findOne({ id });
+        const { username } = payload;
+        const user = await this.playerRepository.findOne({ username });
         if (!user) {
             throw new common_1.UnauthorizedException();
         }

@@ -16,7 +16,6 @@ const common_1 = require("@nestjs/common");
 let PlayerRepository = class PlayerRepository extends typeorm_1.Repository {
     async getUsers(FilterDto) {
         const { id, username, level, status } = FilterDto;
-        console.log("HELL");
         const query = this.createQueryBuilder('user');
         if (id) {
             query.andWhere('user.id = :id', { id });

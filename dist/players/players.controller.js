@@ -14,95 +14,87 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
-const player_entity_1 = require("./player.entity");
 const players_service_1 = require("./players.service");
 const get_player_filter_dto_1 = require("./dto-players/get-player-filter.dto");
 const relations_service_1 = require("../relations/relations.service");
-const get_player_decorator_1 = require("./get-player.decorator");
+const jwt_1 = require("@nestjs/jwt");
 let UsersController = class UsersController {
-    constructor(usersService, relationService) {
+    constructor(usersService, relationService, jwtService) {
         this.usersService = usersService;
         this.relationService = relationService;
+        this.jwtService = jwtService;
     }
-    getCookies(req) {
-        console.log(req.cookies);
-    }
-    getProfile(req, player) {
-        const playerData = this.usersService.getUserById(player.id);
-        const achievements = this.usersService.getAchievements(player.id);
+    async getProfile(req) {
+        const user = await this.usersService.verifyToken(req.cookies.connect_sid);
+        const playerData = await this.usersService.getUserById(user.id);
+        const achievements = await this.usersService.getAchievements(user.id);
         const data = {
             "profile": playerData,
             "achievements": achievements,
         };
         return data;
     }
-    getFriendProfile(id) {
-        const playerData = this.usersService.getUserById(id);
-        const achievements = this.usersService.getAchievements(id);
+    async getFriendProfile(id) {
+        const playerData = await this.usersService.getUserById(id);
+        const achievements = await this.usersService.getAchievements(id);
         const data = {
             "profile": playerData,
             "achievements": achievements,
         };
         return data;
     }
-    updateUsername(player, username) {
-        return this.usersService.updateUsername(player.id, username);
+    async updateUsername(req, username) {
+        const user = await this.usersService.verifyToken(req.cookies.connect_sid);
+        return this.usersService.updateUsername(user.id, username);
     }
-    updateAvatar(player, avatar) {
-        return this.usersService.updateAvatar(player.id, avatar);
+    async updateAvatar(req, avatar) {
+        const user = await this.usersService.verifyToken(req.cookies.connect_sid);
+        return this.usersService.updateAvatar(user.id, avatar);
     }
-    updateTwoFa(player) {
-        return this.usersService.updateTwoFa(player.id);
+    async updateTwoFa(req) {
+        const user = await this.usersService.verifyToken(req.cookies.connect_sid);
+        return this.usersService.updateTwoFa(user.id);
     }
     getUsers(FilterDto) {
-        console.log("start ");
         return this.usersService.getUsers(FilterDto);
     }
 };
 __decorate([
-    (0, common_1.Get)('cookies'),
-    __param(0, (0, common_1.Request)()),
+    (0, common_1.Get)('/profile'),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "getCookies", null);
-__decorate([
-    (0, common_1.Get)('/profile'),
-    __param(0, (0, common_1.Request)()),
-    __param(1, (0, get_player_decorator_1.GetPlayer)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, player_entity_1.Player]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getProfile", null);
 __decorate([
     (0, common_1.Get)('/profile/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getFriendProfile", null);
 __decorate([
     (0, common_1.Patch)('/settings/username/:id'),
-    __param(0, (0, get_player_decorator_1.GetPlayer)()),
+    __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)('username')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [player_entity_1.Player, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
 ], UsersController.prototype, "updateUsername", null);
 __decorate([
     (0, common_1.Patch)('/settings/avatar/:id'),
-    __param(0, (0, get_player_decorator_1.GetPlayer)()),
+    __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)('avatar')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [player_entity_1.Player, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
 ], UsersController.prototype, "updateAvatar", null);
 __decorate([
     (0, common_1.Patch)('/settings/2fa/:id'),
-    __param(0, (0, get_player_decorator_1.GetPlayer)()),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [player_entity_1.Player]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
 ], UsersController.prototype, "updateTwoFa", null);
 __decorate([
     (0, common_1.Get)('/users'),
@@ -114,7 +106,8 @@ __decorate([
 UsersController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [players_service_1.UsersService,
-        relations_service_1.RelationsService])
+        relations_service_1.RelationsService,
+        jwt_1.JwtService])
 ], UsersController);
 exports.UsersController = UsersController;
 //# sourceMappingURL=players.controller.js.map

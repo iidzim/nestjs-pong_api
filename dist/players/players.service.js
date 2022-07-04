@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_1 = require("@nestjs/jwt");
 const avatars_1 = require("@dicebear/avatars");
 const style = require("@dicebear/croodles");
 const typeorm_1 = require("@nestjs/typeorm");
@@ -21,8 +22,9 @@ const player_entity_1 = require("./player.entity");
 const player_repository_1 = require("./player.repository");
 const player_status_enum_1 = require("./player_status.enum");
 let UsersService = class UsersService {
-    constructor(userRepository) {
+    constructor(userRepository, jwtService) {
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
     async getUserById(id) {
         const found = await this.userRepository.findOne(id);
@@ -32,7 +34,6 @@ let UsersService = class UsersService {
         return found;
     }
     async getUsers(FilterDto) {
-        console.log("HELL");
         return this.userRepository.getUsers(FilterDto);
     }
     async updateUsername(id, username) {
@@ -77,6 +78,8 @@ let UsersService = class UsersService {
             s = -2;
         else if (user.wins == 1 || user.losses == 1)
             s = -1;
+        else
+            s = 4;
         return achievements.slice(s);
     }
     async findOrCreate(id, login) {
@@ -99,18 +102,41 @@ let UsersService = class UsersService {
         newUser.losses = 0;
         newUser.status = player_status_enum_1.UserStatus.ONLINE;
         newUser.two_fa = false;
-        await newUser.save();
+        try {
+            await newUser.save();
+        }
+        catch (error) {
+            console.log(error.code);
+            if (error.code === '23505') {
+                throw new common_1.ConflictException('Username already exists');
+            }
+            else {
+                throw new common_1.InternalServerErrorException();
+            }
+        }
         console.log('new User saved successfully ' + newUser);
         if (typeof (newUser) == 'undefined') {
             console.log('newUser is undefined');
         }
         return newUser;
     }
+    async verifyToken(token) {
+        try {
+            const decoded = await this.jwtService.verify(token.toString());
+            if (typeof decoded === 'object' && 'id' in decoded)
+                return decoded;
+            throw new common_1.BadRequestException();
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('Token expired');
+        }
+    }
 };
 UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(player_repository_1.PlayerRepository)),
-    __metadata("design:paramtypes", [player_repository_1.PlayerRepository])
+    __metadata("design:paramtypes", [player_repository_1.PlayerRepository,
+        jwt_1.JwtService])
 ], UsersService);
 exports.UsersService = UsersService;
 //# sourceMappingURL=players.service.js.map

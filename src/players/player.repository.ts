@@ -13,7 +13,6 @@ export class PlayerRepository extends Repository<Player> {
 
 	async getUsers(FilterDto: GetPlayersFilterDto): Promise<Player[]> {
 		const { id, username, level, status } = FilterDto;
-		console.log("HELL");
 		const query = this.createQueryBuilder('user');
 		if (id) {
 			query.andWhere('user.id = :id', { id })
@@ -30,7 +29,7 @@ export class PlayerRepository extends Repository<Player> {
 		const users = await query.getMany().then((user) => {
 			return (user);
 		});
-		
+
 		return users;
 	}
 

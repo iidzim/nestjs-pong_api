@@ -52,14 +52,14 @@ export class AuthService {
 	}
 
 	async cb(@Request() req, @Response() res, player: Player) {
-		console.log("called")
-		passport.authenticate('42', {failureRedirect: `/auth/login`})
+		console.log("called");
+		passport.authenticate('42', {failureRedirect: `/auth/login`});
 		const id = player.id;
-		const payload: JwtPayload = { id };
+		const username = player.username;
+		const payload: JwtPayload = { username, id };
 		const accessToken = await this.jwtService.sign(payload);
-		console.log(accessToken);
-		res.cookie('connect.sid',[accessToken]);
-		res.redirect('http://127.0.0.1:3000/home');
+		res.cookie('connect_sid',[accessToken]);
+		res.redirect('http://localhost:3000/home');
 		// return player;
 	}
 

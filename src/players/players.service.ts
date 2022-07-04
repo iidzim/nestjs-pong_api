@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { createAvatar } from '@dicebear/avatars';
 import * as style from '@dicebear/croodles';
@@ -13,6 +13,7 @@ export class UsersService {
 	constructor(
 		@InjectRepository(PlayerRepository)
 		private userRepository: PlayerRepository,
+		private jwtService: JwtService,
 	) {}
 
 	// async signUp(createUserDto: CreateUserDto): Promise<void> {
@@ -39,7 +40,6 @@ export class UsersService {
 	}
 
 	async getUsers(FilterDto: GetPlayersFilterDto):Promise<Player[]> {
-		console.log("HELL");
 		return this.userRepository.getUsers(FilterDto);
 	}
 
@@ -91,7 +91,9 @@ export class UsersService {
 			s = -2;
 		else if (user.wins == 1 || user.losses == 1)
 			s = -1;
-		return achievements.slice(s)
+		else
+			s = 4;
+		return achievements.slice(s);
 	}
 
 	async findOrCreate(id: number, login: string): Promise<Player> {
@@ -114,11 +116,35 @@ export class UsersService {
 		newUser.losses = 0;
 		newUser.status = UserStatus.ONLINE;
 		newUser.two_fa = false;
-		await newUser.save();
+		// await newUser.save();
+		try {
+			await newUser.save();
+		} catch (error) {
+			console.log(error.code);
+			if (error.code === '23505') {
+				throw new ConflictException('Username already exists');
+			} else {
+				throw new InternalServerErrorException();
+			}
+		}
 		console.log('new User saved successfully ' + newUser);
 		if (typeof(newUser) == 'undefined') {
 			console.log('newUser is undefined');
 		}
 		return newUser;
+	}
+
+	async verifyToken(token: string): Promise<Player> {
+
+		try {
+			// const decoded = await this.jwtService.verify(token);
+			const decoded = await this.jwtService.verify(token.toString());
+			// console.log(' -> ' + decoded.username);
+			if (typeof decoded === 'object' && 'id' in decoded)
+				return decoded;
+			throw new BadRequestException();
+		} catch(error) {
+			throw new BadRequestException('Token expired');
+		}
 	}
 }

@@ -32,10 +32,16 @@ export class Player extends BaseEntity {
 	@Column({ nullable: true, default: false })
 	two_fa: boolean;
 
-	@OneToMany(type => Relation, relation => relation.receiver, { eager: true})
+	@OneToMany(
+		type => Relation, 
+		relation => relation.receiver, 
+		{ eager: true })
 	receivers: Relation[];
 	
-	@OneToMany(type => Relation, relation => relation.sender, { eager: true})
+	@OneToMany(
+		type => Relation,
+		relation => relation.sender,
+		{ eager: true})
 	senders: Relation[];
 
 	// @Exclude()
