@@ -37,11 +37,21 @@ let UsersService = class UsersService {
     async updateUsername(id, username) {
         const updated = await this.getUserById(id);
         updated.username = username;
-        await updated.save();
+        try {
+            await updated.save();
+        }
+        catch (error) {
+            console.log(error.code);
+            if (error.code === '23505') {
+                throw new common_1.ConflictException('Username already exists');
+            }
+            else {
+                throw new common_1.InternalServerErrorException();
+            }
+        }
         return updated;
     }
     async updateAvatar(id, avatar) {
-        console.log(avatar);
         const updated = await this.getUserById(id);
         updated.avatar = avatar;
         await updated.save();
@@ -101,18 +111,7 @@ let UsersService = class UsersService {
         newUser.losses = 0;
         newUser.status = player_status_enum_1.UserStatus.ONLINE;
         newUser.two_fa = false;
-        try {
-            await newUser.save();
-        }
-        catch (error) {
-            console.log(error.code);
-            if (error.code === '23505') {
-                throw new common_1.ConflictException('Username already exists');
-            }
-            else {
-                throw new common_1.InternalServerErrorException();
-            }
-        }
+        await newUser.save();
         console.log('new User saved successfully ' + newUser);
         if (typeof (newUser) == 'undefined') {
             console.log('newUser is undefined');

@@ -10,6 +10,5 @@ export declare class Player extends BaseEntity {
     losses: number;
     status: UserStatus;
     two_fa: boolean;
-    receivers: Relation[];
     senders: Relation[];
 }

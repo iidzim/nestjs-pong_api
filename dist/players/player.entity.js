@@ -48,10 +48,6 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Player.prototype, "two_fa", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(type => relation_entity_1.Relation, relation => relation.receiver, { eager: true }),
-    __metadata("design:type", Array)
-], Player.prototype, "receivers", void 0);
-__decorate([
     (0, typeorm_1.OneToMany)(type => relation_entity_1.Relation, relation => relation.sender, { eager: true }),
     __metadata("design:type", Array)
 ], Player.prototype, "senders", void 0);

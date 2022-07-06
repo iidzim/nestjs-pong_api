@@ -51,7 +51,7 @@ let AuthService = class AuthService {
         return this.cb(req, res, player);
     }
     async cb(req, res, player) {
-        console.log("called");
+        console.log("callback");
         passport.authenticate('42', { failureRedirect: `/auth/login` });
         const id = player.id;
         const username = player.username;
@@ -64,7 +64,7 @@ let AuthService = class AuthService {
         console.log('logout');
         await this.playerService.updateStatus(id, player_status_enum_1.UserStatus.OFFLINE);
         req.logout();
-        return res.redirect('/auth/login');
+        return res.redirect('http://localhost:3000/home');
     }
 };
 __decorate([

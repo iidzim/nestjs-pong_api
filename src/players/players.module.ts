@@ -9,6 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from '../auth/auth.module';
 import { JwtStrategy } from '../auth/jwt.strategy';
+import { RelationRepository } from '../relations/relation.repository';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { JwtStrategy } from '../auth/jwt.strategy';
             },
         }),
         TypeOrmModule.forFeature([PlayerRepository]),
+        TypeOrmModule.forFeature([RelationRepository]),
         RelationModule,
     ],
     controllers: [UsersController],

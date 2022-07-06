@@ -51,8 +51,12 @@ export class AuthService {
 		return this.cb(req, res, player);
 	}
 
-	async cb(@Request() req, @Response() res, player: Player) {
-		console.log("called");
+	async cb(
+		@Request() req,
+		@Response() res,
+		player: Player
+	) {
+		console.log("callback");
 		passport.authenticate('42', {failureRedirect: `/auth/login`});
 		const id = player.id;
 		const username = player.username;
@@ -60,14 +64,13 @@ export class AuthService {
 		const accessToken = await this.jwtService.sign(payload);
 		res.cookie('connect_sid',[accessToken]);
 		res.redirect('http://localhost:3000/home');
-		// return player;
 	}
 
 	async logout(id: number, req, res): Promise<any> {
 		console.log('logout');
 		await this.playerService.updateStatus(id, UserStatus.OFFLINE);
-		// passport.logout();
+		// passport.logout(); //! error logout is not a function
 		req.logout();
-		return res.redirect('/auth/login');
+		return res.redirect('http://localhost:3000/home');
 	}
 }
