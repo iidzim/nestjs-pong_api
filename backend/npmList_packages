@@ -10,6 +10,7 @@ ttest@0.0.1 /Users/iidzim/Desktop/ft_transcendence/backend
 ├── @nestjs/platform-express@8.4.5
 ├── @nestjs/platform-socket.io@8.4.7
 ├── @nestjs/schematics@8.0.11
+├── @nestjs/serve-static@3.0.0
 ├── @nestjs/swagger@5.2.1
 ├── @nestjs/testing@8.4.5
 ├── @nestjs/typeorm@8.0.4
@@ -40,6 +41,7 @@ ttest@0.0.1 /Users/iidzim/Desktop/ft_transcendence/backend
 ├── passport@0.5.3
 ├── pg@8.7.3
 ├── prettier@2.6.2
+├── qrcode@1.5.1
 ├── reflect-metadata@0.1.13
 ├── rimraf@3.0.2
 ├── rxjs@7.5.5

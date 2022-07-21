@@ -16,11 +16,16 @@ const players_module_1 = require("./players/players.module");
 const relations_module_1 = require("./relations/relations.module");
 const pong_game_module_1 = require("./pong-game/pong-game.module");
 const chat_module_1 = require("./chat/chat.module");
+const serve_static_1 = require("@nestjs/serve-static");
+const path_1 = require("path");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            serve_static_1.ServeStaticModule.forRoot({
+                rootPath: (0, path_1.join)(__dirname, '..', 'public'),
+            }),
             config_1.ConfigModule.forRoot({ envFilePath: '.env' }),
             typeorm_1.TypeOrmModule.forRoot(typeorm_config_1.typeOrmConfig),
             auth_module_1.AuthModule,

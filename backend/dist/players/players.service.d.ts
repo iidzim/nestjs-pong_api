@@ -12,7 +12,7 @@ export declare class UsersService {
     getUsers(FilterDto: GetPlayersFilterDto): Promise<Player[]>;
     updateUsername(id: number, username: string): Promise<Player>;
     updateAvatar(id: number, avatar: string): Promise<Player>;
-    generateSecretQr(user: Player, res: Response): Promise<void>;
+    generateSecretQr(user: Player): Promise<string>;
     updateLevel(id: number): Promise<Player>;
     updateStatus(id: number, status: UserStatus): Promise<Player>;
     getAchievements(id: number): Promise<any>;
@@ -24,6 +24,5 @@ export declare class UsersService {
         secret: string;
         otpauth_url: string;
     }>;
-    pipeQrCodeStream(stream: Response, otpauth_url: string): Promise<any>;
     verifyTwoFactorAuthenticationCodeValid(user: Player, code: string): Promise<boolean>;
 }

@@ -20,7 +20,7 @@ const player_entity_1 = require("./player.entity");
 const player_repository_1 = require("./player.repository");
 const player_status_enum_1 = require("./player_status.enum");
 const otplib_1 = require("otplib");
-const qrcode_1 = require("qrcode");
+const QRCode = require('qrcode');
 const dotenv = require("dotenv");
 dotenv.config({ path: `.env` });
 let UsersService = class UsersService {
@@ -47,14 +47,18 @@ let UsersService = class UsersService {
     }
     async updateUsername(id, username) {
         const updated = await this.getUserById(id);
+        var regEx = /^[0-9a-zA-Z]+$/;
         updated.username = username;
+        if (!regEx.test(username)) {
+            throw new common_1.BadRequestException('Username must be alphanumeric');
+        }
         try {
             await updated.save();
         }
         catch (error) {
             console.log(error.code);
             if (error.code === '23505') {
-                throw new common_1.ConflictException('Username already exists');
+                throw new common_1.BadRequestException('Username already exists');
             }
             else {
                 throw new common_1.InternalServerErrorException();
@@ -68,9 +72,10 @@ let UsersService = class UsersService {
         await updated.save();
         return updated;
     }
-    async generateSecretQr(user, res) {
+    async generateSecretQr(user) {
         const { otpauth_url } = await this.generateTwoFactorAuthenticationSecret(user);
-        return this.pipeQrCodeStream(res, otpauth_url);
+        const qr = await QRCode.toString(otpauth_url);
+        return qr;
     }
     async updateLevel(id) {
         const updated = await this.getUserById(id);
@@ -147,24 +152,20 @@ let UsersService = class UsersService {
     }
     async generateTwoFactorAuthenticationSecret(user) {
         const secret = otplib_1.authenticator.generateSecret();
-        console.log('secret: ', secret);
-        const otpauth_url = otplib_1.authenticator.keyuri(user.email, process.env.APP_NAME, secret);
+        const token = otplib_1.authenticator.generate(secret);
+        const otpauth_url = otplib_1.authenticator.keyuri(token, process.env.APP_NAME, secret);
         await this.userRepository.update(user.id, { secret: secret });
         return { secret, otpauth_url };
     }
-    async pipeQrCodeStream(stream, otpauth_url) {
-        return (0, qrcode_1.toFileStream)(stream, otpauth_url);
-    }
     async verifyTwoFactorAuthenticationCodeValid(user, code) {
-        return otplib_1.authenticator.verify({ token: code, secret: user.secret });
+        console.log('verifyTwoFactorAuthenticationCodeValid > ');
+        const secret = user.secret;
+        console.log(code);
+        const verif = otplib_1.authenticator.verify({ token: code, secret: secret });
+        console.log('verrified = ' + verif);
+        return verif;
     }
 };
-__decorate([
-    __param(1, (0, common_1.Res)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [player_entity_1.Player, Object]),
-    __metadata("design:returntype", Promise)
-], UsersService.prototype, "generateSecretQr", null);
 UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(player_repository_1.PlayerRepository)),

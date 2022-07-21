@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn, Unique,  } from "typeorm";
 import { UserStatus } from "./player_status.enum";
 // import { Game } from "../games/game.entity";
 import { Relation } from "../relations/relation.entity";
@@ -13,13 +13,13 @@ export class Player extends BaseEntity {
 	@PrimaryColumn()
 	id: number;
 
-	// @Column({unique: true})
 	@Column()
 	username: string;
 
 	@Column()
 	avatar: string;
 
+	// @Column({type: 'real'})
 	@Column()
 	level: number;
 
@@ -43,7 +43,7 @@ export class Player extends BaseEntity {
 	// 	relation => relation.receiver,
 	// 	{ eager: true })
 	// receivers: Relation[];
-	@Column({ select: false, nullable: true })
+	@Column({ nullable: true })
 	secret: string;
 
 	@OneToMany(

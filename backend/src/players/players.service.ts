@@ -8,7 +8,8 @@ import { PlayerRepository } from "./player.repository";
 import { UserStatus } from "./player_status.enum";
 
 import { authenticator } from 'otplib';
-import { toFileStream } from 'qrcode';
+import { toFile, qrcode, create } from 'qrcode';
+const QRCode = require('qrcode');
 import * as dotenv from "dotenv";
 dotenv.config({ path: `.env` })
 
@@ -43,7 +44,7 @@ export class UsersService {
 		}
 		return found;
 	}
-	
+
 	async getUserByUsername(username:string): Promise<Player> {
 		const found = await this.userRepository.findOne(username);
 		if (!found){
@@ -59,13 +60,17 @@ export class UsersService {
 	async updateUsername(id: number, username: string): Promise<Player> {
 
 		const updated = await this.getUserById(id);
+		var regEx = /^[0-9a-zA-Z]+$/;
 		updated.username = username;
+		if (!regEx.test(username)) {
+			throw new BadRequestException('Username must be alphanumeric');
+		}
 		try {
 			await updated.save();
 		} catch (error) {
 			console.log(error.code);
 			if (error.code === '23505') {
-				throw new ConflictException('Username already exists');
+				throw new BadRequestException('Username already exists');
 			} else {
 				throw new InternalServerErrorException();
 			}
@@ -81,9 +86,12 @@ export class UsersService {
 		return updated;
 	}
 
-	async generateSecretQr(user: Player, @Res() res: Response): Promise<void> {
+	async generateSecretQr(user: Player): Promise<string> {
 		const { otpauth_url } = await this.generateTwoFactorAuthenticationSecret(user);
-		return this.pipeQrCodeStream(res, otpauth_url);
+		// return await this.pipeQrCodePath(res, otpauth_url);
+		const qr = await QRCode.toString(otpauth_url);
+		// console.log(qr);
+		return qr;
 	}
 
 	async updateLevel(id: number): Promise<Player> {
@@ -171,18 +179,33 @@ export class UsersService {
 	async generateTwoFactorAuthenticationSecret(user: Player) {
 
         const secret = authenticator.generateSecret();
-		console.log('secret: ', secret);
-        const otpauth_url = authenticator.keyuri(user.email, process.env.APP_NAME, secret);
+		const token = authenticator.generate(secret);
+        const otpauth_url = authenticator.keyuri(token, process.env.APP_NAME, secret);
+		// console.log(otpauth_url);
         // await this.setTwoFactorAuthenticationSecret(user.id, secret);
 		await this.userRepository.update(user.id, { secret: secret });
         return { secret, otpauth_url };
     }
 
-    async pipeQrCodeStream(stream: Response, otpauth_url: string) {
-        return toFileStream(stream, otpauth_url);
-    }
+    // async pipeQrCodePath(stream: Response, otpauth_url: string): Promise<string> {
+	// 	//& use toFile and return the file path
+	// 	// const qr = await create(otpauth_url);
+	// 	// const num = Math.floor(Math.random() * 1000000);
+	// 	// const fileName = '/backend/public/qrcode' + num.toString() + '.png';
+	// 	// console.log('HERE ' + fileName)
+	// 	// const file = await QRCode.toFile(fileName, otpauth_url);
+	// 	const qr = await QRCode.toString(otpauth_url);
+	// 	console.log(qr);
+	// 	return qr;
+    // }
 
 	async verifyTwoFactorAuthenticationCodeValid(user: Player, code: string) {
-		return authenticator.verify({token: code, secret: user.secret});
+		console.log('verifyTwoFactorAuthenticationCodeValid > ');
+		const secret = user.secret;
+		console.log(code);
+		const verif = authenticator.verify({token: code, secret: secret});
+		// const verif = authenticator.verify({token: token, secret: secret});
+		console.log('verrified = ' + verif);
+		return verif;
 	}
 }

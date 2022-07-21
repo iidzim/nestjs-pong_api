@@ -66,17 +66,28 @@ let UsersController = class UsersController {
         console.log("imagename === ", imageName);
         return this.usersService.updateAvatar(user.id, imageName);
     }
-    async updateTwoFa(req, res) {
+    async updateTwoFa(req) {
         const user = await this.usersService.verifyToken(req.cookies.connect_sid);
-        console.log("controller 2fa");
-        return this.usersService.generateSecretQr(user, res);
+        const qr = await this.usersService.generateSecretQr(user);
+        try {
+            fs.writeFileSync(process.cwd() + "/public/qr_" + user.username + ".png", qr);
+        }
+        catch (error) {
+            console.log(error);
+        }
+        const path = "../../../backend/public/qr_" + user.username + ".png";
+        return path;
     }
-    async TwoFactorEnable(req, code) {
-        const user = await this.usersService.verifyToken(req.cookies.connect_sid);
-        const isValid = await this.usersService.verifyTwoFactorAuthenticationCodeValid(user, code);
+    async TwoFactorEnable(req, Password2fa) {
+        const user_token = await this.usersService.verifyToken(req.cookies.connect_sid);
+        const user = await this.usersService.getUserById(user_token.id);
+        const isValid = await this.usersService.verifyTwoFactorAuthenticationCodeValid(user, Password2fa);
         if (!isValid) {
+            console.log('invalid');
             throw new common_1.UnauthorizedException('Wrong authentication code');
         }
+        console.log('valid');
+        fs.unlinkSync(process.cwd() + "/public/qr_" + user.username + ".png");
         await this.usersService.turnOnTwoFactorAuthentication(user.id);
     }
     async TwoFactorAuthenticate(req, code) {
@@ -127,15 +138,14 @@ __decorate([
 __decorate([
     (0, common_1.Get)('/settings/2fa/generate'),
     __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "updateTwoFa", null);
 __decorate([
     (0, common_1.Post)('/settings/2fa/enable'),
     __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Body)('twaFactorCode')),
+    __param(1, (0, common_1.Body)('Password2fa')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)

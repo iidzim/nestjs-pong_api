@@ -65,12 +65,12 @@ export class AuthService {
 		const payload: JwtPayload = { username, id, two_fa };
 		const accessToken = await this.jwtService.sign(payload);
 		res.cookie('connect_sid',[accessToken]);
-		if (player.two_fa == false) {
+		// if (player.two_fa == false) {
 			res.redirect('http://localhost:3000/home');
-		}
-		else {
-			res.redirect('http://localhost:3001/2fa/authenticate');
-		}
+		// }
+		// else {
+		// 	res.redirect('http://localhost:3001/2fa/authenticate');
+		// }
 	}
 
 	async logout(id: number, req, res): Promise<any> {

@@ -86,7 +86,7 @@ export class UsersController {
     ){
         const user = await this.usersService.verifyToken(req.cookies.connect_sid);
         fs.writeFileSync(process.cwd().substring(0,process.cwd().length - 7) + "frontend/src/assets/"+imageName, avatar.buffer);
-        console.log("imagename === ", imageName)
+		console.log("imagename === ", imageName)
 		return this.usersService.updateAvatar(user.id, imageName);
     }
 
@@ -94,23 +94,32 @@ export class UsersController {
 	@Get('/settings/2fa/generate')
 	async updateTwoFa(
 		@Req() req: Request,
-		@Res() res: Response
-	){
+	): Promise<string>{
 		const user = await this.usersService.verifyToken(req.cookies.connect_sid);
-		console.log("controller 2fa");
-		return this.usersService.generateSecretQr(user, res);
+		const qr = await this.usersService.generateSecretQr(user);
+		try {
+			fs.writeFileSync(process.cwd() + "/public/qr_" + user.username + ".png", qr);
+		} catch (error) {
+			console.log(error);
+		}
+		const path =  "../../../backend/public/qr_" + user.username + ".png";
+		return path;
 	}
 
 	@Post('/settings/2fa/enable')
 	async TwoFactorEnable(
 		@Req() req: Request,
-		@Body('twaFactorCode') code: string,
-	): Promise<any> {
-        const user = await this.usersService.verifyToken(req.cookies.connect_sid);
-		const isValid = await this.usersService.verifyTwoFactorAuthenticationCodeValid(user, code);
+		@Body('Password2fa') Password2fa: string,
+	): Promise<void> {
+        const user_token = await this.usersService.verifyToken(req.cookies.connect_sid);
+		const user = await this.usersService.getUserById(user_token.id);
+		const isValid = await this.usersService.verifyTwoFactorAuthenticationCodeValid(user, Password2fa);
 		if (!isValid) {
+			console.log('invalid');
 			throw new UnauthorizedException('Wrong authentication code');
 		}
+		console.log('valid');
+		fs.unlinkSync(process.cwd() + "/public/qr_" + user.username + ".png");
 		await this.usersService.turnOnTwoFactorAuthentication(user.id);
 	}
 
@@ -124,7 +133,7 @@ export class UsersController {
 		if (!isValid) {
 			throw new UnauthorizedException('Wrong authentication code');
 		}
-		// set another cookie 
+		// set another cookie
 	}
 
 	//- get all users
