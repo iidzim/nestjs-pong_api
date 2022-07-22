@@ -45,13 +45,24 @@ let UsersService = class UsersService {
     async getUsers(FilterDto) {
         return this.userRepository.getUsers(FilterDto);
     }
+    async updateUsersStatus() {
+        const onlineUsers = await this.userRepository.find({ where: { status: player_status_enum_1.UserStatus.ONLINE } });
+        for (const user of onlineUsers) {
+            const now = new Date();
+            const diff = now.getTime() - user.last_activity.getTime();
+            console.log(user.username + diff);
+            if (diff > 1000 * 60 * 5) {
+                await this.updateStatus(user.id, player_status_enum_1.UserStatus.OFFLINE);
+            }
+        }
+    }
     async updateUsername(id, username) {
         const updated = await this.getUserById(id);
         var regEx = /^[0-9a-zA-Z]+$/;
-        updated.username = username;
         if (!regEx.test(username)) {
             throw new common_1.BadRequestException('Username must be alphanumeric');
         }
+        updated.username = username;
         try {
             await updated.save();
         }
@@ -74,19 +85,46 @@ let UsersService = class UsersService {
     }
     async generateSecretQr(user) {
         const { otpauth_url } = await this.generateTwoFactorAuthenticationSecret(user);
-        const qr = await QRCode.toString(otpauth_url);
-        return qr;
+        const imageUrl = process.cwd() + "/public/qr_" + user.username + ".png";
+        const pathToServe = "qr_" + user.username + ".png";
+        QRCode.toFile(imageUrl, otpauth_url.toString(), [], (err, img) => {
+            if (err) {
+                console.log('Error with QR');
+                return;
+            }
+        });
+        return pathToServe;
     }
-    async updateLevel(id) {
+    async updateLevel(id, difficult) {
         const updated = await this.getUserById(id);
-        updated.level += 0.125;
-        await updated.save();
+        if (updated) {
+            updated.level = updated.level + (difficult ? 0.15 : 0.10);
+            await updated.save();
+        }
+        return updated;
+    }
+    async winsGame(id) {
+        const updated = await this.getUserById(id);
+        if (updated) {
+            updated.wins++;
+            await updated.save();
+        }
+        return updated;
+    }
+    async LostGame(id) {
+        const updated = await this.getUserById(id);
+        if (updated) {
+            updated.losses++;
+            await updated.save();
+        }
         return updated;
     }
     async updateStatus(id, status) {
         const updated = await this.getUserById(id);
-        updated.status = status;
-        await updated.save();
+        if (updated) {
+            updated.status = status;
+            await updated.save();
+        }
         return updated;
     }
     async getAchievements(id) {
@@ -99,23 +137,23 @@ let UsersService = class UsersService {
             s = -3;
         else if (user.wins >= 5)
             s = -2;
-        else if (user.wins == 1)
+        else if (user.wins >= 1 && user.wins < 5)
             s = -1;
         else
             s = 4;
         return achievements.slice(s);
     }
-    async findOrCreate(id, login, email) {
-        console.log("find or create > number of arguments passed: ", arguments.length);
-        console.log(id, login);
+    async findPlayer(id) {
+        const found = await this.userRepository.findOne({ where: { id } });
+        return found;
+    }
+    async findOrCreate(id, login) {
         const found = await this.userRepository.findOne({ where: { id } });
         if (found) {
-            console.log('found !!');
             found.status = player_status_enum_1.UserStatus.ONLINE;
             await found.save();
             return found;
         }
-        console.log('not found !!');
         const newUser = new player_entity_1.Player();
         newUser.id = id;
         newUser.username = login;
@@ -125,11 +163,12 @@ let UsersService = class UsersService {
         newUser.losses = 0;
         newUser.status = player_status_enum_1.UserStatus.ONLINE;
         newUser.two_fa = false;
-        newUser.email = email;
-        await newUser.save();
-        console.log('new User saved successfully ' + newUser);
-        if (typeof (newUser) == 'undefined') {
-            console.log('newUser is undefined');
+        try {
+            await newUser.save();
+        }
+        catch (error) {
+            console.log(error.code);
+            throw new common_1.BadRequestException();
         }
         return newUser;
     }
@@ -158,9 +197,7 @@ let UsersService = class UsersService {
         return { secret, otpauth_url };
     }
     async verifyTwoFactorAuthenticationCodeValid(user, code) {
-        console.log('verifyTwoFactorAuthenticationCodeValid > ');
         const secret = user.secret;
-        console.log(code);
         const verif = otplib_1.authenticator.verify({ token: code, secret: secret });
         console.log('verrified = ' + verif);
         return verif;

@@ -17,7 +17,7 @@ let roomRepository = class roomRepository extends typeorm_1.Repository {
         const Room = new room_entity_1.chatroom();
         Room.name = name;
         Room.ischannel = true;
-        if (privacy === 'private')
+        if (privacy === 'Private')
             Room.ispublic = false;
         Room.password = password;
         await Room.save();
@@ -30,6 +30,15 @@ let roomRepository = class roomRepository extends typeorm_1.Repository {
         }
         return Room;
     }
+    async createDM(sender, receiver) {
+        const DM = new room_entity_1.chatroom();
+        DM.name = sender + ":" + receiver;
+        DM.ischannel = false;
+        DM.password = '';
+        DM.ispublic = false;
+        await DM.save();
+        return DM;
+    }
     async addMember(room, creator, role) {
         const Membership = new membership_entity_1.membership();
         Membership.role = role;
@@ -41,10 +50,16 @@ let roomRepository = class roomRepository extends typeorm_1.Repository {
         const room = await this.findOne({ id });
         return room;
     }
+    async getChatroomById(id) {
+        const room = await this.createQueryBuilder('room')
+            .where('room.id = :id', { id })
+            .select(['room.id', 'room.name', 'room.ispublic', 'room.ischannel'])
+            .getOne();
+        return room;
+    }
     async getRoomsForUser(Playerid) {
         const query = await this.createQueryBuilder('membership')
             .where('name = :Playerid', { Playerid });
-        console.log(await query.getMany());
     }
 };
 roomRepository = __decorate([

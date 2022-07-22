@@ -41,8 +41,22 @@ export class ChatService {
         return await this.roomRepo.createRoom(RoomDto, creators);
     }
 
+    async createDM(sender:number, receiver:number):Promise<chatroom>{
+        const chatroom = await this.roomRepo.createDM(sender, receiver);
+        let User = await this.userService.getUserById(sender);
+        await this.addMember(chatroom, User, RoleStatus.USER);
+
+        User = await this.userService.getUserById(receiver);
+        await this.addMember(chatroom, User, RoleStatus.USER);
+        return chatroom;
+    }
+
     async getRoomById(id:number):Promise<chatroom>{
         return await this.roomRepo.getRoomById(id);
+    }
+
+    async getRoomByName(name:string):Promise<chatroom>{
+        return await this.roomRepo.findOne({name:name});
     }
    
 
@@ -56,7 +70,7 @@ export class ChatService {
         const members:Player[] = [];
         for (var id of usersid)
             members.push(await this.userService.getUserById(id.playerid));
-        return members;
+        return members; //maybe I should select only [id && username]
     }
 
     async getRoomsForUser(playerid:number):Promise<chatroom[]>{
@@ -77,7 +91,7 @@ export class ChatService {
     
         
         for (var id of roomsid)
-            rooms.push(await this.getRoomById(id.roomid));
+            rooms.push(await this.roomRepo.getChatroomById(id.roomid));
         return rooms;
     }
 
@@ -97,16 +111,27 @@ export class ChatService {
         return Message;
     }
 
-    async getMessagesByroomId(roomid:number):Promise<message[]>{
+    async getMessagesByroomId(roomid:number):Promise<message[]>{ 
        const query = await this.messageRepo.createQueryBuilder('message')
-        .select(['message.content','message.playerid'])
+        .select(['message.content','message.playerid', 'message.roomid'])
         .where("message.roomid = :roomid", {roomid})
         .orderBy("message.created_at");
 
        const messages = await query.getMany();
-   //    console.log(messages);
        return messages;
     }
+    async getDMs(userid:number, receiverid:number):Promise<message[]>{
+        //find roomid
+
+        let room =await this.getRoomByName(userid+":"+receiverid);
+        if (!room)
+            room = await this.getRoomByName(receiverid+":"+userid);
+        let messages:message[]=[];
+
+        if (room)
+            messages = await this.getMessagesByroomId(room.id);
+        return messages;
+    }  
 
     async deleteMmebership(roomid :number, playrid:number){
         await this.membershipRepo.delete(
@@ -125,13 +150,21 @@ export class ChatService {
         
         //The public && private ones
         const rooms = await this.roomRepo.createQueryBuilder('chatroom')
+        .select(['chatroom.id', 'chatroom.name', 'chatroom.ispublic', 'chatroom.ischannel'])
         .getMany();
         
         //if the channel os private=>check if the user is a member
-        for (let i = 0; i < rooms.length; i++)
+        let i = 0;
+        while (i < rooms.length)
         {
-            if (rooms[i].ispublic === false && await this.isMember(rooms[i].id, playerid) === null)
+            // console.log(rooms[1].name+" => "+rooms[1].ispublic)
+            if (await rooms[i].ispublic == false && await this.isMember(rooms[i].id, playerid) === null)
+            {
+               // console.log(rooms[i].name +' is removed bcz private ');
                 rooms.splice(i , 1);
+            }
+            else
+                i++;
         }
        // console.log(rooms);
         return rooms;
@@ -153,5 +186,21 @@ export class ChatService {
         Membership.role =   RoleStatus.USER;
         await Membership.save();
     }
+
+    async DMexist(senderid:number, receiverid:number):Promise<chatroom>{
+        let chatroomName = senderid+":"+receiverid;
+        let room = await this.roomRepo.findOne({name:chatroomName, ischannel:false});
+        if (room)
+            return room;
+        chatroomName = receiverid+":"+senderid;
+        room = await this.roomRepo.findOne({name:chatroomName, ischannel:false});
+        if (room)
+            return room;
+        return null;
+    }
+
+    // async updateRole(role: RoleStatus):Promise<membership>{
+
+    // }
 
 }

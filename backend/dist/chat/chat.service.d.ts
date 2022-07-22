@@ -19,15 +19,19 @@ export declare class ChatService {
     protected userService: UsersService;
     constructor(roomRepo: roomRepository, membershipRepo: Repository<membership>, messageRepo: Repository<message>, authService: AuthService, PlayerRepository: PlayerRepository, userService: UsersService);
     createRoom(RoomDto: RoomDto, creators: Player[]): Promise<chatroom>;
+    createDM(sender: number, receiver: number): Promise<chatroom>;
     getRoomById(id: number): Promise<chatroom>;
+    getRoomByName(name: string): Promise<chatroom>;
     getMembersByRoomId(roomid: number): Promise<Player[]>;
     getRoomsForUser(playerid: number): Promise<chatroom[]>;
     addMember(room: chatroom, creator: Player, role: RoleStatus): Promise<void>;
     createMessage(messageDto: messageDto, sender: Player): Promise<message>;
     getMessagesByroomId(roomid: number): Promise<message[]>;
+    getDMs(userid: number, receiverid: number): Promise<message[]>;
     deleteMmebership(roomid: number, playrid: number): Promise<void>;
     isMember(roomid: number, playerid: number): Promise<membership>;
     getAllRooms(playerid: number): Promise<chatroom[]>;
     getRole(roomid: number, playerid: number): Promise<membership>;
     createMembership(playerid: number, roomid: number): Promise<void>;
+    DMexist(senderid: number, receiverid: number): Promise<chatroom>;
 }

@@ -3,9 +3,11 @@ import { timeStamp } from 'console';
 import { query } from 'express';
 import { get } from 'http';
 import { Player } from 'src/players/player.entity';
+import { QueryResult } from 'typeorm';
 
 import { ChatService } from './chat.service';
 import { RoomDto } from './dto/room-dto';
+import { membership } from './membership.entity';
 import { message } from './message.entity';
 import { chatroom } from './room.entity';
 
@@ -18,6 +20,11 @@ export class ChatController {
     @Get('messages') 
     getAllMessageByRoomId(@Query('roomid') roomid:number):Promise<message[]>{
         return this.chatService.getMessagesByroomId(roomid);   
+    }
+
+    @Get('DM')
+    getMessages(@Query('userid') userid:number, @Query('receiverid') receiverid:number):Promise<message[]>{
+        return this.chatService.getDMs(userid, receiverid);
     }
 
     //display usernnames => return playerid to the server-side
@@ -40,5 +47,10 @@ export class ChatController {
     @Get('allchannels')//make sure that are channels && not DM
     getAllRooms(@Query('playerid') playerid:number) :Promise<chatroom[]>{
         return this.chatService.getAllRooms(playerid);
+    }
+
+    @Get('isMember')
+    getMembership(@Query('roomid') roomid:number, @Query('playerid') playerid:number):Promise<membership>{
+        return this.chatService.isMember(roomid, playerid);
     }
 }

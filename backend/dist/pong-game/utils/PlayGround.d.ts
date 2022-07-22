@@ -3,6 +3,7 @@ import { Ball } from './Ball';
 import { Bounds } from './Bounds';
 import { Paddle } from './Paddle';
 import { PaddleController } from './PaddleController';
+import { ScoreBoard } from './ScoreBoard';
 export declare class PlayGround {
     private _x;
     private _y;
@@ -17,7 +18,9 @@ export declare class PlayGround {
     private _scoreBoard;
     private _win_score;
     private _difficult;
-    constructor(x: number, y: number, width: number, height: number, color: string, win_score: number, difficult: boolean);
+    private _player1;
+    private _player2;
+    constructor(x: number, y: number, width: number, height: number, color: string, win_score: number, difficult: boolean, player1: string, player2: string);
     get x(): number;
     get y(): number;
     get width(): number;
@@ -28,10 +31,14 @@ export declare class PlayGround {
     get rightPaddle(): Paddle;
     get leftPaddleController(): PaddleController;
     get rightPaddleController(): PaddleController;
+    get win_score(): number;
+    get player1(): string;
+    get player2(): string;
     private getRadius;
     private getPaddleWidth;
     private getPaddleHeight;
     getPlayGroundInterface(): PlayGroundInterface;
     get bounds(): Bounds;
+    get scoreBoard(): ScoreBoard;
     update(): boolean;
 }

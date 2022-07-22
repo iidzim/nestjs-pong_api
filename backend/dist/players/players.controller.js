@@ -62,23 +62,15 @@ let UsersController = class UsersController {
     }
     async updateAvatar(req, imageName, avatar) {
         const user = await this.usersService.verifyToken(req.cookies.connect_sid);
-        fs.writeFileSync(process.cwd().substring(0, process.cwd().length - 7) + "frontend/src/assets/" + imageName, avatar.buffer);
-        console.log("imagename === ", imageName);
+        fs.writeFileSync(process.cwd().substring(0, process.cwd().length - 7) + "frontend/public/assets/" + imageName, avatar.buffer);
         return this.usersService.updateAvatar(user.id, imageName);
     }
     async updateTwoFa(req) {
         const user = await this.usersService.verifyToken(req.cookies.connect_sid);
-        const qr = await this.usersService.generateSecretQr(user);
-        try {
-            fs.writeFileSync(process.cwd() + "/public/qr_" + user.username + ".png", qr);
-        }
-        catch (error) {
-            console.log(error);
-        }
-        const path = "../../../backend/public/qr_" + user.username + ".png";
-        return path;
+        const imageUrl = await this.usersService.generateSecretQr(user);
+        return imageUrl;
     }
-    async TwoFactorEnable(req, Password2fa) {
+    async twoFactorEnable(req, Password2fa) {
         const user_token = await this.usersService.verifyToken(req.cookies.connect_sid);
         const user = await this.usersService.getUserById(user_token.id);
         const isValid = await this.usersService.verifyTwoFactorAuthenticationCodeValid(user, Password2fa);
@@ -90,12 +82,23 @@ let UsersController = class UsersController {
         fs.unlinkSync(process.cwd() + "/public/qr_" + user.username + ".png");
         await this.usersService.turnOnTwoFactorAuthentication(user.id);
     }
-    async TwoFactorAuthenticate(req, code) {
+    async twoFactorAuthenticate(req, res, code) {
         const user = await this.usersService.verifyToken(req.cookies.connect_sid);
         const isValid = await this.usersService.verifyTwoFactorAuthenticationCodeValid(user, code);
         if (!isValid) {
             throw new common_1.UnauthorizedException('Wrong authentication code');
         }
+        await res.clearCookie('twofa', { domain: 'localhost', path: '/' });
+        const id = user.id;
+        const username = user.username;
+        const two_fa = user.two_fa;
+        const payload = { username, id, two_fa };
+        const accessToken = await this.jwtService.sign(payload);
+        res.cookie('connect_sid', [accessToken]);
+        res.redirect('http://localhost:3000/home');
+    }
+    async updateUsersStatus() {
+        return await this.usersService.updateUsersStatus();
     }
     async getUsers(FilterDto, req) {
         const user = await this.usersService.verifyToken(req.cookies.connect_sid);
@@ -149,15 +152,22 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
-], UsersController.prototype, "TwoFactorEnable", null);
+], UsersController.prototype, "twoFactorEnable", null);
 __decorate([
-    (0, common_1.Post)('/2fa/authenticate'),
+    (0, common_1.Post)('/twofactorauthentication'),
     __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Body)('twaFactorCode')),
+    __param(1, (0, common_1.Response)()),
+    __param(2, (0, common_1.Body)('twaFactorCode')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, Object, String]),
     __metadata("design:returntype", Promise)
-], UsersController.prototype, "TwoFactorAuthenticate", null);
+], UsersController.prototype, "twoFactorAuthenticate", null);
+__decorate([
+    (0, common_1.Get)('/updateUsersStatus'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "updateUsersStatus", null);
 __decorate([
     (0, common_1.Get)('/users'),
     __param(0, (0, common_1.Query)(common_1.ValidationPipe)),

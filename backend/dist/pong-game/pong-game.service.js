@@ -15,21 +15,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PongGameService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const room_entity_1 = require("./typeorm/room.entity");
+const game_room_entity_1 = require("./typeorm/game-room.entity");
 const typeorm_2 = require("typeorm");
+const game_history_entity_1 = require("./typeorm/game-history.entity");
 let PongGameService = class PongGameService {
-    constructor(roomRepository) {
+    constructor(roomRepository, gameRepository) {
         this.roomRepository = roomRepository;
+        this.gameRepository = gameRepository;
     }
     async getRooms() {
         const rooms = await this.roomRepository.find();
-        return { rooms: rooms };
+        return { gamesRooms: rooms };
     }
     async addRoom(Createroom) {
-        const { roomname, difficulty } = Createroom;
-        const room = new room_entity_1.Room();
+        const { roomname, difficulty, player1, player2 } = Createroom;
+        const room = new game_room_entity_1.GameRoom();
         room.roomname = roomname;
         room.difficulty = difficulty;
+        room.player1 = player1;
+        room.player2 = player2;
         try {
             await this.roomRepository.save(room);
         }
@@ -41,11 +45,66 @@ let PongGameService = class PongGameService {
     async deleteRoom(roomname) {
         await this.roomRepository.delete({ roomname: roomname });
     }
+    async getGamesHistory(id) {
+        const games = await this.gameRepository.find({
+            relations: ['winner', 'loser'],
+            where: [
+                {
+                    winner: {
+                        id: id
+                    },
+                },
+                {
+                    loser: {
+                        id: id
+                    },
+                }
+            ],
+            select: ['winner', 'loser', 'winnerScore', 'loserScore', 'mode', 'createdAt']
+        });
+        games.map((game) => {
+            delete game.winner.id;
+            delete game.winner.avatar;
+            delete game.winner.level;
+            delete game.winner.losses;
+            delete game.winner.wins;
+            delete game.winner.status;
+            delete game.winner.senders;
+            delete game.winner.two_fa;
+            delete game.loser.id;
+            delete game.loser.avatar;
+            delete game.loser.level;
+            delete game.loser.losses;
+            delete game.loser.wins;
+            delete game.loser.status;
+            delete game.loser.senders;
+            delete game.loser.two_fa;
+        });
+        return { gamesHistory: games };
+    }
+    async addGameHistory(createGameHistoryDto) {
+        const { mode, winner, loser, winnerScore, loserScore } = createGameHistoryDto;
+        const gamesHistory = new game_history_entity_1.GameHistory();
+        gamesHistory.mode = mode;
+        gamesHistory.winner = winner;
+        gamesHistory.loser = loser;
+        gamesHistory.winnerScore = winnerScore;
+        gamesHistory.loserScore = loserScore;
+        try {
+            await this.gameRepository.save(gamesHistory);
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException();
+        }
+        return gamesHistory;
+    }
 };
 PongGameService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(room_entity_1.Room)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(0, (0, typeorm_1.InjectRepository)(game_room_entity_1.GameRoom)),
+    __param(1, (0, typeorm_1.InjectRepository)(game_history_entity_1.GameHistory)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], PongGameService);
 exports.PongGameService = PongGameService;
 //# sourceMappingURL=pong-game.service.js.map

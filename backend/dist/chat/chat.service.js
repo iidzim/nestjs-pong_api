@@ -35,8 +35,19 @@ let ChatService = class ChatService {
     async createRoom(RoomDto, creators) {
         return await this.roomRepo.createRoom(RoomDto, creators);
     }
+    async createDM(sender, receiver) {
+        const chatroom = await this.roomRepo.createDM(sender, receiver);
+        let User = await this.userService.getUserById(sender);
+        await this.addMember(chatroom, User, membership_model_1.RoleStatus.USER);
+        User = await this.userService.getUserById(receiver);
+        await this.addMember(chatroom, User, membership_model_1.RoleStatus.USER);
+        return chatroom;
+    }
     async getRoomById(id) {
         return await this.roomRepo.getRoomById(id);
+    }
+    async getRoomByName(name) {
+        return await this.roomRepo.findOne({ name: name });
     }
     async getMembersByRoomId(roomid) {
         const usersid = await this.membershipRepo
@@ -57,7 +68,7 @@ let ChatService = class ChatService {
             .getMany();
         let rooms = [];
         for (var id of roomsid)
-            rooms.push(await this.getRoomById(id.roomid));
+            rooms.push(await this.roomRepo.getChatroomById(id.roomid));
         return rooms;
     }
     async addMember(room, creator, role) {
@@ -74,10 +85,19 @@ let ChatService = class ChatService {
     }
     async getMessagesByroomId(roomid) {
         const query = await this.messageRepo.createQueryBuilder('message')
-            .select(['message.content', 'message.playerid'])
+            .select(['message.content', 'message.playerid', 'message.roomid'])
             .where("message.roomid = :roomid", { roomid })
             .orderBy("message.created_at");
         const messages = await query.getMany();
+        return messages;
+    }
+    async getDMs(userid, receiverid) {
+        let room = await this.getRoomByName(userid + ":" + receiverid);
+        if (!room)
+            room = await this.getRoomByName(receiverid + ":" + userid);
+        let messages = [];
+        if (room)
+            messages = await this.getMessagesByroomId(room.id);
         return messages;
     }
     async deleteMmebership(roomid, playrid) {
@@ -91,10 +111,15 @@ let ChatService = class ChatService {
     }
     async getAllRooms(playerid) {
         const rooms = await this.roomRepo.createQueryBuilder('chatroom')
+            .select(['chatroom.id', 'chatroom.name', 'chatroom.ispublic', 'chatroom.ischannel'])
             .getMany();
-        for (let i = 0; i < rooms.length; i++) {
-            if (rooms[i].ispublic === false && await this.isMember(rooms[i].id, playerid) === null)
+        let i = 0;
+        while (i < rooms.length) {
+            if (await rooms[i].ispublic == false && await this.isMember(rooms[i].id, playerid) === null) {
                 rooms.splice(i, 1);
+            }
+            else
+                i++;
         }
         return rooms;
     }
@@ -112,6 +137,17 @@ let ChatService = class ChatService {
         Membership.roomid = roomid;
         Membership.role = membership_model_1.RoleStatus.USER;
         await Membership.save();
+    }
+    async DMexist(senderid, receiverid) {
+        let chatroomName = senderid + ":" + receiverid;
+        let room = await this.roomRepo.findOne({ name: chatroomName, ischannel: false });
+        if (room)
+            return room;
+        chatroomName = receiverid + ":" + senderid;
+        room = await this.roomRepo.findOne({ name: chatroomName, ischannel: false });
+        if (room)
+            return room;
+        return null;
     }
 };
 ChatService = __decorate([

@@ -1,14 +1,13 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException, Res, Response } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-// import { TwoFactorAuthenticationService } from "../auth/two-factor-authentication.service";
 import { GetPlayersFilterDto } from "./dto-players/get-player-filter.dto";
 import { Player } from "./player.entity";
 import { PlayerRepository } from "./player.repository";
 import { UserStatus } from "./player_status.enum";
 
 import { authenticator } from 'otplib';
-import { toFile, qrcode, create } from 'qrcode';
+// import QRCode from 'qrcode';
 const QRCode = require('qrcode');
 import * as dotenv from "dotenv";
 dotenv.config({ path: `.env` })
@@ -21,21 +20,6 @@ export class UsersService {
 		// private readonly twofactorService: TwoFactorAuthenticationService,
 		private jwtService: JwtService,
 	) {}
-
-	// async signUp(createUserDto: CreateUserDto): Promise<void> {
-	// 	return this.userRepository.signUp(createUserDto);
-	// }
-
-	// async signIn(createUserDto: CreateUserDto): Promise<{ accessToken: string }> {
-	// 	const username = await this.userRepository.validateUserPassword(createUserDto);
-	// 	if (!username) {
-	// 		throw new UnauthorizedException('Invalid credentials')
-	// 	}
-	
-	// 	const payload: JwtPayload = { username };
-	// 	const accessToken = await this.jwtService.sign(payload);
-	// 	return { accessToken };
-	// }
 
 	async getUserById(id: number): Promise<Player> {
 		const found = await this.userRepository.findOne(id);
@@ -57,14 +41,27 @@ export class UsersService {
 		return this.userRepository.getUsers(FilterDto);
 	}
 
+	async updateUsersStatus() {
+		console.log('Updating users status');
+		const onlineUsers = await this.userRepository.find({ where: { status: UserStatus.ONLINE } });
+		for (const user of onlineUsers) {
+			const now = new Date();
+			const diff = now.getTime() - user.last_activity.getTime();
+			console.log(user.username + diff);
+			if (diff > 1000 * 60 * 5) {
+				await this.updateStatus(user.id, UserStatus.OFFLINE);
+			}
+		}
+	}
+
 	async updateUsername(id: number, username: string): Promise<Player> {
 
 		const updated = await this.getUserById(id);
 		var regEx = /^[0-9a-zA-Z]+$/;
-		updated.username = username;
 		if (!regEx.test(username)) {
 			throw new BadRequestException('Username must be alphanumeric');
 		}
+		updated.username = username;
 		try {
 			await updated.save();
 		} catch (error) {
@@ -88,23 +85,55 @@ export class UsersService {
 
 	async generateSecretQr(user: Player): Promise<string> {
 		const { otpauth_url } = await this.generateTwoFactorAuthenticationSecret(user);
-		// return await this.pipeQrCodePath(res, otpauth_url);
-		const qr = await QRCode.toString(otpauth_url);
-		// console.log(qr);
-		return qr;
+		const imageUrl = process.cwd() + "/public/qr_" + user.username + ".png";
+		const pathToServe = "qr_" + user.username + ".png";
+		QRCode.toFile(
+			imageUrl,
+			otpauth_url.toString(),
+			[],
+			(err, img) => {
+					if (err) {
+					  console.log('Error with QR');
+					  return;
+					}
+				}
+		  	)
+		return pathToServe;
 	}
 
-	async updateLevel(id: number): Promise<Player> {
+	async updateLevel(id: number, difficult: boolean): Promise<Player> {
 		const updated = await this.getUserById(id);
-		updated.level += 0.125;
-		await updated.save();
+		if (updated) {
+			updated.level = updated.level + (difficult ? 0.15 : 0.10);
+			await updated.save();
+		}
+		return updated;
+	}
+
+	async winsGame(id: number): Promise<Player> {
+		const updated = await this.getUserById(id);
+		if (updated) {
+			updated.wins++;
+			await updated.save();
+		}
+		return updated;
+	}
+
+	async LostGame(id: number): Promise<Player> {
+		const updated = await this.getUserById(id);
+		if (updated) {
+			updated.losses++;
+			await updated.save();
+		}
 		return updated;
 	}
 
 	async updateStatus(id: number, status: UserStatus): Promise<Player> {
 		const updated = await this.getUserById(id);
-		updated.status = status;
-		await updated.save();
+		if (updated) {
+			updated.status = status;
+			await updated.save();
+		}
 		return updated;
 	}
 
@@ -118,24 +147,25 @@ export class UsersService {
 			s = -3;
 		else if (user.wins >= 5)
 			s = -2;
-		else if (user.wins == 1)
+		else if (user.wins >= 1 && user.wins < 5)
 			s = -1;
 		else
 			s = 4;
 		return achievements.slice(s);
 	}
 
-	async findOrCreate(id: number, login: string, email: string): Promise<Player> {
-		console.log("find or create > number of arguments passed: ", arguments.length);
-		console.log(id, login);
+	async findPlayer(id: number): Promise<Player> {
+		const found = await this.userRepository.findOne({ where: { id } });
+		return found;
+	}
+
+	async findOrCreate(id: number, login: string): Promise<Player> {
 		const found = await this.userRepository.findOne({ where: { id } });
 		if (found) {
-			console.log('found !!');
 			found.status = UserStatus.ONLINE;
 			await found.save();
 			return found;
 		}
-		console.log('not found !!');
 		const newUser = new Player();
 		newUser.id = id;
 		newUser.username = login;
@@ -145,12 +175,15 @@ export class UsersService {
 		newUser.losses = 0;
 		newUser.status = UserStatus.ONLINE;
 		newUser.two_fa = false;
-		newUser.email = email;
-		await newUser.save();
-		console.log('new User saved successfully ' + newUser);
-		if (typeof(newUser) == 'undefined') {
-			console.log('newUser is undefined');
+		try {
+			await newUser.save();
+		} catch (error) {
+			console.log(error.code);
+			throw new BadRequestException();
 		}
+		// if (typeof(newUser) == 'undefined') {
+		// 	console.log('newUser is undefined');
+		// }
 		return newUser;
 	}
 
@@ -181,30 +214,14 @@ export class UsersService {
         const secret = authenticator.generateSecret();
 		const token = authenticator.generate(secret);
         const otpauth_url = authenticator.keyuri(token, process.env.APP_NAME, secret);
-		// console.log(otpauth_url);
         // await this.setTwoFactorAuthenticationSecret(user.id, secret);
 		await this.userRepository.update(user.id, { secret: secret });
         return { secret, otpauth_url };
     }
 
-    // async pipeQrCodePath(stream: Response, otpauth_url: string): Promise<string> {
-	// 	//& use toFile and return the file path
-	// 	// const qr = await create(otpauth_url);
-	// 	// const num = Math.floor(Math.random() * 1000000);
-	// 	// const fileName = '/backend/public/qrcode' + num.toString() + '.png';
-	// 	// console.log('HERE ' + fileName)
-	// 	// const file = await QRCode.toFile(fileName, otpauth_url);
-	// 	const qr = await QRCode.toString(otpauth_url);
-	// 	console.log(qr);
-	// 	return qr;
-    // }
-
 	async verifyTwoFactorAuthenticationCodeValid(user: Player, code: string) {
-		console.log('verifyTwoFactorAuthenticationCodeValid > ');
 		const secret = user.secret;
-		console.log(code);
 		const verif = authenticator.verify({token: code, secret: secret});
-		// const verif = authenticator.verify({token: token, secret: secret});
 		console.log('verrified = ' + verif);
 		return verif;
 	}

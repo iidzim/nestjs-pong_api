@@ -8,6 +8,7 @@ import { Request, Express } from "express";
 import * as fs  from "fs";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { RelationStatus } from "../relations/relation_status.enum";
+import { JwtPayload } from "../auth/jwt-payload.interface";
 
 @Controller()
 export class UsersController {
@@ -32,7 +33,6 @@ export class UsersController {
 		const friends = await this.relationService.getUsersByStatus(user, RelationStatus.FRIEND);
 		const blockedUsers = await this.relationService.getUsersByStatus(user, RelationStatus.BLOCKED);
 		const achievements = await this.usersService.getAchievements(user.id);
-		// const matchHistory = await this.gameService.getMatchByUser(id);
 		const data = {
 			"profile": playerData,
 			"wins": playerData.wins,
@@ -40,7 +40,6 @@ export class UsersController {
 			"friends": friends,
 			"blockedUsers": blockedUsers,
 			"achievements": achievements,
-			// "matchHistory": matchHistory,
 			"cookie":req.cookies.connect_sid,
 		};
 		return data;
@@ -56,12 +55,10 @@ export class UsersController {
 		const playerData = await this.usersService.getUserById(id);
 		const friends = await this.relationService.getUsersByStatus(playerData, RelationStatus.FRIEND);
 		const achievements = await this.usersService.getAchievements(id);
-		// const matchHistory = await this.gameService.getMatchByUser(id);
 		const data = {
 			"profile": playerData,
 			"friends": friends,
 			"achievements": achievements,
-			// "matchHistory": matchHistory,
 		};
 		return data;
 	}
@@ -85,8 +82,8 @@ export class UsersController {
 		@UploadedFile() avatar: Express.Multer.File,
     ){
         const user = await this.usersService.verifyToken(req.cookies.connect_sid);
-        fs.writeFileSync(process.cwd().substring(0,process.cwd().length - 7) + "frontend/src/assets/"+imageName, avatar.buffer);
-		console.log("imagename === ", imageName)
+        fs.writeFileSync(process.cwd().substring(0,process.cwd().length - 7) + "frontend/public/assets/"+imageName, avatar.buffer);
+        // console.log("imagename === ", imageName)
 		return this.usersService.updateAvatar(user.id, imageName);
     }
 
@@ -96,18 +93,13 @@ export class UsersController {
 		@Req() req: Request,
 	): Promise<string>{
 		const user = await this.usersService.verifyToken(req.cookies.connect_sid);
-		const qr = await this.usersService.generateSecretQr(user);
-		try {
-			fs.writeFileSync(process.cwd() + "/public/qr_" + user.username + ".png", qr);
-		} catch (error) {
-			console.log(error);
-		}
-		const path =  "../../../backend/public/qr_" + user.username + ".png";
-		return path;
+		const imageUrl = await this.usersService.generateSecretQr(user);
+		// console.log("imageUrl === ", imageUrl);
+		return imageUrl;
 	}
 
 	@Post('/settings/2fa/enable')
-	async TwoFactorEnable(
+	async twoFactorEnable(
 		@Req() req: Request,
 		@Body('Password2fa') Password2fa: string,
 	): Promise<void> {
@@ -123,9 +115,10 @@ export class UsersController {
 		await this.usersService.turnOnTwoFactorAuthentication(user.id);
 	}
 
-	@Post('/2fa/authenticate')
-	async TwoFactorAuthenticate(
+	@Post('/twofactorauthentication')
+	async twoFactorAuthenticate(
 		@Req() req: Request,
+		@Response() res,
 		@Body('twaFactorCode') code: string,
 	): Promise<any> {
         const user = await this.usersService.verifyToken(req.cookies.connect_sid);
@@ -133,7 +126,21 @@ export class UsersController {
 		if (!isValid) {
 			throw new UnauthorizedException('Wrong authentication code');
 		}
-		// set another cookie
+		await res.clearCookie('twofa', {domain: 'localhost', path: '/'});
+		const id = user.id;
+		const username = user.username;
+		const two_fa = user.two_fa;
+		const payload: JwtPayload = { username, id, two_fa };
+		const accessToken = await this.jwtService.sign(payload);
+		res.cookie('connect_sid',[accessToken]);
+		res.redirect('http://localhost:3000/home');
+	}
+
+	//+ upadte user status online/offline
+	@Get('/updateUsersStatus')
+	async updateUsersStatus(): Promise<any> {
+		console.log("updateUsersStatus ----------");
+		return await this.usersService.updateUsersStatus();
 	}
 
 	//- get all users

@@ -42,22 +42,18 @@ let ChatGateway = class ChatGateway {
             return this.disconnect(client);
         }
     }
+    async getSocketid(id) {
+        for (var user of this.user) {
+            let decoded = user.handshake.query.token;
+            decoded = await this.userService.verifyToken(decoded);
+            if (decoded.id === id)
+                return user;
+        }
+    }
     async handleConnection(client) {
         await this.definePlayer(client);
         client.data.player = this.player;
-        const rooms = await this.chatService.getRoomsForUser(this.decoded.id);
         this.user.push(client);
-        this.title.push(`${client.id}`);
-        console.log(`On Connnect ... !${client.id} ${this.player.username}`);
-        this.server.to(client.id).emit('message', rooms);
-        let messages = [];
-        let members = [];
-        if (rooms.length != 0) {
-            messages = await this.chatService.getMessagesByroomId(rooms[0].id);
-            members = await this.chatService.getMembersByRoomId(rooms[0].id);
-        }
-        this.server.to(client.id).emit('sendMessage', messages);
-        this.server.to(client.id).emit('members', members);
     }
     disconnect(socket) {
         socket.emit('Error', new common_1.UnauthorizedException());
@@ -78,13 +74,16 @@ let ChatGateway = class ChatGateway {
         await this.chatService.addMember(room, socket.data.player, membership_model_1.RoleStatus.OWNER);
         let userid;
         let rooms;
+        let allrooms;
         let members = await this.chatService.getMembersByRoomId(room.id);
         for (var x of this.user) {
             userid = await x.handshake.query.token;
             userid = await this.userService.verifyToken(userid);
             rooms = await this.chatService.getRoomsForUser(userid.id);
+            allrooms = await this.chatService.getAllRooms(userid.id);
             this.server.to(x.id).emit('message', rooms);
             this.server.to(x.id).emit('members', members);
+            this.server.to(x.id).emit('allrooms', allrooms);
         }
         this.players.splice(0);
     }
@@ -124,7 +123,46 @@ let ChatGateway = class ChatGateway {
         await this.definePlayer(socket);
         await this.chatService.createMembership(this.player.id, roomid);
     }
-    async sendDirectMessage(sender, receiverid) {
+    async createDM(sender, receiverid) {
+        await this.definePlayer(sender);
+        let room = await this.chatService.DMexist(this.player.id, receiverid);
+        if (!room) {
+            const DM = await this.chatService.createDM(this.player.id, receiverid);
+            let allrooms = await this.chatService.getAllRooms(this.player.id);
+            let rooms = await this.chatService.getRoomsForUser(this.player.id);
+            this.server.to(sender.id).emit('allrooms', allrooms);
+            this.server.to(sender.id).emit('message', rooms);
+            let decoded = await this.getSocketid(receiverid);
+            if (decoded != null) {
+                allrooms = await this.chatService.getAllRooms(receiverid);
+                rooms = await this.chatService.getRoomsForUser(receiverid);
+                this.server.to(decoded.id).emit('allrooms', allrooms);
+                this.server.to(decoded.id).emit('message', rooms);
+            }
+        }
+        else {
+            let messages = await this.chatService.getMessagesByroomId(room.id);
+            this.server.to(this.decoded.id).emit("sendMessage", messages);
+        }
+    }
+    async sendDM(sender, messagedto) {
+        await this.definePlayer(sender);
+        let receiverid = messagedto.id;
+        let roomName = receiverid + ":" + this.player.id;
+        let room = await this.chatService.getRoomByName(roomName);
+        if (!room)
+            room = await this.chatService.getRoomByName(this.player.id + ":" + receiverid);
+        messagedto.id = room.id;
+        await this.chatService.createMessage(messagedto, this.player);
+        for (var x of this.user) {
+            let userid = await x.handshake.query.token;
+            userid = await this.userService.verifyToken(userid);
+            let messages = await this.chatService.getMessagesByroomId(messagedto.id);
+            if (await this.chatService.isMember(messagedto.id, userid)) {
+                console.log("userid username" + userid.username);
+                this.server.to(x.id).emit('sendMessage', messages);
+            }
+        }
     }
 };
 __decorate([
@@ -156,11 +194,17 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "joinChannel", null);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('direct-message'),
+    (0, websockets_1.SubscribeMessage)('create-DM'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [socket_io_1.Socket, Number]),
     __metadata("design:returntype", Promise)
-], ChatGateway.prototype, "sendDirectMessage", null);
+], ChatGateway.prototype, "createDM", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('send-DM'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, message_dto_1.messageDto]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "sendDM", null);
 ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ namespace: '/chat', cors: true }),
     __metadata("design:paramtypes", [auth_service_1.AuthService,
