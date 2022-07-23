@@ -28,24 +28,25 @@ let RelationRepository = class RelationRepository extends typeorm_1.Repository {
         const relations = await query.getMany();
         return relations;
     }
-    async addFriend(user, friend_id) {
-        const exist = await this.findOne({ where: { sender: user, receiver: friend_id, status: relation_status_enum_1.RelationStatus.FRIEND } });
-        if (exist) {
-            console.log('already friend');
-            return exist;
-        }
-        const blocked = await this.findOne({ where: { sender: user, receiver: friend_id, status: relation_status_enum_1.RelationStatus.BLOCKED } });
-        if (blocked) {
+    async addFriend(user, friend) {
+        const blocked = await this.findOne({ where: { sender: user, receiver: friend.id, status: relation_status_enum_1.RelationStatus.BLOCKED } });
+        const blocked2 = await this.findOne({ where: { sender: friend, receiver: user.id, status: relation_status_enum_1.RelationStatus.BLOCKED } });
+        if (blocked || blocked2) {
             console.log('user is blocked !!!!!!!!!!!!');
-            throw new common_1.BadRequestException('You cannot add this user');
+            throw new common_1.BadRequestException('You cannot add this user, user is blocked');
         }
-        const relation = new relation_entity_1.Relation();
-        relation.receiver = friend_id;
-        relation.sender = user;
-        relation.status = relation_status_enum_1.RelationStatus.FRIEND;
-        await relation.save();
+        const relation_user = new relation_entity_1.Relation();
+        relation_user.receiver = friend.id;
+        relation_user.sender = user;
+        relation_user.status = relation_status_enum_1.RelationStatus.FRIEND;
+        await relation_user.save();
+        const relation_friend = new relation_entity_1.Relation();
+        relation_friend.receiver = user.id;
+        relation_friend.sender = friend;
+        relation_friend.status = relation_status_enum_1.RelationStatus.FRIEND;
+        await relation_friend.save();
         console.log('friend added suuccessfully');
-        return relation;
+        return relation_user;
     }
     async blockPlayer(user, blocked_id) {
         const friend = await this.findOne({ where: { sender: user, receiver: blocked_id, status: relation_status_enum_1.RelationStatus.FRIEND } });

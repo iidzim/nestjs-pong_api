@@ -149,6 +149,12 @@ let ChatService = class ChatService {
             return room;
         return null;
     }
+    async updateMembership(playerid, roomid, role) {
+        const membership = await this.membershipRepo.findOne({ playerid: playerid, roomid: roomid });
+        membership.role = role;
+        await membership.save();
+        return membership;
+    }
 };
 ChatService = __decorate([
     (0, common_1.Injectable)(),

@@ -16,6 +16,7 @@ const socket_io_1 = require("socket.io");
 const auth_service_1 = require("../auth/auth.service");
 const players_service_1 = require("../players/players.service");
 const chat_service_1 = require("./chat.service");
+const membership_dto_1 = require("./dto/membership-dto");
 const membership_model_1 = require("./dto/membership.model");
 const message_dto_1 = require("./dto/message-dto");
 const room_dto_1 = require("./dto/room-dto");
@@ -49,8 +50,10 @@ let ChatGateway = class ChatGateway {
             if (decoded.id === id)
                 return user;
         }
+        return null;
     }
     async handleConnection(client) {
+        console.log('Connected: ' + client.id);
         await this.definePlayer(client);
         client.data.player = this.player;
         this.user.push(client);
@@ -60,7 +63,7 @@ let ChatGateway = class ChatGateway {
         socket.disconnect();
     }
     handleDisconnect(client) {
-        this.user.splice(this.user.indexOf(`${client}`), 1);
+        this.user = this.user.filter(us => us.id !== client.id);
         console.log(`On Disconnet ... ! ${client.id}`);
     }
     async onCreateRoom(socket, roomdto) {
@@ -154,15 +157,46 @@ let ChatGateway = class ChatGateway {
             room = await this.chatService.getRoomByName(this.player.id + ":" + receiverid);
         messagedto.id = room.id;
         await this.chatService.createMessage(messagedto, this.player);
-        for (var x of this.user) {
-            let userid = await x.handshake.query.token;
-            userid = await this.userService.verifyToken(userid);
-            let messages = await this.chatService.getMessagesByroomId(messagedto.id);
-            if (await this.chatService.isMember(messagedto.id, userid)) {
-                console.log("userid username" + userid.username);
-                this.server.to(x.id).emit('sendMessage', messages);
-            }
+        let socketguest = await this.getSocketid(receiverid);
+        let messages = await this.chatService.getMessagesByroomId(messagedto.id);
+        if (socketguest) {
+            console.log(socketguest.id);
+            this.server.to(socketguest.id).emit('sendMessage', messages);
         }
+        this.server.to(sender.id).emit('sendMessage', messages);
+    }
+    async setAdmin(socket, membershipdto) {
+        this.chatService.updateMembership(membershipdto.userid, membershipdto.roomid, membership_model_1.RoleStatus.ADMIN);
+        let members = await this.chatService.getMembersByRoomId(membershipdto.roomid);
+        let userid;
+        for (var x of this.user) {
+            userid = await x.handshake.query.token;
+            userid = await this.userService.verifyToken(userid);
+            if (await this.chatService.isMember(membershipdto.roomid, userid))
+                this.server.to(x.id).emit('members', members);
+        }
+    }
+    async removeAdmin(socket, membershipdto) {
+        this.chatService.updateMembership(membershipdto.userid, membershipdto.roomid, membership_model_1.RoleStatus.USER);
+        let members = await this.chatService.getMembersByRoomId(membershipdto.roomid);
+        let userid;
+        for (var x of this.user) {
+            userid = await x.handshake.query.token;
+            userid = await this.userService.verifyToken(userid);
+            if (await this.chatService.isMember(membershipdto.roomid, userid))
+                this.server.to(x.id).emit('members', members);
+        }
+    }
+    async invitePlay(client, guest) {
+        await this.definePlayer(client);
+        let socketguest = await this.getSocketid(guest);
+        if (socketguest)
+            this.server.to(socketguest.id).emit('invitation', this.player.username);
+        else
+            console.log('you are trying to invite a user who is offline !');
+    }
+    async acceptInvitation(client) {
+        console.log('invitation accepted');
     }
 };
 __decorate([
@@ -205,6 +239,30 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, message_dto_1.messageDto]),
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "sendDM", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('set-admin'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, membership_dto_1.membershipDto]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "setAdmin", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('remove-admin'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, membership_dto_1.membershipDto]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "removeAdmin", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('invite-game'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Number]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "invitePlay", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('invitation-accepted'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "acceptInvitation", null);
 ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ namespace: '/chat', cors: true }),
     __metadata("design:paramtypes", [auth_service_1.AuthService,

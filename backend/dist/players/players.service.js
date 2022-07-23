@@ -42,6 +42,13 @@ let UsersService = class UsersService {
         }
         return found;
     }
+    async getUserByStatusId(id) {
+        const found = await this.userRepository.findOne({ where: { id: id, status: player_status_enum_1.UserStatus.ONLINE } });
+        if (!found) {
+            throw new common_1.NotFoundException(`User with ID "${id}" not found`);
+        }
+        return found;
+    }
     async getUsers(FilterDto) {
         return this.userRepository.getUsers(FilterDto);
     }
@@ -50,9 +57,9 @@ let UsersService = class UsersService {
         for (const user of onlineUsers) {
             const now = new Date();
             const diff = now.getTime() - user.last_activity.getTime();
-            console.log(user.username + diff);
-            if (diff > 1000 * 60 * 5) {
+            if (diff > 1000 * 60 * 500) {
                 await this.updateStatus(user.id, player_status_enum_1.UserStatus.OFFLINE);
+                console.log('User ' + user.username + ' is offline');
             }
         }
     }
@@ -82,18 +89,6 @@ let UsersService = class UsersService {
         updated.avatar = avatar;
         await updated.save();
         return updated;
-    }
-    async generateSecretQr(user) {
-        const { otpauth_url } = await this.generateTwoFactorAuthenticationSecret(user);
-        const imageUrl = process.cwd() + "/public/qr_" + user.username + ".png";
-        const pathToServe = "qr_" + user.username + ".png";
-        QRCode.toFile(imageUrl, otpauth_url.toString(), [], (err, img) => {
-            if (err) {
-                console.log('Error with QR');
-                return;
-            }
-        });
-        return pathToServe;
     }
     async updateLevel(id, difficult) {
         const updated = await this.getUserById(id);
@@ -182,6 +177,18 @@ let UsersService = class UsersService {
         catch (error) {
             throw new common_1.BadRequestException('Token expired');
         }
+    }
+    async generateSecretQr(user) {
+        const { otpauth_url } = await this.generateTwoFactorAuthenticationSecret(user);
+        const imageUrl = process.cwd() + "/public/qr_" + user.username + ".png";
+        const pathToServe = "qr_" + user.username + ".png";
+        QRCode.toFile(imageUrl, otpauth_url.toString(), [], (err, img) => {
+            if (err) {
+                console.log('Error with QR');
+                return;
+            }
+        });
+        return pathToServe;
     }
     async setTwoFactorAuthenticationSecret(id, secret) {
         await this.userRepository.update(id, { secret: secret });

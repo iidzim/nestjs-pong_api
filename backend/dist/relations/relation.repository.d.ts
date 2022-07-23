@@ -5,6 +5,6 @@ import { Relation } from "./relation.entity";
 export declare class RelationRepository extends Repository<Relation> {
     constructor();
     getRelations(FilterDto: GetRelationFilterDto): Promise<Relation[]>;
-    addFriend(user: Player, friend_id: number): Promise<Relation>;
+    addFriend(user: Player, friend: Player): Promise<Relation>;
     blockPlayer(user: Player, blocked_id: number): Promise<Relation>;
 }

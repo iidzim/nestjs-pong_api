@@ -4,6 +4,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { Player } from 'src/players/player.entity';
 import { UsersService } from 'src/players/players.service';
 import { ChatService } from './chat.service';
+import { membershipDto } from './dto/membership-dto';
 import { messageDto } from './dto/message-dto';
 import { RoomDto } from './dto/room-dto';
 export declare class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -28,4 +29,8 @@ export declare class ChatGateway implements OnGatewayConnection, OnGatewayDiscon
     joinChannel(socket: Socket, roomid: number): Promise<void>;
     createDM(sender: Socket, receiverid: number): Promise<void>;
     sendDM(sender: Socket, messagedto: messageDto): Promise<void>;
+    setAdmin(socket: Socket, membershipdto: membershipDto): Promise<void>;
+    removeAdmin(socket: Socket, membershipdto: membershipDto): Promise<void>;
+    invitePlay(client: Socket, guest: number): Promise<void>;
+    acceptInvitation(client: Socket): Promise<void>;
 }

@@ -38,7 +38,8 @@ let RelationsService = class RelationsService {
         return friends;
     }
     async addFriend(user, friend_id) {
-        return this.relationRepository.addFriend(user, friend_id);
+        const friend = await this.usersService.getUserById(friend_id);
+        return this.relationRepository.addFriend(user, friend);
     }
     async blockPlayer(user, blocked_id) {
         return this.relationRepository.blockPlayer(user, blocked_id);

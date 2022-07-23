@@ -37,19 +37,26 @@ export class UsersService {
 		return found;
 	}
 
+	async getUserByStatusId(id:number): Promise<Player> {
+		const found = await this.userRepository.findOne({ where: { id: id, status: UserStatus.ONLINE } });
+		if (!found){
+			throw new NotFoundException(`User with ID "${id}" not found`);
+		}
+		return found;
+	}
+
 	async getUsers(FilterDto: GetPlayersFilterDto):Promise<Player[]> {
 		return this.userRepository.getUsers(FilterDto);
 	}
 
 	async updateUsersStatus() {
-		console.log('Updating users status');
 		const onlineUsers = await this.userRepository.find({ where: { status: UserStatus.ONLINE } });
 		for (const user of onlineUsers) {
 			const now = new Date();
 			const diff = now.getTime() - user.last_activity.getTime();
-			console.log(user.username + diff);
-			if (diff > 1000 * 60 * 5) {
+			if (diff > 1000 * 60 * 500) {
 				await this.updateStatus(user.id, UserStatus.OFFLINE);
+				console.log('User ' + user.username + ' is offline');
 			}
 		}
 	}
@@ -81,24 +88,6 @@ export class UsersService {
 		updated.avatar = avatar;
 		await updated.save();
 		return updated;
-	}
-
-	async generateSecretQr(user: Player): Promise<string> {
-		const { otpauth_url } = await this.generateTwoFactorAuthenticationSecret(user);
-		const imageUrl = process.cwd() + "/public/qr_" + user.username + ".png";
-		const pathToServe = "qr_" + user.username + ".png";
-		QRCode.toFile(
-			imageUrl,
-			otpauth_url.toString(),
-			[],
-			(err, img) => {
-					if (err) {
-					  console.log('Error with QR');
-					  return;
-					}
-				}
-		  	)
-		return pathToServe;
 	}
 
 	async updateLevel(id: number, difficult: boolean): Promise<Player> {
@@ -199,6 +188,24 @@ export class UsersService {
 		}
 	}
 
+	async generateSecretQr(user: Player): Promise<string> {
+		const { otpauth_url } = await this.generateTwoFactorAuthenticationSecret(user);
+		const imageUrl = process.cwd() + "/public/qr_" + user.username + ".png";
+		const pathToServe = "qr_" + user.username + ".png";
+		QRCode.toFile(
+			imageUrl,
+			otpauth_url.toString(),
+			[],
+			(err, img) => {
+					if (err) {
+					  console.log('Error with QR');
+					  return;
+					}
+				}
+		  	)
+		return pathToServe;
+	}
+
 	async setTwoFactorAuthenticationSecret(id:number , secret: string) {
 		await this.userRepository.update(id, { secret: secret });
 	}
@@ -207,7 +214,7 @@ export class UsersService {
 		await this.userRepository.update(id, { two_fa: true });
 	}
 
-	//----------------------------- TwoFactorAuthentication.service.ts
+	//----------------------------- TwoFactorAuthentication service.ts
 
 	async generateTwoFactorAuthenticationSecret(user: Player) {
 
