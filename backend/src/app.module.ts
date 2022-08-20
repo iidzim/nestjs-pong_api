@@ -10,6 +10,7 @@ import { ChatModule } from './chat/chat.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { LoggerMiddleware } from './config/logger.middleware';
+import { AppGateway } from './players/app.gateway';
 
 @Module({
   imports: [
@@ -27,9 +28,10 @@ import { LoggerMiddleware } from './config/logger.middleware';
   controllers: [],
   providers: [],
 })
-export class AppModule implements NestModule{
-  constructor() {}
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}
+// export class AppModule implements NestModule{
+//   constructor() {}
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer.apply(LoggerMiddleware).forRoutes('*');
+//   }
+// }

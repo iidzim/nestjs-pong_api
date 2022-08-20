@@ -18,9 +18,9 @@ async function bootstrap() {
 //   SwaggerModule.setup('api', app, document);
 
 	app.use(cookieParser());
-	app.enableCors({origin: "http://localhost:3000", credentials: true}); // edited
+	app.enableCors({origin: "http://" + process.env.FRONTEND_HOST, credentials: true}); // edited
 //   app.enableCors({
-//     origin: ["http://localhost:3000/", "https://api.intra.42.fr/"],
+//     origin: ["http://" + process.env.FRONTEND_HOST, "https://api.intra.42.fr/"],
 //     methods: ['GET', 'POST', 'DELETE', 'OPTIONS', 'HEAD'],
 //     credentials: true
 //   });
@@ -36,7 +36,14 @@ bootstrap();
 
 // td list:
 
-	// login with 2fa - validate code
-	// bidirectional friend relation
+	//+ catch expired token exception
+	//+ users status depending on connectedUsers table
+
+
+//! errors
+//[Nest] 6028  - 07/26/2022, 9:45:29 PM   ERROR [ExceptionsHandler] ENOENT: no such file or directory, stat '/Users/iidzim/Desktop/ft_transcendence/backend/public/index.html'
+
 
 	
+// website: http://10.11.11.1
+// redirect uri: http://10.11.11.1:3001/auth/login

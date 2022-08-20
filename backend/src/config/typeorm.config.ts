@@ -10,12 +10,11 @@ import { GameHistory } from "src/pong-game/typeorm/game-history.entity";
 export const typeOrmConfig: TypeOrmModuleOptions = {
     type: 'postgres',
     host: '127.0.0.1',
-    //host: '192.168.99.117',
+    // host: '10.11.1.2',
     port: 5432,
     username: 'ping',
     password: 'pong',
     database: 'pong_db',
-    // entities: [__dirname + '/../**/*.entity.ts'],
     entities: [
         Player,
         Relation,
@@ -29,8 +28,3 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     logging: false,
     autoLoadEntities : true,
 }
-
-
-// synchronize - Indicates if database schema should be auto created on every application launch.
-// Be careful with this option and don't use this in production - otherwise you can lose production data.
-// This option is useful during debug and development.

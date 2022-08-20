@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, OnModuleDestroy } from '@nestjs/common';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -9,7 +9,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { DefaultService } from './default.service';
 
-@WebSocketGateway({ namespace: '/default', cors: true })
+@WebSocketGateway({ namespace: '/default', cors: true, path: '/game/default' })
 export class DefaultGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
@@ -20,15 +20,15 @@ export class DefaultGateway
     this.players = [];
   }
 
-  handleConnection(client: Socket) {
-    this.defaultService.handleUserConnected(client, this.players, this.wss);
+  async handleConnection(client: Socket) {
+    await this.defaultService.handleUserConnected(client, this.players, this.wss);
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     this.players = this.players.filter((clt) => {
       return clt.id !== client.id;
     });
-    this.defaultService.handleUserDisconnected(this.wss, client);
+    await this.defaultService.handleUserDisconnected(this.wss, client);
   }
 
   @SubscribeMessage('UpKeyPressed')

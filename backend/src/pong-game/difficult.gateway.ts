@@ -9,7 +9,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { DifficultService } from './difficult.service';
 
-@WebSocketGateway({ namespace: '/difficult', cors: true })
+@WebSocketGateway({ namespace: '/difficult', cors: true, path: '/game/difficult' })
 export class DifficultGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
@@ -20,15 +20,15 @@ export class DifficultGateway
     this.players = [];
   }
 
-  handleConnection(client: Socket) {
-    this.difficultService.handleUserConnected(client, this.players, this.wss);
+  async handleConnection(client: Socket) {
+    await this.difficultService.handleUserConnected(client, this.players, this.wss);
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     this.players = this.players.filter((clt) => {
       return clt.id !== client.id;
     });
-    this.difficultService.handleUserDisconnected(this.wss, client);
+    await this.difficultService.handleUserDisconnected(this.wss, client);
   }
 
   @SubscribeMessage('UpKeyPressed')

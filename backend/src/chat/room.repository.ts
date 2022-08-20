@@ -6,6 +6,7 @@ import { memoryUsage } from "process";
 import { membership } from "./membership.entity";
 import { RoleStatus } from "./dto/membership.model";
 import { Player } from "src/players/player.entity";
+import * as bcrypt from 'bcrypt';
 
 @EntityRepository(chatroom)
 export class roomRepository extends Repository<chatroom>{
@@ -18,7 +19,9 @@ export class roomRepository extends Repository<chatroom>{
         Room.ischannel = true;
         if (privacy === 'Private')
             Room.ispublic = false;
-        Room.password = password;
+        //hash this password
+        Room.salt = await bcrypt.genSalt();
+        Room.password = await bcrypt.hash(password, Room.salt);
         await Room.save();
 
         for (var user of creators)
@@ -27,9 +30,11 @@ export class roomRepository extends Repository<chatroom>{
             Membership.role = RoleStatus.USER;
             Membership.Player = user;
             Membership.room = Room;
+            Membership.isbanned = false;
+            Membership.ismuted = false;
             await Membership.save();
         }
-        //update the last one to be the owner
+        //update the last one to be the owner => already done in chhat gateway
 
 
         return Room;
@@ -40,6 +45,7 @@ export class roomRepository extends Repository<chatroom>{
 
         DM.name = sender+":"+receiver;
         DM.ischannel = false;
+        DM.salt = '';
         DM.password='';
         DM.ispublic = false;
         
@@ -53,6 +59,8 @@ export class roomRepository extends Repository<chatroom>{
         Membership.role =role;
         Membership.Player = creator;
         Membership.room = room;
+         Membership.ismuted = false;
+        Membership.isbanned = false;
         await Membership.save();
     }
  
@@ -66,30 +74,9 @@ export class roomRepository extends Repository<chatroom>{
         .where('room.id = :id', {id})
         .select(['room.id', 'room.name', 'room.ispublic', 'room.ischannel'])
         .getOne();
-
-       // console.log(room);
+        
         return room;
 
     }
-
-    async getRoomsForUser(Playerid:number):Promise<void>{
-        //! The new query
-        
-        //select * from room where id IN (select roomid from membership where Playerid=Playerid)
-
-
-       const query = await this.createQueryBuilder('membership')
-       .where('name = :Playerid', {Playerid})
-     //  console.log(await query.getMany());
-      // const rooms = await query.getMany();
-
-      // return rooms;
-
-    }
-
-    // async addUserToRoom(room:room, user:Player):Promise<room>{
-    //     await room.Players.push(user);
-    //     return room;
-    // }
 
 }

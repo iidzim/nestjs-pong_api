@@ -13,7 +13,10 @@ import { In } from 'typeorm';
 import { PlayerRepository } from 'src/players/player.repository';
 import { UsersService } from 'src/players/players.service';
 import { Player } from 'src/players/player.entity';
-
+import { memberDto } from './dto/member-dto';
+import { RelationsService } from 'src/relations/relations.service';
+import { RelationStatus } from 'src/relations/relation_status.enum';
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class ChatService {
     constructor(
@@ -31,7 +34,9 @@ export class ChatService {
         @InjectRepository(PlayerRepository)
         protected PlayerRepository:PlayerRepository,
 
-       protected userService:UsersService,
+        protected userService:UsersService,
+
+        protected relationService:RelationsService
         
         
     ){
@@ -39,10 +44,26 @@ export class ChatService {
     }
 
     async createRoom(RoomDto:RoomDto, creators :Player[]):Promise<chatroom>{
-        return await this.roomRepo.createRoom(RoomDto, creators);
+        const {name,privacy,password} = RoomDto;
+
+        const Room = new chatroom();
+        Room.name = name;
+        Room.ischannel = true;
+        if (privacy === 'Private')
+            Room.ispublic = false;
+        //hash this password
+        Room.salt = await bcrypt.genSalt();
+        Room.password = await bcrypt.hash(password, Room.salt);
+        await Room.save();
+        for (var user of creators)
+        {
+            await this.createMembership(user.id,Room.id);
+        }
+        return await Room;
     }
 
     async createDM(sender:number, receiver:number):Promise<chatroom>{
+        
         const chatroom = await this.roomRepo.createDM(sender, receiver);
         let User = await this.userService.getUserById(sender);
         await this.addMember(chatroom, User, RoleStatus.USER);
@@ -61,32 +82,43 @@ export class ChatService {
     }
    
 
-    async getMembersByRoomId(roomid:number):Promise<Player[]>{
+    async getMembersByRoomId(roomid:number, playerid:number):Promise<memberDto[]>{
+        let membersObj : memberDto[] =[];
+        if (await this.isMember(roomid, playerid))
+        {
+
         const usersid = await this.membershipRepo
         .createQueryBuilder('m')
         .where('m.roomid = :roomid', { roomid })
-        .select(['m.playerid'])
+        .select(['m.playerid', 'm.role'])
         .getMany();
 
         const members:Player[] = [];
         for (var id of usersid)
-            members.push(await this.userService.getUserById(id.playerid));
-        return members; //maybe I should select only [id && username]
+        {
+            let memberObj = {member: await this.userService.getUserById(id.playerid), role : id.role,isbanned:id.isbanned, ismuted:id.ismuted }
+            membersObj.push(memberObj);
+           // console.log(memberObj.member.username);
+        }
+    }
+        return membersObj; //maybe I should select only [id && username]
     }
 
-    async getRoomsForUser(playerid:number):Promise<chatroom[]>{
+    async getRoomsForUser(playerid:number):Promise<chatroom[]>{ 
         
        //! select * from room INNER JOIN membership ON (membership.Playerid=36 and room.id=membership.roomid);
         // const rooms = await this.roomRepo.createQueryBuilder('room')
         // .innerJoin('membership', 'room.id = membership.roomid')
         // .getMany();
 
-         const roomsid = await this.membershipRepo
+        //where playerid == playerid && is not banned !!
+        const isbanned = false;
+        const roomsid = await this.membershipRepo
         .createQueryBuilder('p')
         .where('p.playerid = :playerid', { playerid })
+        .andWhere('p.isbanned = :isbanned', {isbanned})
         .select(['p.roomid'])
         .getMany();
-        //console.log('faiiiled !');
 
         let rooms = [];
     
@@ -98,7 +130,18 @@ export class ChatService {
 
     
     async addMember(room:chatroom, creator:Player, role:RoleStatus):Promise<void>{
-        return await this.roomRepo.addMember(room, creator, role);
+        let found = await this.membershipRepo.findOne({roomid:room.id,playerid:creator.id});
+        if (!found)
+        {
+            const Membership = new membership();
+            Membership.role =role;
+            Membership.Player = creator;
+            Membership.room = room;
+            Membership.ismuted = false;
+            Membership.isbanned = false;
+            await Membership.save();
+        }
+       // return await this.roomRepo.addMember(room, creator, role);
     }
 
     async createMessage(messageDto:messageDto, sender:Player):Promise<message>{
@@ -112,25 +155,44 @@ export class ChatService {
         return Message;
     }
 
-    async getMessagesByroomId(roomid:number):Promise<message[]>{ 
-       const query = await this.messageRepo.createQueryBuilder('message')
-        .select(['message.content','message.playerid', 'message.roomid'])
-        .where("message.roomid = :roomid", {roomid})
-        .orderBy("message.created_at");
+    async getMessagesByroomId(roomid:number, playerid:number):Promise<message[]>{ 
 
-       const messages = await query.getMany();
-       return messages;
+        let messages :message[] =[];
+        if (await this.isMember(roomid, playerid))
+        {
+            const query = await this.messageRepo.createQueryBuilder('message')
+            .select(['message.content','message.playerid', 'message.roomid'])
+            .where("message.roomid = :roomid", {roomid})
+            .orderBy("message.created_at");
+            messages = await query.getMany();
+            //remove messages from the blocked user
+            let i = 0;
+            while (i < messages.length){
+                if (await this.relationService.checkBlock(messages[i].playerid, playerid) != null)
+                    messages.splice(i, 1);
+                else
+                    i++;
+            }
+        } 
+            return messages;
     }
+
     async getDMs(userid:number, receiverid:number):Promise<message[]>{
-        //find roomid
+        
+        //! check if player is blocked 
+        let messages : message[]=[]
 
-        let room =await this.getRoomByName(userid+":"+receiverid);
-        if (!room)
-            room = await this.getRoomByName(receiverid+":"+userid);
-        let messages:message[]=[];
+        if (await this.relationService.checkBlock(userid, receiverid) == null)
+        {
+            let room =await this.getRoomByName(userid+":"+receiverid);
+            if (!room)
+                room = await this.getRoomByName(receiverid+":"+userid);
+      
 
-        if (room)
-            messages = await this.getMessagesByroomId(room.id);
+            if (room)
+                messages = await this.getMessagesByroomId(room.id, userid);
+            
+        }
         return messages;
     }  
 
@@ -141,10 +203,34 @@ export class ChatService {
 
     async isMember(roomid:number, playerid:number):Promise<membership>{
 
-        const membership = await this.membershipRepo.findOne({playerid, roomid});
+        const membership = await this.membershipRepo.findOne({playerid:playerid, roomid:roomid, isbanned:false});
         if (membership)
             return membership
         return null;
+    }
+
+    async getMembership(roomid:number, playerid:number):Promise<membership>
+    {
+        let membership = await this.membershipRepo.findOne({playerid:playerid, roomid:roomid});
+        return membership;
+    }
+
+    // async isNotBannedMember(roomid:number, playerid:number):Promise<boolean>{  //is membernotbanned
+    //     //const membership = await this.membershipRepo.findOne({playerid:playerid, roomid:roomid, isbanned:true});
+    //     const membership = await this.isMember(roomid, playerid);
+    //     if (membership && membership.isbanned == false)
+    //         return true;
+        
+    //     return false;
+    // }
+
+    async isBanned(roomid:number, playerid:number):Promise<boolean>{
+        let result = await this.membershipRepo.findOne({roomid:roomid, playerid:playerid});
+       
+        if (result && result.isbanned == true)
+            return true;
+        return false;
+        
     }
 
     async getAllRooms(playerid:number):Promise<chatroom[]>{
@@ -155,13 +241,14 @@ export class ChatService {
         .getMany();
         
         //if the channel os private=>check if the user is a member
+        //if public check if is not banned
         let i = 0;
         while (i < rooms.length)
         {
-            // console.log(rooms[1].name+" => "+rooms[1].ispublic)
-            if (await rooms[i].ispublic == false && await this.isMember(rooms[i].id, playerid) === null)
+            if ((rooms[i].ispublic == false && await this.isMember(rooms[i].id, playerid) === null) || (rooms[i].ispublic == true && await this.isBanned(rooms[i].id, playerid) == true))
             {
                // console.log(rooms[i].name +' is removed bcz private ');
+               //if the user is a member check if he is banned !!
                 rooms.splice(i , 1);
             }
             else
@@ -181,11 +268,20 @@ export class ChatService {
     }
 
     async createMembership(playerid:number, roomid:number){
-        const Membership = new membership();
-        Membership.playerid = playerid;
-        Membership.roomid = roomid;
-        Membership.role =   RoleStatus.USER;
-        await Membership.save();
+        //before creating membership => check ppwd
+        const found = await this.membershipRepo.findOne({playerid:playerid, roomid:roomid});
+        if (!found)
+        {
+            let room = await this.getRoomById(roomid);
+            let user = await this.userService.getUserById(playerid);
+            const Membership = new membership();
+            Membership.Player = user;
+            Membership.room = room;
+            Membership.isbanned = false;
+            Membership.ismuted = false;
+            Membership.role =   RoleStatus.USER;
+            await Membership.save();
+        }
     }
 
     async DMexist(senderid:number, receiverid:number):Promise<chatroom>{
@@ -212,8 +308,47 @@ export class ChatService {
         return membership;
     }
 
-
     /*
+        edit pwd == something different
+        remove pwd == ''
     */
+    async updatePassword(roomid:number, password:string):Promise<chatroom>{
+        
+        let room = await this.getRoomById(roomid);
+        let salt =   await bcrypt.genSalt();
+        room.password = await bcrypt.hash(password, salt);
+        room.salt = salt;
+        await room.save();
+
+        return room;
+    }
+
+
+    
+    async updateBanStatus(playerid:number, roomid:number, ban:boolean):Promise<membership>{
+        const membership = await this.membershipRepo.findOne({playerid:playerid, roomid:roomid});
+        membership.isbanned = ban; // true | false
+        await membership.save();
+
+        return membership;
+    }
+
+    async updateMuteStatus(playerid:number, roomid:number, mute:boolean):Promise<membership>{
+        const membership = await this.membershipRepo.findOne({playerid:playerid, roomid:roomid});
+        membership.ismuted = mute; // true | false
+        await membership.save();
+
+        return membership;
+
+    }
+
+    async validatingRoomPwd(room:chatroom, password:string):Promise<boolean>{
+        const hash = await bcrypt.hash(password, room.salt);
+        if (room.password === hash )
+            return true;
+        return false;
+    }
+    
+    
 
 }

@@ -9,7 +9,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { OneVOneService } from './one-v-one.service';
 
-@WebSocketGateway({ namespace: '/oneVone', cors: true })
+@WebSocketGateway({ namespace: '/oneVone', cors: true, path: '/game/oneVone' })
 export class OneVOneGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
@@ -20,15 +20,15 @@ export class OneVOneGateway
     this.players = [];
   }
   
-  handleConnection(client: Socket) {
-    this.onevoneService.handleUserConnected(client, this.players, this.wss);
+  async handleConnection(client: Socket) {
+    await this.onevoneService.handleUserConnected(client, this.players, this.wss);
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     this.players = this.players.filter((clt) => {
       return clt.id !== client.id;
     });
-    this.onevoneService.handleUserDisconnected(this.wss, client);
+    await this.onevoneService.handleUserDisconnected(this.wss, client);
   }
 
   @SubscribeMessage('UpKeyPressed')
